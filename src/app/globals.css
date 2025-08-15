@@ -120,3 +120,76 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom Animations for HASHI BANK */
+@keyframes fly-bird {
+  0% {
+    transform: translateX(-100px) translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateX(25vw) translateY(-20px) rotate(5deg);
+  }
+  50% {
+    transform: translateX(50vw) translateY(10px) rotate(-5deg);
+  }
+  75% {
+    transform: translateX(75vw) translateY(-15px) rotate(3deg);
+  }
+  100% {
+    transform: translateX(100vw) translateY(0px) rotate(0deg);
+  }
+}
+
+@keyframes fly-bird-continuous {
+  0% {
+    transform: translateX(-100px) translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateX(25vw) translateY(-20px) rotate(5deg);
+  }
+  50% {
+    transform: translateX(50vw) translateY(10px) rotate(-5deg);
+  }
+  75% {
+    transform: translateX(75vw) translateY(-15px) rotate(3deg);
+  }
+  100% {
+    transform: translateX(100vw) translateY(0px) rotate(0deg);
+  }
+}
+
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gradient-x {
+  0%, 100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-position: right center;
+  }
+}
+
+.animate-fly-bird {
+  animation: fly-bird 15s linear infinite;
+}
+
+.animate-fly-bird-continuous {
+  animation: fly-bird-continuous 15s linear infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 8s ease infinite;
+}

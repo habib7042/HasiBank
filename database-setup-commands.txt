@@ -1,0 +1,45 @@
+# Copy and paste these commands into your psql terminal:
+
+# First, connect to your database:
+psql 'postgresql://neondb_owner:npg_7tcCWGfaJzF8@ep-spring-voice-a1mmjmkd-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+
+# Then run these SQL commands:
+
+CREATE TABLE "Settings" (
+    "id" SERIAL PRIMARY KEY,
+    "pin" VARCHAR(255) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "User" (
+    "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(255) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "Deposit" (
+    "id" SERIAL PRIMARY KEY,
+    "amount" DECIMAL(10,2) NOT NULL,
+    "month" VARCHAR(255) NOT NULL,
+    "year" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Deposit_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+INSERT INTO "Settings" ("id", "pin") VALUES (1, '7042');
+INSERT INTO "User" ("id", "name") VALUES (1, 'Shobuj');
+INSERT INTO "User" ("id", "name") VALUES (2, 'Shitu');
+
+# To verify the setup, run:
+SELECT * FROM "Settings";
+SELECT * FROM "User";
+SELECT * FROM "Deposit";
+
+# You should see:
+# - Settings table with PIN 7042
+# - User table with Shobuj and Shitu
+# - Deposit table (empty, ready for data)

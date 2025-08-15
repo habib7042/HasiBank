@@ -173,96 +173,113 @@ export default function Home() {
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-8 p-4 bg-gradient-to-br from-blue-900 via-black to-blue-900 animate-gradient-x relative overflow-hidden">
-        {/* Flying Bird Animation - Continuous */}
+        {/* Enhanced Flying Bird Animation */}
         <div className="absolute top-10 left-0 w-full h-20 overflow-hidden pointer-events-none">
-          <div className="animate-fly-bird-continuous text-4xl absolute">🕊️</div>
+          <div className="animate-fly-bird-continuous text-4xl absolute glossy-text">🕊️</div>
         </div>
         
+        {/* Glossy Particles */}
+        <div className="glossy-particle" style={{ top: '20%', left: '10%', animationDelay: '0s' }}></div>
+        <div className="glossy-particle" style={{ top: '30%', left: '80%', animationDelay: '1s' }}></div>
+        <div className="glossy-particle" style={{ top: '60%', left: '20%', animationDelay: '2s' }}></div>
+        <div className="glossy-particle" style={{ top: '70%', left: '70%', animationDelay: '3s' }}></div>
+        
         <div className="text-center space-y-6 z-10">
-          <h1 className="text-5xl md:text-7xl font-bold text-cyan-400 drop-shadow-lg animate-pulse">
+          <h1 className="text-5xl md:text-7xl font-bold glossy-text drop-shadow-lg animate-pulse-glow">
             Welcome to HASHI BANK
           </h1>
-          <p className="text-2xl md:text-3xl text-blue-300 font-medium drop-shadow-md animate-bounce">
+          <p className="text-2xl md:text-3xl text-blue-300 font-medium drop-shadow-md animate-float">
             We save for the future ✨
           </p>
         </div>
         
-        <Card className="w-full max-w-md backdrop-blur-sm bg-black/40 border-blue-500/30 shadow-2xl transform hover:scale-105 transition-all duration-300">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl text-cyan-400">Enter PIN</CardTitle>
-            <CardDescription className="text-blue-300/80">
-              Please enter your PIN to access your savings account
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="pin" className="text-blue-300">PIN Number</Label>
-              <Input
-                id="pin"
-                type="password"
-                placeholder="Enter your PIN"
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                maxLength={4}
-                className="text-center text-lg bg-black/60 border-blue-500/50 text-cyan-400 placeholder-blue-500/60"
-              />
-            </div>
-            <Button 
-              onClick={handleLogin} 
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold shadow-lg transform hover:scale-105 transition-all duration-200"
-            >
-              {isLoading ? "Verifying..." : "Access Account 🚀"}
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="glossy-border rounded-2xl animate-glow">
+          <Card className="w-full max-w-md glass-card-glow transform hover:scale-105 transition-all duration-300">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl glossy-text">Enter PIN</CardTitle>
+              <CardDescription className="text-blue-300/80">
+                Please enter your PIN to access your savings account
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="pin" className="text-blue-300">PIN Number</Label>
+                <Input
+                  id="pin"
+                  type="password"
+                  placeholder="Enter your PIN"
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value)}
+                  maxLength={4}
+                  className="text-center text-lg glass-input text-cyan-400 placeholder-blue-500/60"
+                />
+              </div>
+              <Button 
+                onClick={handleLogin} 
+                disabled={isLoading}
+                className="w-full glass-button text-white font-bold glossy-text"
+              >
+                {isLoading ? "Verifying..." : "Access Account 🚀"}
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
         
-        {/* Decorative Elements */}
-        <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow text-cyan-400">💰</div>
-        <div className="absolute bottom-10 right-10 text-6xl animate-pulse text-blue-400">🏦</div>
-        <div className="absolute top-1/2 left-10 text-4xl animate-bounce text-cyan-300">🌟</div>
-        <div className="absolute top-1/2 right-10 text-4xl animate-bounce text-blue-300">💎</div>
+        {/* Enhanced Decorative Elements */}
+        <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow glossy-text">💰</div>
+        <div className="absolute bottom-10 right-10 text-6xl animate-pulse-glow glossy-text">🏦</div>
+        <div className="absolute top-1/2 left-10 text-4xl animate-float glossy-text">🌟</div>
+        <div className="absolute top-1/2 right-10 text-4xl animate-float glossy-text" style={{ animationDelay: '1s' }}>💎</div>
+        
+        {/* Shimmer Effect */}
+        <div className="glossy-shimmer"></div>
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-black to-blue-900 animate-gradient-x p-4 relative overflow-hidden">
-      {/* Flying Bird Animation - Continuous */}
+      {/* Enhanced Flying Bird Animation */}
       <div className="absolute top-10 left-0 w-full h-20 overflow-hidden pointer-events-none">
-        <div className="animate-fly-bird-continuous text-4xl absolute">🕊️</div>
+        <div className="animate-fly-bird-continuous text-4xl absolute glossy-text">🕊️</div>
       </div>
+      
+      {/* Glossy Particles */}
+      <div className="glossy-particle" style={{ top: '15%', left: '5%', animationDelay: '0.5s' }}></div>
+      <div className="glossy-particle" style={{ top: '25%', left: '85%', animationDelay: '1.5s' }}></div>
+      <div className="glossy-particle" style={{ top: '55%', left: '15%', animationDelay: '2.5s' }}></div>
+      <div className="glossy-particle" style={{ top: '75%', left: '75%', animationDelay: '3.5s' }}></div>
       
       <div className="max-w-6xl mx-auto pt-20">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-cyan-400 drop-shadow-lg animate-pulse">
+            <h1 className="text-4xl md:text-5xl font-bold glossy-text drop-shadow-lg animate-pulse-glow">
               HASHI BANK
             </h1>
-            <p className="text-xl md:text-2xl text-blue-300 font-medium drop-shadow-md">
+            <p className="text-xl md:text-2xl text-blue-300 font-medium drop-shadow-md animate-float">
               We save for the future ✨
             </p>
           </div>
           <Button 
             onClick={handleLogout} 
             variant="outline"
-            className="bg-black/40 hover:bg-black/60 text-cyan-400 border-blue-500/50 backdrop-blur-sm transform hover:scale-105 transition-all duration-200"
+            className="glass-button text-cyan-400 font-medium"
           >
             Logout 🚪
           </Button>
         </div>
 
         <Tabs defaultValue="totals" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 bg-black/40 backdrop-blur-sm p-1 rounded-lg border border-blue-500/30">
+          <TabsList className="grid w-full grid-cols-2 glass-card backdrop-blur-sm p-1 rounded-xl border border-blue-500/30">
             <TabsTrigger 
               value="totals" 
-              className="data-[state=active]:bg-blue-900/50 text-cyan-400 font-medium"
+              className="data-[state=active]:glass-button data-[state=active]:text-white text-cyan-400 font-medium"
             >
               Account Totals 📊
             </TabsTrigger>
             <TabsTrigger 
               value="deposits" 
-              className="data-[state=active]:bg-blue-900/50 text-cyan-400 font-medium"
+              className="data-[state=active]:glass-button data-[state=active]:text-white text-cyan-400 font-medium"
             >
               Add Deposits 💰
             </TabsTrigger>
@@ -270,181 +287,192 @@ export default function Home() {
 
           <TabsContent value="totals" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="backdrop-blur-sm bg-black/40 border-blue-500/30 shadow-2xl transform hover:scale-105 transition-all duration-300">
-                <CardHeader>
-                  <CardTitle className="text-center text-cyan-400">Bank Total 🏦</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-cyan-300 animate-pulse">
-                      ৳{bankTotal.toFixed(2)}
-                    </div>
-                    <p className="text-sm text-blue-300/80 mt-2">
-                      Total Savings
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {userTotals.map((user) => (
-                <Card key={user.userName} className="backdrop-blur-sm bg-black/40 border-blue-500/30 shadow-2xl transform hover:scale-105 transition-all duration-300">
+              <div className="glossy-border rounded-2xl animate-glow">
+                <Card className="glass-card-glow transform hover:scale-105 transition-all duration-300">
                   <CardHeader>
-                    <CardTitle className="text-center text-cyan-400">
-                      {user.userName} 👤
-                    </CardTitle>
+                    <CardTitle className="text-center glossy-text">Bank Total 🏦</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-center space-y-2">
-                      <div className="text-3xl font-bold text-cyan-300">
-                        ৳{user.totalAmount.toFixed(2)}
+                    <div className="text-center">
+                      <div className="text-4xl font-bold glossy-text animate-pulse-glow">
+                        ৳{bankTotal.toFixed(2)}
                       </div>
-                      <Badge variant="secondary" className="bg-blue-900/50 text-cyan-400">
-                        {user.depositCount} deposits 📝
-                      </Badge>
+                      <p className="text-sm text-blue-300/80 mt-2">
+                        Total Savings
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
+              </div>
+
+              {userTotals.map((user) => (
+                <div key={user.userName} className="glossy-border rounded-2xl animate-glow">
+                  <Card className="glass-card-glow transform hover:scale-105 transition-all duration-300">
+                    <CardHeader>
+                      <CardTitle className="text-center glossy-text">
+                        {user.userName} 👤
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center space-y-2">
+                        <div className="text-3xl font-bold glossy-text">
+                          ৳{user.totalAmount.toFixed(2)}
+                        </div>
+                        <Badge variant="secondary" className="glass-button text-cyan-400">
+                          {user.depositCount} deposits 📝
+                        </Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               ))}
             </div>
 
-            <Card className="backdrop-blur-sm bg-black/40 border-blue-500/30 shadow-2xl">
-              <CardHeader>
-                <CardTitle className="text-cyan-400">Recent Deposits 📋</CardTitle>
-                <CardDescription className="text-blue-300/80">
-                  Latest deposits in HASHI BANK
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {deposits.length === 0 ? (
-                    <p className="text-center text-blue-300/60 py-8">
-                      No deposits yet. Add your first deposit! 🎯
-                    </p>
-                  ) : (
-                    deposits.map((deposit) => (
-                      <div key={deposit.id} className="flex justify-between items-center p-3 bg-black/20 rounded-lg shadow-sm backdrop-blur-sm transform hover:scale-102 transition-all duration-200 border border-blue-500/20">
-                        <div>
-                          <p className="font-medium text-cyan-400">{deposit.userName}</p>
-                          <p className="text-sm text-blue-300/70">
-                            {deposit.month} {deposit.year}
-                          </p>
+            <div className="glossy-border rounded-2xl animate-glow">
+              <Card className="glass-card-glow">
+                <CardHeader>
+                  <CardTitle className="glossy-text">Recent Deposits 📋</CardTitle>
+                  <CardDescription className="text-blue-300/80">
+                    Latest deposits in HASHI BANK
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {deposits.length === 0 ? (
+                      <p className="text-center text-blue-300/60 py-8">
+                        No deposits yet. Add your first deposit! 🎯
+                      </p>
+                    ) : (
+                      deposits.map((deposit) => (
+                        <div key={deposit.id} className="glass-card p-3 rounded-lg shadow-sm backdrop-blur-sm transform hover:scale-102 transition-all duration-200 border border-blue-500/20">
+                          <div>
+                            <p className="font-medium text-cyan-400">{deposit.userName}</p>
+                            <p className="text-sm text-blue-300/70">
+                              {deposit.month} {deposit.year}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold glossy-text">
+                              ৳{deposit.amount.toFixed(2)}
+                            </p>
+                            <p className="text-xs text-blue-300/60">
+                              {new Date(deposit.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-bold text-cyan-300">
-                            ৳{deposit.amount.toFixed(2)}
-                          </p>
-                          <p className="text-xs text-blue-300/60">
-                            {new Date(deposit.createdAt).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="deposits" className="space-y-6">
-            <Card className="backdrop-blur-sm bg-black/40 border-blue-500/30 shadow-2xl">
-              <CardHeader>
-                <CardTitle className="text-cyan-400">Add New Deposit 💰</CardTitle>
-                <CardDescription className="text-blue-300/80">
-                  Add a new deposit to HASHI BANK
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="userName" className="text-cyan-400">User Name</Label>
-                    <select
-                      id="userName"
-                      value={newDeposit.userName}
-                      onChange={(e) => setNewDeposit({
-                        ...newDeposit,
-                        userName: e.target.value
-                      })}
-                      className="w-full p-2 border border-blue-500/30 rounded-md bg-black/60 text-cyan-400"
-                    >
-                      <option value="Shobuj">Shobuj</option>
-                      <option value="Shitu">Shitu</option>
-                    </select>
+            <div className="glossy-border rounded-2xl animate-glow">
+              <Card className="glass-card-glow">
+                <CardHeader>
+                  <CardTitle className="glossy-text">Add New Deposit 💰</CardTitle>
+                  <CardDescription className="text-blue-300/80">
+                    Add a new deposit to HASHI BANK
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="userName" className="text-cyan-400">User Name</Label>
+                      <select
+                        id="userName"
+                        value={newDeposit.userName}
+                        onChange={(e) => setNewDeposit({
+                          ...newDeposit,
+                          userName: e.target.value
+                        })}
+                        className="w-full p-2 border border-blue-500/30 rounded-md glass-input text-cyan-400"
+                      >
+                        <option value="Shobuj">Shobuj</option>
+                        <option value="Shitu">Shitu</option>
+                      </select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="amount" className="text-cyan-400">Amount (৳)</Label>
+                      <Input
+                        id="amount"
+                        type="number"
+                        placeholder="Enter amount"
+                        value={newDeposit.amount}
+                        onChange={(e) => setNewDeposit({
+                          ...newDeposit,
+                          amount: e.target.value
+                        })}
+                        className="glass-input text-cyan-400 placeholder-blue-500/60"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="month" className="text-cyan-400">Month</Label>
+                      <select
+                        id="month"
+                        value={newDeposit.month}
+                        onChange={(e) => setNewDeposit({
+                          ...newDeposit,
+                          month: e.target.value
+                        })}
+                        className="w-full p-2 border border-blue-500/30 rounded-md glass-input text-cyan-400"
+                      >
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                      </select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="year" className="text-cyan-400">Year</Label>
+                      <Input
+                        id="year"
+                        type="number"
+                        placeholder="Year"
+                        value={newDeposit.year}
+                        onChange={(e) => setNewDeposit({
+                          ...newDeposit,
+                          year: e.target.value
+                        })}
+                        className="glass-input text-cyan-400 placeholder-blue-500/60"
+                      />
+                    </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="amount" className="text-cyan-400">Amount (৳)</Label>
-                    <Input
-                      id="amount"
-                      type="number"
-                      placeholder="Enter amount"
-                      value={newDeposit.amount}
-                      onChange={(e) => setNewDeposit({
-                        ...newDeposit,
-                        amount: e.target.value
-                      })}
-                      className="bg-black/60 border-blue-500/30 text-cyan-400 placeholder-blue-500/60"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="month" className="text-cyan-400">Month</Label>
-                    <select
-                      id="month"
-                      value={newDeposit.month}
-                      onChange={(e) => setNewDeposit({
-                        ...newDeposit,
-                        month: e.target.value
-                      })}
-                      className="w-full p-2 border border-blue-500/30 rounded-md bg-black/60 text-cyan-400"
-                    >
-                      <option value="January">January</option>
-                      <option value="February">February</option>
-                      <option value="March">March</option>
-                      <option value="April">April</option>
-                      <option value="May">May</option>
-                      <option value="June">June</option>
-                      <option value="July">July</option>
-                      <option value="August">August</option>
-                      <option value="September">September</option>
-                      <option value="October">October</option>
-                      <option value="November">November</option>
-                      <option value="December">December</option>
-                    </select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="year" className="text-cyan-400">Year</Label>
-                    <Input
-                      id="year"
-                      type="number"
-                      placeholder="Year"
-                      value={newDeposit.year}
-                      onChange={(e) => setNewDeposit({
-                        ...newDeposit,
-                        year: e.target.value
-                      })}
-                      className="bg-black/60 border-blue-500/30 text-cyan-400 placeholder-blue-500/60"
-                    />
-                  </div>
-                </div>
-                
-                <Button 
-                  onClick={handleAddDeposit}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold shadow-lg transform hover:scale-105 transition-all duration-200"
-                >
-                  Add Deposit 🚀
-                </Button>
-              </CardContent>
-            </Card>
+                  <Button 
+                    onClick={handleAddDeposit}
+                    className="w-full glass-button text-white font-bold glossy-text"
+                  >
+                    Add Deposit 🚀
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
       
-      {/* Decorative Elements */}
-      <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow text-cyan-400">💰</div>
-      <div className="absolute bottom-10 right-10 text-6xl animate-pulse text-blue-400">🏦</div>
-      <div className="absolute top-1/2 left-10 text-4xl animate-bounce text-cyan-300">🌟</div>
-      <div className="absolute top-1/2 right-10 text-4xl animate-bounce text-blue-300">💎</div>
+      {/* Enhanced Decorative Elements */}
+      <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow glossy-text">💰</div>
+      <div className="absolute bottom-10 right-10 text-6xl animate-pulse-glow glossy-text">🏦</div>
+      <div className="absolute top-1/2 left-10 text-4xl animate-float glossy-text">🌟</div>
+      <div className="absolute top-1/2 right-10 text-4xl animate-float glossy-text" style={{ animationDelay: '1s' }}>💎</div>
+      
+      {/* Shimmer Effect */}
+      <div className="glossy-shimmer"></div>
     </div>
   )
 }

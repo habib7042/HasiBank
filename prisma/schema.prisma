@@ -16,7 +16,7 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -25,11 +25,11 @@ model User {
 }
 
 model Deposit {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   amount    Float
   month     String
   year      String
-  userId    String
+  userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
@@ -37,7 +37,7 @@ model Deposit {
 }
 
 model Settings {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   pin       String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

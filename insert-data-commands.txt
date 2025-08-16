@@ -1,27 +1,22 @@
 # Copy and paste these commands into your psql terminal:
 
-# First, connect to your database:
+# Step 1: Connect to your database
 psql 'postgresql://neondb_owner:npg_0sdCXl8TMhQW@ep-red-dew-a1dte3uq-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
 
-# Then run these SQL commands to insert the initial data:
+# Step 2: Insert the initial data
 
--- Insert the settings with PIN 7042
+-- Insert PIN 7042 into Settings table
 INSERT INTO "Settings" ("pin") VALUES ('7042');
 
 -- Insert the two users
 INSERT INTO "User" ("name") VALUES ('Shobuj');
 INSERT INTO "User" ("name") VALUES ('Shitu');
 
--- To verify the data insertion, run:
+# Step 3: Verify the data was inserted correctly
 SELECT * FROM "Settings";
 SELECT * FROM "User";
-SELECT * FROM "Deposit";
 
 # Expected results:
 # Settings table should show: id=1, pin=7042
-# User table should show: Shobuj and Shitu with auto-generated IDs
-# Deposit table should be empty (ready for your deposits)
-
-# Your HASHI BANK is now ready to use!
-# PIN: 7042
-# Users: Shobuj and Shitu
+# User table should show: Shobuj (id=1) and Shitu (id=2)
+# Deposit table should be empty (ready for deposits)

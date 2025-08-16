@@ -194,7 +194,7 @@ export default function Home() {
         </div>
         
         <div className="white-glossy-border rounded-2xl animate-glow">
-          <Card className="w-full max-w-md white-glossy-card-glow transform hover:scale-105 transition-all duration-300">
+          <Card className="white-glossy-card-enhanced transform hover:scale-105 transition-all duration-300">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl white-glossy-text">Enter PIN</CardTitle>
               <CardDescription className="text-slate-600">
@@ -211,13 +211,13 @@ export default function Home() {
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
                   maxLength={4}
-                  className="text-center text-lg white-glossy-input placeholder-slate-400"
+                  className="text-center text-lg white-glossy-input-enhanced placeholder-slate-400"
                 />
               </div>
               <Button 
                 onClick={handleLogin} 
                 disabled={isLoading}
-                className="w-full white-glossy-button font-bold"
+                className="w-full white-glossy-button-enhanced font-bold"
               >
                 {isLoading ? "Verifying..." : "Access Account 🚀"}
               </Button>
@@ -227,9 +227,24 @@ export default function Home() {
         
         {/* Enhanced Decorative Elements */}
         <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow white-glossy-text">💰</div>
-        <div className="absolute bottom-10 right-10 text-6xl animate-pulse-glow white-glossy-text">🏦</div>
         <div className="absolute top-1/2 left-10 text-4xl animate-float white-glossy-text">🌟</div>
-        <div className="absolute top-1/2 right-10 text-4xl animate-float white-glossy-text" style={{ animationDelay: '1s' }}>💎</div>
+        
+        {/* Enhanced Glass Orbs */}
+        <div className="white-glossy-orb" style={{ width: '120px', height: '120px', bottom: '15%', right: '10%', animationDelay: '0s' }}></div>
+        <div className="white-glossy-orb" style={{ width: '80px', height: '80px', top: '20%', right: '15%', animationDelay: '2s' }}></div>
+        <div className="white-glossy-orb" style={{ width: '60px', height: '60px', top: '60%', left: '5%', animationDelay: '4s' }}></div>
+        
+        {/* Enhanced Glass Crystals */}
+        <div className="white-glossy-crystal" style={{ bottom: '20%', right: '20%', animationDelay: '1s' }}></div>
+        <div className="white-glossy-crystal" style={{ top: '30%', left: '10%', animationDelay: '3s' }}></div>
+        
+        {/* Enhanced Glass Spheres */}
+        <div className="white-glossy-sphere" style={{ width: '40px', height: '40px', top: '25%', right: '25%', animationDelay: '0.5s' }}></div>
+        <div className="white-glossy-sphere" style={{ width: '30px', height: '30px', bottom: '30%', left: '15%', animationDelay: '2.5s' }}></div>
+        
+        {/* Floating Glass Elements */}
+        <div className="white-glossy-float" style={{ width: '20px', height: '20px', top: '40%', right: '10%', animationDelay: '1s' }}></div>
+        <div className="white-glossy-float" style={{ width: '15px', height: '15px', bottom: '25%', left: '20%', animationDelay: '3s' }}></div>
         
         {/* Shimmer Effect */}
         <div className="white-glossy-shimmer"></div>
@@ -263,7 +278,7 @@ export default function Home() {
           <Button 
             onClick={handleLogout} 
             variant="outline"
-            className="white-glossy-button font-medium"
+            className="white-glossy-button-enhanced font-medium"
           >
             Logout 🚪
           </Button>
@@ -288,9 +303,9 @@ export default function Home() {
           <TabsContent value="totals" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="white-glossy-border rounded-2xl animate-glow">
-                <Card className="white-glossy-card-glow transform hover:scale-105 transition-all duration-300">
+                <Card className="white-glossy-card-enhanced transform hover:scale-105 transition-all duration-300">
                   <CardHeader>
-                    <CardTitle className="text-center white-glossy-text">Bank Total 🏦</CardTitle>
+                    <CardTitle className="text-center white-glossy-text">Bank Total</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center">
@@ -307,7 +322,7 @@ export default function Home() {
 
               {userTotals.map((user) => (
                 <div key={user.userName} className="white-glossy-border rounded-2xl animate-glow">
-                  <Card className="white-glossy-card-glow transform hover:scale-105 transition-all duration-300">
+                  <Card className="white-glossy-card-enhanced transform hover:scale-105 transition-all duration-300">
                     <CardHeader>
                       <CardTitle className="text-center white-glossy-text">
                         {user.userName} 👤
@@ -329,7 +344,7 @@ export default function Home() {
             </div>
 
             <div className="white-glossy-border rounded-2xl animate-glow">
-              <Card className="white-glossy-card-glow">
+              <Card className="white-glossy-card-enhanced">
                 <CardHeader>
                   <CardTitle className="white-glossy-text">Recent Deposits 📋</CardTitle>
                   <CardDescription className="text-slate-600">
@@ -370,7 +385,7 @@ export default function Home() {
 
           <TabsContent value="deposits" className="space-y-6">
             <div className="white-glossy-border rounded-2xl animate-glow">
-              <Card className="white-glossy-card-glow">
+              <Card className="white-glossy-card-enhanced">
                 <CardHeader>
                   <CardTitle className="white-glossy-text">Add New Deposit 💰</CardTitle>
                   <CardDescription className="text-slate-600">
@@ -388,7 +403,7 @@ export default function Home() {
                           ...newDeposit,
                           userName: e.target.value
                         })}
-                        className="w-full p-2 border border-white/30 rounded-md white-glossy-input"
+                        className="w-full p-2 border border-white/30 rounded-md white-glossy-input-enhanced"
                       >
                         <option value="Shobuj">Shobuj</option>
                         <option value="Shitu">Shitu</option>
@@ -406,7 +421,7 @@ export default function Home() {
                           ...newDeposit,
                           amount: e.target.value
                         })}
-                        className="white-glossy-input placeholder-slate-400"
+                        className="white-glossy-input-enhanced placeholder-slate-400"
                       />
                     </div>
                     
@@ -419,7 +434,7 @@ export default function Home() {
                           ...newDeposit,
                           month: e.target.value
                         })}
-                        className="w-full p-2 border border-white/30 rounded-md white-glossy-input"
+                        className="w-full p-2 border border-white/30 rounded-md white-glossy-input-enhanced"
                       >
                         <option value="January">January</option>
                         <option value="February">February</option>
@@ -447,14 +462,14 @@ export default function Home() {
                           ...newDeposit,
                           year: e.target.value
                         })}
-                        className="white-glossy-input placeholder-slate-400"
+                        className="white-glossy-input-enhanced placeholder-slate-400"
                       />
                     </div>
                   </div>
                   
                   <Button 
                     onClick={handleAddDeposit}
-                    className="w-full white-glossy-button font-bold"
+                    className="w-full white-glossy-button-enhanced font-bold"
                   >
                     Add Deposit 🚀
                   </Button>
@@ -467,9 +482,23 @@ export default function Home() {
       
       {/* Enhanced Decorative Elements */}
       <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow white-glossy-text">💰</div>
-      <div className="absolute bottom-10 right-10 text-6xl animate-pulse-glow white-glossy-text">🏦</div>
       <div className="absolute top-1/2 left-10 text-4xl animate-float white-glossy-text">🌟</div>
-      <div className="absolute top-1/2 right-10 text-4xl animate-float white-glossy-text" style={{ animationDelay: '1s' }}>💎</div>
+      
+      {/* Enhanced Glass Orbs */}
+      <div className="white-glossy-orb" style={{ width: '100px', height: '100px', bottom: '10%', right: '8%', animationDelay: '0s' }}></div>
+      <div className="white-glossy-orb" style={{ width: '70px', height: '70px', top: '15%', right: '12%', animationDelay: '2s' }}></div>
+      
+      {/* Enhanced Glass Crystals */}
+      <div className="white-glossy-crystal" style={{ bottom: '15%', right: '15%', animationDelay: '1s' }}></div>
+      <div className="white-glossy-crystal" style={{ top: '25%', left: '8%', animationDelay: '3s' }}></div>
+      
+      {/* Enhanced Glass Spheres */}
+      <div className="white-glossy-sphere" style={{ width: '35px', height: '35px', top: '20%', right: '20%', animationDelay: '0.5s' }}></div>
+      <div className="white-glossy-sphere" style={{ width: '25px', height: '25px', bottom: '20%', left: '12%', animationDelay: '2.5s' }}></div>
+      
+      {/* Floating Glass Elements */}
+      <div className="white-glossy-float" style={{ width: '18px', height: '18px', top: '35%', right: '8%', animationDelay: '1s' }}></div>
+      <div className="white-glossy-float" style={{ width: '12px', height: '12px', bottom: '20%', left: '15%', animationDelay: '3s' }}></div>
       
       {/* Shimmer Effect */}
       <div className="white-glossy-shimmer"></div>

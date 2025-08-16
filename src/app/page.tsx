@@ -173,9 +173,9 @@ export default function Home() {
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-8 p-4 white-glossy-bg relative overflow-hidden">
-        {/* Enhanced Flying Bird Animation */}
+        {/* Static Bird */}
         <div className="absolute top-10 left-0 w-full h-20 overflow-hidden pointer-events-none">
-          <div className="animate-fly-bird-continuous text-4xl absolute white-glossy-text">🕊️</div>
+          <div className="text-4xl absolute white-glossy-text">🕊️</div>
         </div>
         
         {/* White Glossy Particles */}
@@ -185,16 +185,16 @@ export default function Home() {
         <div className="white-glossy-particle" style={{ top: '70%', left: '70%', animationDelay: '3s' }}></div>
         
         <div className="text-center space-y-6 z-10">
-          <h1 className="text-5xl md:text-7xl font-bold white-glossy-text drop-shadow-lg animate-pulse-glow">
+          <h1 className="text-5xl md:text-7xl font-bold white-glossy-text drop-shadow-lg">
             Welcome to HASHI BANK
           </h1>
-          <p className="text-2xl md:text-3xl text-slate-700 font-medium drop-shadow-md animate-float">
+          <p className="text-2xl md:text-3xl text-slate-700 font-medium drop-shadow-md">
             We save for the future ✨
           </p>
         </div>
         
-        <div className="white-glossy-border rounded-2xl animate-glow">
-          <Card className="white-glossy-card-enhanced transform hover:scale-105 transition-all duration-300">
+        <div className="white-glossy-border rounded-2xl">
+          <Card className="white-glossy-card-enhanced">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl white-glossy-text">Enter PIN</CardTitle>
               <CardDescription className="text-slate-600">
@@ -225,27 +225,6 @@ export default function Home() {
           </Card>
         </div>
         
-        {/* Enhanced Decorative Elements */}
-        <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow white-glossy-text">💰</div>
-        <div className="absolute top-1/2 left-10 text-4xl animate-float white-glossy-text">🌟</div>
-        
-        {/* Enhanced Glass Orbs */}
-        <div className="white-glossy-orb" style={{ width: '120px', height: '120px', bottom: '15%', right: '10%', animationDelay: '0s' }}></div>
-        <div className="white-glossy-orb" style={{ width: '80px', height: '80px', top: '20%', right: '15%', animationDelay: '2s' }}></div>
-        <div className="white-glossy-orb" style={{ width: '60px', height: '60px', top: '60%', left: '5%', animationDelay: '4s' }}></div>
-        
-        {/* Enhanced Glass Crystals */}
-        <div className="white-glossy-crystal" style={{ bottom: '20%', right: '20%', animationDelay: '1s' }}></div>
-        <div className="white-glossy-crystal" style={{ top: '30%', left: '10%', animationDelay: '3s' }}></div>
-        
-        {/* Enhanced Glass Spheres */}
-        <div className="white-glossy-sphere" style={{ width: '40px', height: '40px', top: '25%', right: '25%', animationDelay: '0.5s' }}></div>
-        <div className="white-glossy-sphere" style={{ width: '30px', height: '30px', bottom: '30%', left: '15%', animationDelay: '2.5s' }}></div>
-        
-        {/* Floating Glass Elements */}
-        <div className="white-glossy-float" style={{ width: '20px', height: '20px', top: '40%', right: '10%', animationDelay: '1s' }}></div>
-        <div className="white-glossy-float" style={{ width: '15px', height: '15px', bottom: '25%', left: '20%', animationDelay: '3s' }}></div>
-        
         {/* Shimmer Effect */}
         <div className="white-glossy-shimmer"></div>
       </div>
@@ -254,9 +233,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen white-glossy-bg p-4 relative overflow-hidden">
-      {/* Enhanced Flying Bird Animation */}
+      {/* Static Bird */}
       <div className="absolute top-10 left-0 w-full h-20 overflow-hidden pointer-events-none">
-        <div className="animate-fly-bird-continuous text-4xl absolute white-glossy-text">🕊️</div>
+        <div className="text-4xl absolute white-glossy-text">🕊️</div>
       </div>
       
       {/* White Glossy Particles */}
@@ -268,10 +247,10 @@ export default function Home() {
       <div className="max-w-6xl mx-auto pt-20">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold white-glossy-text drop-shadow-lg animate-pulse-glow">
+            <h1 className="text-4xl md:text-5xl font-bold white-glossy-text drop-shadow-lg">
               HASHI BANK
             </h1>
-            <p className="text-xl md:text-2xl text-slate-700 font-medium drop-shadow-md animate-float">
+            <p className="text-xl md:text-2xl text-slate-700 font-medium drop-shadow-md">
               We save for the future ✨
             </p>
           </div>
@@ -302,14 +281,14 @@ export default function Home() {
 
           <TabsContent value="totals" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="white-glossy-border rounded-2xl animate-glow">
-                <Card className="white-glossy-card-enhanced transform hover:scale-105 transition-all duration-300">
+              <div className="white-glossy-border rounded-2xl">
+                <Card className="white-glossy-card-enhanced">
                   <CardHeader>
                     <CardTitle className="text-center white-glossy-text">Bank Total</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center">
-                      <div className="text-4xl font-bold white-glossy-text animate-pulse-glow">
+                      <div className="text-4xl font-bold white-glossy-text">
                         ৳{bankTotal.toFixed(2)}
                       </div>
                       <p className="text-sm text-slate-600 mt-2">
@@ -321,8 +300,8 @@ export default function Home() {
               </div>
 
               {userTotals.map((user) => (
-                <div key={user.userName} className="white-glossy-border rounded-2xl animate-glow">
-                  <Card className="white-glossy-card-enhanced transform hover:scale-105 transition-all duration-300">
+                <div key={user.userName} className="white-glossy-border rounded-2xl">
+                  <Card className="white-glossy-card-enhanced">
                     <CardHeader>
                       <CardTitle className="text-center white-glossy-text">
                         {user.userName} 👤
@@ -343,7 +322,7 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="white-glossy-border rounded-2xl animate-glow">
+            <div className="white-glossy-border rounded-2xl">
               <Card className="white-glossy-card-enhanced">
                 <CardHeader>
                   <CardTitle className="white-glossy-text">Recent Deposits 📋</CardTitle>
@@ -359,7 +338,7 @@ export default function Home() {
                       </p>
                     ) : (
                       deposits.map((deposit) => (
-                        <div key={deposit.id} className="white-glossy-card p-3 rounded-lg shadow-sm backdrop-blur-sm transform hover:scale-102 transition-all duration-200 border border-white/20">
+                        <div key={deposit.id} className="white-glossy-card p-3 rounded-lg shadow-sm backdrop-blur-sm border border-white/20">
                           <div>
                             <p className="font-medium text-slate-800">{deposit.userName}</p>
                             <p className="text-sm text-slate-600">
@@ -384,7 +363,7 @@ export default function Home() {
           </TabsContent>
 
           <TabsContent value="deposits" className="space-y-6">
-            <div className="white-glossy-border rounded-2xl animate-glow">
+            <div className="white-glossy-border rounded-2xl">
               <Card className="white-glossy-card-enhanced">
                 <CardHeader>
                   <CardTitle className="white-glossy-text">Add New Deposit 💰</CardTitle>
@@ -479,26 +458,6 @@ export default function Home() {
           </TabsContent>
         </Tabs>
       </div>
-      
-      {/* Enhanced Decorative Elements */}
-      <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow white-glossy-text">💰</div>
-      <div className="absolute top-1/2 left-10 text-4xl animate-float white-glossy-text">🌟</div>
-      
-      {/* Enhanced Glass Orbs */}
-      <div className="white-glossy-orb" style={{ width: '100px', height: '100px', bottom: '10%', right: '8%', animationDelay: '0s' }}></div>
-      <div className="white-glossy-orb" style={{ width: '70px', height: '70px', top: '15%', right: '12%', animationDelay: '2s' }}></div>
-      
-      {/* Enhanced Glass Crystals */}
-      <div className="white-glossy-crystal" style={{ bottom: '15%', right: '15%', animationDelay: '1s' }}></div>
-      <div className="white-glossy-crystal" style={{ top: '25%', left: '8%', animationDelay: '3s' }}></div>
-      
-      {/* Enhanced Glass Spheres */}
-      <div className="white-glossy-sphere" style={{ width: '35px', height: '35px', top: '20%', right: '20%', animationDelay: '0.5s' }}></div>
-      <div className="white-glossy-sphere" style={{ width: '25px', height: '25px', bottom: '20%', left: '12%', animationDelay: '2.5s' }}></div>
-      
-      {/* Floating Glass Elements */}
-      <div className="white-glossy-float" style={{ width: '18px', height: '18px', top: '35%', right: '8%', animationDelay: '1s' }}></div>
-      <div className="white-glossy-float" style={{ width: '12px', height: '12px', bottom: '20%', left: '15%', animationDelay: '3s' }}></div>
       
       {/* Shimmer Effect */}
       <div className="white-glossy-shimmer"></div>

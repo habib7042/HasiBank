@@ -1,0 +1,33 @@
+{
+  "name": "HASHI BANK",
+  "short_name": "HASHI BANK",
+  "description": "We save for the future - Personal savings tracking app",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00bcd4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["finance", "productivity"],
+  "lang": "en",
+  "scope": "/",
+  "serviceworker": "/sw.js"
+}

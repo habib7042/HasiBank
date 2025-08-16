@@ -1,0 +1,49 @@
+# Copy and paste these commands into your psql terminal:
+
+# First, connect to your database:
+psql 'postgresql://neondb_owner:npg_7tcCWGfaJzF8@ep-spring-voice-a1mmjmkd-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+
+# Drop existing tables first (to start fresh):
+DROP TABLE IF EXISTS "Deposit" CASCADE;
+DROP TABLE IF EXISTS "User" CASCADE;
+DROP TABLE IF EXISTS "Settings" CASCADE;
+
+# Create tables that match the Prisma schema:
+
+CREATE TABLE "Settings" (
+    "id" TEXT PRIMARY KEY DEFAULT (cuid()),
+    "pin" TEXT UNIQUE NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "User" (
+    "id" TEXT PRIMARY KEY DEFAULT (cuid()),
+    "name" TEXT UNIQUE NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "Deposit" (
+    "id" TEXT PRIMARY KEY DEFAULT (cuid()),
+    "amount" DOUBLE PRECISION NOT NULL,
+    "month" TEXT NOT NULL,
+    "year" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Deposit_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+# Insert initial data:
+INSERT INTO "Settings" ("pin") VALUES ('7042');
+INSERT INTO "User" ("name") VALUES ('Shobuj');
+INSERT INTO "User" ("name") VALUES ('Shitu');
+
+# To verify the setup, run:
+SELECT * FROM "Settings";
+SELECT * FROM "User";
+
+# You should see:
+# - Settings table with PIN 7042
+# - User table with Shobuj and Shitu

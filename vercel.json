@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "env": {
+    "DATABASE_URL": "${DATABASE_URL}",
+    "NEXTAUTH_URL": "${NEXTAUTH_URL}",
+    "NEXTAUTH_SECRET": "${NEXTAUTH_SECRET}",
+    "NODE_ENV": "production"
+  },
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "devCommand": "npm run dev",
+  "framework": "nextjs",
+  "functions": {
+    "app/**/*.tsx": {
+      "maxDuration": 30
+    },
+    "app/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}

@@ -47,6 +47,15 @@ export default function Home() {
   const [confirmPin, setConfirmPin] = useState('')
   const [isConfirmed, setIsConfirmed] = useState(false)
   const [isAddingDeposit, setIsAddingDeposit] = useState(false)
+  const [newWithdrawal, setNewWithdrawal] = useState({
+    userName: '',
+    amount: '',
+    month: new Date().toLocaleString('default', { month: 'long' }),
+    year: new Date().getFullYear().toString()
+  })
+  const [withdrawalConfirmPin, setWithdrawalConfirmPin] = useState('')
+  const [isWithdrawalConfirmed, setIsWithdrawalConfirmed] = useState(false)
+  const [isWithdrawing, setIsWithdrawing] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -91,6 +100,12 @@ export default function Home() {
         // Set default user if none is selected
         if (!newDeposit.userName && data.users.length > 0) {
           setNewDeposit(prev => ({
+            ...prev,
+            userName: data.users[0].name
+          }))
+        }
+        if (!newWithdrawal.userName && data.users.length > 0) {
+          setNewWithdrawal(prev => ({
             ...prev,
             userName: data.users[0].name
           }))
@@ -244,6 +259,100 @@ export default function Home() {
     }
   }
 
+  const handleWithdrawal = async () => {
+    if (!newWithdrawal.amount || parseFloat(newWithdrawal.amount) <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid amount",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!withdrawalConfirmPin || withdrawalConfirmPin.length !== 4) {
+      toast({
+        title: "PIN Required",
+        description: "Please enter your 4-digit PIN to confirm this withdrawal",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!isWithdrawalConfirmed) {
+      toast({
+        title: "Confirmation Required",
+        description: "Please check the 'Are you sure?' box to confirm this withdrawal",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsWithdrawing(true)
+    try {
+      // First verify the PIN
+      const pinResponse = await fetch('/api/auth/verify-pin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pin: withdrawalConfirmPin }),
+      })
+
+      if (!pinResponse.ok) {
+        toast({
+          title: "Invalid PIN",
+          description: "The PIN you entered is incorrect. Please try again.",
+          variant: "destructive",
+        })
+        setWithdrawalConfirmPin('')
+        setIsWithdrawing(false)
+        return
+      }
+
+      // If PIN is valid, proceed with the withdrawal
+      const response = await fetch('/api/withdrawals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newWithdrawal),
+      })
+
+      if (response.ok) {
+        toast({
+          title: "Withdrawal Processed Successfully",
+          description: `Withdrew ৳${newWithdrawal.amount} for ${newWithdrawal.userName}`,
+        })
+        // Reset form
+        setNewWithdrawal({
+          ...newWithdrawal,
+          amount: ''
+        })
+        setWithdrawalConfirmPin('')
+        setIsWithdrawalConfirmed(false)
+        // Refresh data
+        loadTotals()
+        loadDeposits()
+        loadUsers()
+      } else {
+        const error = await response.json()
+        toast({
+          title: "Error",
+          description: error.error || "Failed to process withdrawal",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Unable to process withdrawal. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsWithdrawing(false)
+    }
+  }
+
   const handleLogout = () => {
     setIsAuthenticated(false)
     setPin('')
@@ -343,7 +452,7 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="totals" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 white-glossy-card backdrop-blur-sm p-1 rounded-xl border border-white/30">
+          <TabsList className="grid w-full grid-cols-3 white-glossy-card backdrop-blur-sm p-1 rounded-xl border border-white/30">
             <TabsTrigger 
               value="totals" 
               className="data-[state=active]:white-glossy-button data-[state=active]:text-slate-900 text-slate-700 font-medium"
@@ -356,6 +465,12 @@ export default function Home() {
             >
               Add Deposits 💰
             </TabsTrigger>
+            <TabsTrigger 
+              value="withdrawals" 
+              className="data-[state=active]:white-glossy-button data-[state=active]:text-slate-900 text-slate-700 font-medium"
+            >
+              Withdraw 💸
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="totals" className="space-y-6">
@@ -367,11 +482,11 @@ export default function Home() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-center">
-                      <div className="text-4xl font-bold white-glossy-text">
-                        ৳{bankTotal.toFixed(2)}
+                      <div className={`text-4xl font-bold ${bankTotal >= 0 ? 'white-glossy-text' : 'text-red-500'}`}>
+                        ৳{Math.abs(bankTotal).toFixed(2)}{bankTotal < 0 ? ' (Debt)' : ''}
                       </div>
                       <p className="text-sm text-slate-600 mt-2">
-                        Total Savings
+                        {bankTotal >= 0 ? 'Total Savings' : 'Total Debt'}
                       </p>
                     </div>
                   </CardContent>
@@ -388,11 +503,11 @@ export default function Home() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-center space-y-2">
-                        <div className="text-3xl font-bold white-glossy-text">
-                          ৳{user.totalAmount.toFixed(2)}
+                        <div className={`text-3xl font-bold ${user.totalAmount >= 0 ? 'white-glossy-text' : 'text-red-500'}`}>
+                          ৳{Math.abs(user.totalAmount).toFixed(2)}{user.totalAmount < 0 ? ' (Debt)' : ''}
                         </div>
                         <Badge variant="secondary" className="white-glossy-button text-slate-700">
-                          {user.depositCount} deposits 📝
+                          {user.depositCount} transactions 📝
                         </Badge>
                       </div>
                     </CardContent>
@@ -404,16 +519,16 @@ export default function Home() {
             <div className="white-glossy-border rounded-2xl">
               <Card className="white-glossy-card-enhanced">
                 <CardHeader>
-                  <CardTitle className="white-glossy-text">Recent Deposits 📋</CardTitle>
+                  <CardTitle className="white-glossy-text">Recent Transactions 📋</CardTitle>
                   <CardDescription className="text-slate-600">
-                    Latest deposits in HASHI BANK
+                    Latest deposits and withdrawals in HASHI BANK
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2 max-h-96 overflow-y-auto">
                     {deposits.length === 0 ? (
                       <p className="text-center text-slate-500 py-8">
-                        No deposits yet. Add your first deposit! 🎯
+                        No transactions yet. Add your first deposit! 🎯
                       </p>
                     ) : (
                       deposits.map((deposit) => (
@@ -425,8 +540,8 @@ export default function Home() {
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold white-glossy-text">
-                              ৳{deposit.amount.toFixed(2)}
+                            <p className={`font-bold ${deposit.amount >= 0 ? 'white-glossy-text' : 'text-red-500'}`}>
+                              {deposit.amount >= 0 ? '+' : ''}৳{Math.abs(deposit.amount).toFixed(2)}
                             </p>
                             <p className="text-xs text-slate-500">
                               {new Date(deposit.createdAt).toLocaleDateString()}
@@ -571,6 +686,135 @@ export default function Home() {
                   >
                     {isAddingDeposit ? "Adding Deposit..." : "Add Deposit 🚀"}
                   </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="withdrawals" className="space-y-6">
+            <div className="white-glossy-border rounded-2xl">
+              <Card className="white-glossy-card-enhanced">
+                <CardHeader>
+                  <CardTitle className="white-glossy-text">Process Withdrawal 💸</CardTitle>
+                  <CardDescription className="text-slate-600">
+                    Withdraw money from HASHI BANK
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawalUserName" className="text-slate-700">User Name</Label>
+                      <select
+                        id="withdrawalUserName"
+                        value={newWithdrawal.userName}
+                        onChange={(e) => setNewWithdrawal({
+                          ...newWithdrawal,
+                          userName: e.target.value
+                        })}
+                        className="w-full p-2 border border-white/30 rounded-md white-glossy-input-enhanced"
+                      >
+                        {users.length === 0 ? (
+                          <option value="">Loading users...</option>
+                        ) : (
+                          users.map((user) => (
+                            <option key={user.id} value={user.name}>
+                              {user.name}
+                            </option>
+                          ))
+                        )}
+                      </select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawalAmount" className="text-slate-700">Amount (৳)</Label>
+                      <Input
+                        id="withdrawalAmount"
+                        type="number"
+                        placeholder="Enter amount to withdraw"
+                        value={newWithdrawal.amount}
+                        onChange={(e) => setNewWithdrawal({
+                          ...newWithdrawal,
+                          amount: e.target.value
+                        })}
+                        className="white-glossy-input-enhanced placeholder-slate-400"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawalMonth" className="text-slate-700">Month</Label>
+                      <select
+                        id="withdrawalMonth"
+                        value={newWithdrawal.month}
+                        onChange={(e) => setNewWithdrawal({
+                          ...newWithdrawal,
+                          month: e.target.value
+                        })}
+                        className="w-full p-2 border border-white/30 rounded-md white-glossy-input-enhanced"
+                      >
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                      </select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawalYear" className="text-slate-700">Year</Label>
+                      <Input
+                        id="withdrawalYear"
+                        type="number"
+                        placeholder="Year"
+                        value={newWithdrawal.year}
+                        onChange={(e) => setNewWithdrawal({
+                          ...newWithdrawal,
+                          year: e.target.value
+                        })}
+                        className="white-glossy-input-enhanced placeholder-slate-400"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4 pt-4 border-t border-white/20">
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawalConfirmPin" className="text-slate-700">Confirm PIN</Label>
+                      <Input
+                        id="withdrawalConfirmPin"
+                        type="password"
+                        placeholder="Enter 4-digit PIN"
+                        value={withdrawalConfirmPin}
+                        onChange={(e) => setWithdrawalConfirmPin(e.target.value)}
+                        maxLength={4}
+                        className="text-center white-glossy-input-enhanced placeholder-slate-400"
+                      />
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="withdrawalConfirm"
+                        checked={isWithdrawalConfirmed}
+                        onCheckedChange={(checked) => setIsWithdrawalConfirmed(checked as boolean)}
+                      />
+                      <Label htmlFor="withdrawalConfirm" className="text-slate-700">
+                        Are you sure? This action cannot be undone.
+                      </Label>
+                    </div>
+                    
+                    <Button 
+                      onClick={handleWithdrawal} 
+                      disabled={isWithdrawing}
+                      className="w-full white-glossy-button-enhanced font-bold"
+                    >
+                      {isWithdrawing ? "Processing..." : "Process Withdrawal 💸"}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>

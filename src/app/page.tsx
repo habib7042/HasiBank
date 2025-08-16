@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import { useToast } from '@/hooks/use-toast'
 
 interface UserTotal {
@@ -37,6 +38,9 @@ export default function Home() {
     month: new Date().toLocaleString('default', { month: 'long' }),
     year: new Date().getFullYear().toString()
   })
+  const [confirmPin, setConfirmPin] = useState('')
+  const [isConfirmed, setIsConfirmed] = useState(false)
+  const [isAddingDeposit, setIsAddingDeposit] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -128,7 +132,47 @@ export default function Home() {
       return
     }
 
+    if (!confirmPin || confirmPin.length !== 4) {
+      toast({
+        title: "PIN Required",
+        description: "Please enter your 4-digit PIN to confirm this deposit",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!isConfirmed) {
+      toast({
+        title: "Confirmation Required",
+        description: "Please check the 'Are you sure?' box to confirm this deposit",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsAddingDeposit(true)
     try {
+      // First verify the PIN
+      const pinResponse = await fetch('/api/auth/verify-pin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pin: confirmPin }),
+      })
+
+      if (!pinResponse.ok) {
+        toast({
+          title: "Invalid PIN",
+          description: "The PIN you entered is incorrect. Please try again.",
+          variant: "destructive",
+        })
+        setConfirmPin('')
+        setIsAddingDeposit(false)
+        return
+      }
+
+      // If PIN is valid, proceed with adding the deposit
       const response = await fetch('/api/deposits', {
         method: 'POST',
         headers: {
@@ -139,13 +183,17 @@ export default function Home() {
 
       if (response.ok) {
         toast({
-          title: "Deposit Added",
-          description: `Successfully added deposit for ${newDeposit.userName}`,
+          title: "Deposit Added Successfully",
+          description: `Added ৳${newDeposit.amount} deposit for ${newDeposit.userName}`,
         })
+        // Reset form
         setNewDeposit({
           ...newDeposit,
           amount: ''
         })
+        setConfirmPin('')
+        setIsConfirmed(false)
+        // Refresh data
         loadTotals()
         loadDeposits()
       } else {
@@ -162,6 +210,8 @@ export default function Home() {
         description: "Unable to add deposit. Please try again.",
         variant: "destructive",
       })
+    } finally {
+      setIsAddingDeposit(false)
     }
   }
 
@@ -446,11 +496,44 @@ export default function Home() {
                     </div>
                   </div>
                   
+                  {/* Confirmation Section */}
+                  <div className="space-y-4 pt-4 border-t border-white/20">
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPin" className="text-slate-700 font-medium">Confirm with PIN</Label>
+                      <Input
+                        id="confirmPin"
+                        type="password"
+                        placeholder="Enter your 4-digit PIN"
+                        value={confirmPin}
+                        onChange={(e) => setConfirmPin(e.target.value)}
+                        maxLength={4}
+                        className="text-center white-glossy-input-enhanced placeholder-slate-400"
+                      />
+                      <p className="text-xs text-slate-500">Enter your PIN to authorize this deposit</p>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="confirm"
+                        checked={isConfirmed}
+                        onCheckedChange={(checked) => setIsConfirmed(checked as boolean)}
+                        className="data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500"
+                      />
+                      <Label
+                        htmlFor="confirm"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-700"
+                      >
+                        Are you sure? This action cannot be undone. ✅
+                      </Label>
+                    </div>
+                  </div>
+                  
                   <Button 
                     onClick={handleAddDeposit}
+                    disabled={isAddingDeposit || !confirmPin || !isConfirmed}
                     className="w-full white-glossy-button-enhanced font-bold"
                   >
-                    Add Deposit 🚀
+                    {isAddingDeposit ? "Adding Deposit..." : "Add Deposit 🚀"}
                   </Button>
                 </CardContent>
               </Card>

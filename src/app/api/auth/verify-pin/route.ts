@@ -36,6 +36,24 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error('PIN verification error:', error)
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('DATABASE_URL environment variable is not set')) {
+        return NextResponse.json(
+          { error: 'Database configuration error: DATABASE_URL not set' },
+          { status: 500 }
+        )
+      }
+      
+      if (error.message.includes('Invalid DATABASE_URL format')) {
+        return NextResponse.json(
+          { error: 'Database configuration error: Invalid URL format' },
+          { status: 500 }
+        )
+      }
+    }
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

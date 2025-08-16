@@ -1,0 +1,55 @@
+# Copy and paste these commands into your psql terminal:
+
+# Step 1: Connect to your new database
+psql 'postgresql://neondb_owner:npg_0sdCXl8TMhQW@ep-red-dew-a1dte3uq-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+
+# Step 2: Run these SQL commands to create tables and insert data:
+
+-- Drop existing tables (fresh start)
+DROP TABLE IF EXISTS "Deposit" CASCADE;
+DROP TABLE IF EXISTS "User" CASCADE;
+DROP TABLE IF EXISTS "Settings" CASCADE;
+
+-- Create Settings table
+CREATE TABLE "Settings" (
+    "id" SERIAL PRIMARY KEY,
+    "pin" TEXT UNIQUE NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create User table
+CREATE TABLE "User" (
+    "id" SERIAL PRIMARY KEY,
+    "name" TEXT UNIQUE NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create Deposit table
+CREATE TABLE "Deposit" (
+    "id" SERIAL PRIMARY KEY,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "month" TEXT NOT NULL,
+    "year" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Deposit_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Create index for better performance
+CREATE INDEX "Deposit_userId_idx" ON "Deposit"("userId");
+
+-- Insert initial data
+INSERT INTO "Settings" ("pin") VALUES ('7042');
+INSERT INTO "User" ("name") VALUES ('Shobuj');
+INSERT INTO "User" ("name") VALUES ('Shitu');
+
+-- Step 3: Verify the setup by running:
+SELECT * FROM "Settings";
+SELECT * FROM "User";
+
+# Expected results:
+# Settings table should show: id=1, pin=7042
+# User table should show: Shobuj and Shitu with auto-generated IDs

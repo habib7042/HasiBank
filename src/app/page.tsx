@@ -172,38 +172,38 @@ export default function Home() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-8 p-4 bg-gradient-to-br from-blue-900 via-black to-blue-900 animate-gradient-x relative overflow-hidden">
+      <div className="flex flex-col items-center justify-center min-h-screen gap-8 p-4 white-glossy-bg relative overflow-hidden">
         {/* Enhanced Flying Bird Animation */}
         <div className="absolute top-10 left-0 w-full h-20 overflow-hidden pointer-events-none">
-          <div className="animate-fly-bird-continuous text-4xl absolute glossy-text">🕊️</div>
+          <div className="animate-fly-bird-continuous text-4xl absolute white-glossy-text">🕊️</div>
         </div>
         
-        {/* Glossy Particles */}
-        <div className="glossy-particle" style={{ top: '20%', left: '10%', animationDelay: '0s' }}></div>
-        <div className="glossy-particle" style={{ top: '30%', left: '80%', animationDelay: '1s' }}></div>
-        <div className="glossy-particle" style={{ top: '60%', left: '20%', animationDelay: '2s' }}></div>
-        <div className="glossy-particle" style={{ top: '70%', left: '70%', animationDelay: '3s' }}></div>
+        {/* White Glossy Particles */}
+        <div className="white-glossy-particle" style={{ top: '20%', left: '10%', animationDelay: '0s' }}></div>
+        <div className="white-glossy-particle" style={{ top: '30%', left: '80%', animationDelay: '1s' }}></div>
+        <div className="white-glossy-particle" style={{ top: '60%', left: '20%', animationDelay: '2s' }}></div>
+        <div className="white-glossy-particle" style={{ top: '70%', left: '70%', animationDelay: '3s' }}></div>
         
         <div className="text-center space-y-6 z-10">
-          <h1 className="text-5xl md:text-7xl font-bold glossy-text drop-shadow-lg animate-pulse-glow">
+          <h1 className="text-5xl md:text-7xl font-bold white-glossy-text drop-shadow-lg animate-pulse-glow">
             Welcome to HASHI BANK
           </h1>
-          <p className="text-2xl md:text-3xl text-blue-300 font-medium drop-shadow-md animate-float">
+          <p className="text-2xl md:text-3xl text-slate-700 font-medium drop-shadow-md animate-float">
             We save for the future ✨
           </p>
         </div>
         
-        <div className="glossy-border rounded-2xl animate-glow">
-          <Card className="w-full max-w-md glass-card-glow transform hover:scale-105 transition-all duration-300">
+        <div className="white-glossy-border rounded-2xl animate-glow">
+          <Card className="w-full max-w-md white-glossy-card-glow transform hover:scale-105 transition-all duration-300">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl glossy-text">Enter PIN</CardTitle>
-              <CardDescription className="text-blue-300/80">
+              <CardTitle className="text-2xl white-glossy-text">Enter PIN</CardTitle>
+              <CardDescription className="text-slate-600">
                 Please enter your PIN to access your savings account
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="pin" className="text-blue-300">PIN Number</Label>
+                <Label htmlFor="pin" className="text-slate-700">PIN Number</Label>
                 <Input
                   id="pin"
                   type="password"
@@ -211,13 +211,13 @@ export default function Home() {
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
                   maxLength={4}
-                  className="text-center text-lg glass-input text-cyan-400 placeholder-blue-500/60"
+                  className="text-center text-lg white-glossy-input placeholder-slate-400"
                 />
               </div>
               <Button 
                 onClick={handleLogin} 
                 disabled={isLoading}
-                className="w-full glass-button text-white font-bold glossy-text"
+                className="w-full white-glossy-button font-bold"
               >
                 {isLoading ? "Verifying..." : "Access Account 🚀"}
               </Button>
@@ -226,60 +226,60 @@ export default function Home() {
         </div>
         
         {/* Enhanced Decorative Elements */}
-        <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow glossy-text">💰</div>
-        <div className="absolute bottom-10 right-10 text-6xl animate-pulse-glow glossy-text">🏦</div>
-        <div className="absolute top-1/2 left-10 text-4xl animate-float glossy-text">🌟</div>
-        <div className="absolute top-1/2 right-10 text-4xl animate-float glossy-text" style={{ animationDelay: '1s' }}>💎</div>
+        <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow white-glossy-text">💰</div>
+        <div className="absolute bottom-10 right-10 text-6xl animate-pulse-glow white-glossy-text">🏦</div>
+        <div className="absolute top-1/2 left-10 text-4xl animate-float white-glossy-text">🌟</div>
+        <div className="absolute top-1/2 right-10 text-4xl animate-float white-glossy-text" style={{ animationDelay: '1s' }}>💎</div>
         
         {/* Shimmer Effect */}
-        <div className="glossy-shimmer"></div>
+        <div className="white-glossy-shimmer"></div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-black to-blue-900 animate-gradient-x p-4 relative overflow-hidden">
+    <div className="min-h-screen white-glossy-bg p-4 relative overflow-hidden">
       {/* Enhanced Flying Bird Animation */}
       <div className="absolute top-10 left-0 w-full h-20 overflow-hidden pointer-events-none">
-        <div className="animate-fly-bird-continuous text-4xl absolute glossy-text">🕊️</div>
+        <div className="animate-fly-bird-continuous text-4xl absolute white-glossy-text">🕊️</div>
       </div>
       
-      {/* Glossy Particles */}
-      <div className="glossy-particle" style={{ top: '15%', left: '5%', animationDelay: '0.5s' }}></div>
-      <div className="glossy-particle" style={{ top: '25%', left: '85%', animationDelay: '1.5s' }}></div>
-      <div className="glossy-particle" style={{ top: '55%', left: '15%', animationDelay: '2.5s' }}></div>
-      <div className="glossy-particle" style={{ top: '75%', left: '75%', animationDelay: '3.5s' }}></div>
+      {/* White Glossy Particles */}
+      <div className="white-glossy-particle" style={{ top: '15%', left: '5%', animationDelay: '0.5s' }}></div>
+      <div className="white-glossy-particle" style={{ top: '25%', left: '85%', animationDelay: '1.5s' }}></div>
+      <div className="white-glossy-particle" style={{ top: '55%', left: '15%', animationDelay: '2.5s' }}></div>
+      <div className="white-glossy-particle" style={{ top: '75%', left: '75%', animationDelay: '3.5s' }}></div>
       
       <div className="max-w-6xl mx-auto pt-20">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold glossy-text drop-shadow-lg animate-pulse-glow">
+            <h1 className="text-4xl md:text-5xl font-bold white-glossy-text drop-shadow-lg animate-pulse-glow">
               HASHI BANK
             </h1>
-            <p className="text-xl md:text-2xl text-blue-300 font-medium drop-shadow-md animate-float">
+            <p className="text-xl md:text-2xl text-slate-700 font-medium drop-shadow-md animate-float">
               We save for the future ✨
             </p>
           </div>
           <Button 
             onClick={handleLogout} 
             variant="outline"
-            className="glass-button text-cyan-400 font-medium"
+            className="white-glossy-button font-medium"
           >
             Logout 🚪
           </Button>
         </div>
 
         <Tabs defaultValue="totals" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 glass-card backdrop-blur-sm p-1 rounded-xl border border-blue-500/30">
+          <TabsList className="grid w-full grid-cols-2 white-glossy-card backdrop-blur-sm p-1 rounded-xl border border-white/30">
             <TabsTrigger 
               value="totals" 
-              className="data-[state=active]:glass-button data-[state=active]:text-white text-cyan-400 font-medium"
+              className="data-[state=active]:white-glossy-button data-[state=active]:text-slate-900 text-slate-700 font-medium"
             >
               Account Totals 📊
             </TabsTrigger>
             <TabsTrigger 
               value="deposits" 
-              className="data-[state=active]:glass-button data-[state=active]:text-white text-cyan-400 font-medium"
+              className="data-[state=active]:white-glossy-button data-[state=active]:text-slate-900 text-slate-700 font-medium"
             >
               Add Deposits 💰
             </TabsTrigger>
@@ -287,17 +287,17 @@ export default function Home() {
 
           <TabsContent value="totals" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="glossy-border rounded-2xl animate-glow">
-                <Card className="glass-card-glow transform hover:scale-105 transition-all duration-300">
+              <div className="white-glossy-border rounded-2xl animate-glow">
+                <Card className="white-glossy-card-glow transform hover:scale-105 transition-all duration-300">
                   <CardHeader>
-                    <CardTitle className="text-center glossy-text">Bank Total 🏦</CardTitle>
+                    <CardTitle className="text-center white-glossy-text">Bank Total 🏦</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center">
-                      <div className="text-4xl font-bold glossy-text animate-pulse-glow">
+                      <div className="text-4xl font-bold white-glossy-text animate-pulse-glow">
                         ৳{bankTotal.toFixed(2)}
                       </div>
-                      <p className="text-sm text-blue-300/80 mt-2">
+                      <p className="text-sm text-slate-600 mt-2">
                         Total Savings
                       </p>
                     </div>
@@ -306,19 +306,19 @@ export default function Home() {
               </div>
 
               {userTotals.map((user) => (
-                <div key={user.userName} className="glossy-border rounded-2xl animate-glow">
-                  <Card className="glass-card-glow transform hover:scale-105 transition-all duration-300">
+                <div key={user.userName} className="white-glossy-border rounded-2xl animate-glow">
+                  <Card className="white-glossy-card-glow transform hover:scale-105 transition-all duration-300">
                     <CardHeader>
-                      <CardTitle className="text-center glossy-text">
+                      <CardTitle className="text-center white-glossy-text">
                         {user.userName} 👤
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-center space-y-2">
-                        <div className="text-3xl font-bold glossy-text">
+                        <div className="text-3xl font-bold white-glossy-text">
                           ৳{user.totalAmount.toFixed(2)}
                         </div>
-                        <Badge variant="secondary" className="glass-button text-cyan-400">
+                        <Badge variant="secondary" className="white-glossy-button text-slate-700">
                           {user.depositCount} deposits 📝
                         </Badge>
                       </div>
@@ -328,34 +328,34 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="glossy-border rounded-2xl animate-glow">
-              <Card className="glass-card-glow">
+            <div className="white-glossy-border rounded-2xl animate-glow">
+              <Card className="white-glossy-card-glow">
                 <CardHeader>
-                  <CardTitle className="glossy-text">Recent Deposits 📋</CardTitle>
-                  <CardDescription className="text-blue-300/80">
+                  <CardTitle className="white-glossy-text">Recent Deposits 📋</CardTitle>
+                  <CardDescription className="text-slate-600">
                     Latest deposits in HASHI BANK
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2 max-h-96 overflow-y-auto">
                     {deposits.length === 0 ? (
-                      <p className="text-center text-blue-300/60 py-8">
+                      <p className="text-center text-slate-500 py-8">
                         No deposits yet. Add your first deposit! 🎯
                       </p>
                     ) : (
                       deposits.map((deposit) => (
-                        <div key={deposit.id} className="glass-card p-3 rounded-lg shadow-sm backdrop-blur-sm transform hover:scale-102 transition-all duration-200 border border-blue-500/20">
+                        <div key={deposit.id} className="white-glossy-card p-3 rounded-lg shadow-sm backdrop-blur-sm transform hover:scale-102 transition-all duration-200 border border-white/20">
                           <div>
-                            <p className="font-medium text-cyan-400">{deposit.userName}</p>
-                            <p className="text-sm text-blue-300/70">
+                            <p className="font-medium text-slate-800">{deposit.userName}</p>
+                            <p className="text-sm text-slate-600">
                               {deposit.month} {deposit.year}
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold glossy-text">
+                            <p className="font-bold white-glossy-text">
                               ৳{deposit.amount.toFixed(2)}
                             </p>
-                            <p className="text-xs text-blue-300/60">
+                            <p className="text-xs text-slate-500">
                               {new Date(deposit.createdAt).toLocaleDateString()}
                             </p>
                           </div>
@@ -369,18 +369,18 @@ export default function Home() {
           </TabsContent>
 
           <TabsContent value="deposits" className="space-y-6">
-            <div className="glossy-border rounded-2xl animate-glow">
-              <Card className="glass-card-glow">
+            <div className="white-glossy-border rounded-2xl animate-glow">
+              <Card className="white-glossy-card-glow">
                 <CardHeader>
-                  <CardTitle className="glossy-text">Add New Deposit 💰</CardTitle>
-                  <CardDescription className="text-blue-300/80">
+                  <CardTitle className="white-glossy-text">Add New Deposit 💰</CardTitle>
+                  <CardDescription className="text-slate-600">
                     Add a new deposit to HASHI BANK
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="userName" className="text-cyan-400">User Name</Label>
+                      <Label htmlFor="userName" className="text-slate-700">User Name</Label>
                       <select
                         id="userName"
                         value={newDeposit.userName}
@@ -388,7 +388,7 @@ export default function Home() {
                           ...newDeposit,
                           userName: e.target.value
                         })}
-                        className="w-full p-2 border border-blue-500/30 rounded-md glass-input text-cyan-400"
+                        className="w-full p-2 border border-white/30 rounded-md white-glossy-input"
                       >
                         <option value="Shobuj">Shobuj</option>
                         <option value="Shitu">Shitu</option>
@@ -396,7 +396,7 @@ export default function Home() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="amount" className="text-cyan-400">Amount (৳)</Label>
+                      <Label htmlFor="amount" className="text-slate-700">Amount (৳)</Label>
                       <Input
                         id="amount"
                         type="number"
@@ -406,12 +406,12 @@ export default function Home() {
                           ...newDeposit,
                           amount: e.target.value
                         })}
-                        className="glass-input text-cyan-400 placeholder-blue-500/60"
+                        className="white-glossy-input placeholder-slate-400"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="month" className="text-cyan-400">Month</Label>
+                      <Label htmlFor="month" className="text-slate-700">Month</Label>
                       <select
                         id="month"
                         value={newDeposit.month}
@@ -419,7 +419,7 @@ export default function Home() {
                           ...newDeposit,
                           month: e.target.value
                         })}
-                        className="w-full p-2 border border-blue-500/30 rounded-md glass-input text-cyan-400"
+                        className="w-full p-2 border border-white/30 rounded-md white-glossy-input"
                       >
                         <option value="January">January</option>
                         <option value="February">February</option>
@@ -437,7 +437,7 @@ export default function Home() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="year" className="text-cyan-400">Year</Label>
+                      <Label htmlFor="year" className="text-slate-700">Year</Label>
                       <Input
                         id="year"
                         type="number"
@@ -447,14 +447,14 @@ export default function Home() {
                           ...newDeposit,
                           year: e.target.value
                         })}
-                        className="glass-input text-cyan-400 placeholder-blue-500/60"
+                        className="white-glossy-input placeholder-slate-400"
                       />
                     </div>
                   </div>
                   
                   <Button 
                     onClick={handleAddDeposit}
-                    className="w-full glass-button text-white font-bold glossy-text"
+                    className="w-full white-glossy-button font-bold"
                   >
                     Add Deposit 🚀
                   </Button>
@@ -466,13 +466,13 @@ export default function Home() {
       </div>
       
       {/* Enhanced Decorative Elements */}
-      <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow glossy-text">💰</div>
-      <div className="absolute bottom-10 right-10 text-6xl animate-pulse-glow glossy-text">🏦</div>
-      <div className="absolute top-1/2 left-10 text-4xl animate-float glossy-text">🌟</div>
-      <div className="absolute top-1/2 right-10 text-4xl animate-float glossy-text" style={{ animationDelay: '1s' }}>💎</div>
+      <div className="absolute bottom-10 left-10 text-6xl animate-spin-slow white-glossy-text">💰</div>
+      <div className="absolute bottom-10 right-10 text-6xl animate-pulse-glow white-glossy-text">🏦</div>
+      <div className="absolute top-1/2 left-10 text-4xl animate-float white-glossy-text">🌟</div>
+      <div className="absolute top-1/2 right-10 text-4xl animate-float white-glossy-text" style={{ animationDelay: '1s' }}>💎</div>
       
       {/* Shimmer Effect */}
-      <div className="glossy-shimmer"></div>
+      <div className="white-glossy-shimmer"></div>
     </div>
   )
 }

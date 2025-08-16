@@ -4,8 +4,8 @@
   "description": "We save for the future - Personal savings tracking app",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#00bcd4",
+  "background_color": "#ffffff",
+  "theme_color": "#06b6d4",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -29,5 +29,19 @@
   "categories": ["finance", "productivity"],
   "lang": "en",
   "scope": "/",
-  "serviceworker": "/sw.js"
+  "serviceworker": "/sw.js",
+  "screenshots": [
+    {
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshot-narrow.png", 
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
 }

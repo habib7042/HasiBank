@@ -15,12 +15,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "HASHI BANK - We save for the future",
-  description: "Personal savings tracking app for Shobuj and Shitu. Track your monthly deposits and watch your savings grow with HASHI BANK.",
+  description: "Personal savings tracking app for Habib and Shitu. Track your monthly deposits and watch your savings grow with HASHI BANK.",
   keywords: ["HASHI BANK", "savings", "finance", "personal banking", "money tracking", "deposits"],
   authors: [{ name: "HASHI BANK Team" }],
   openGraph: {
     title: "HASHI BANK - We save for the future",
-    description: "Personal savings tracking app for Shobuj and Shitu",
+    description: "Personal savings tracking app for Habib and Shitu",
     url: "http://localhost:3000",
     siteName: "HASHI BANK",
     type: "website",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "HASHI BANK - We save for the future",
-    description: "Personal savings tracking app for Shobuj and Shitu",
+    description: "Personal savings tracking app for Habib and Shitu",
   },
   manifest: "/manifest.json",
   appleWebApp: {

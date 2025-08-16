@@ -25,6 +25,11 @@ interface Deposit {
   createdAt: string
 }
 
+interface User {
+  id: string
+  name: string
+}
+
 export default function Home() {
   const [pin, setPin] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -32,8 +37,9 @@ export default function Home() {
   const [userTotals, setUserTotals] = useState<UserTotal[]>([])
   const [bankTotal, setBankTotal] = useState(0)
   const [deposits, setDeposits] = useState<Deposit[]>([])
+  const [users, setUsers] = useState<User[]>([])
   const [newDeposit, setNewDeposit] = useState({
-    userName: 'Shobuj',
+    userName: '',
     amount: '',
     month: new Date().toLocaleString('default', { month: 'long' }),
     year: new Date().getFullYear().toString()
@@ -47,6 +53,7 @@ export default function Home() {
     if (isAuthenticated) {
       loadTotals()
       loadDeposits()
+      loadUsers()
     }
   }, [isAuthenticated])
 
@@ -72,6 +79,25 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error loading deposits:', error)
+    }
+  }
+
+  const loadUsers = async () => {
+    try {
+      const response = await fetch('/api/users')
+      if (response.ok) {
+        const data = await response.json()
+        setUsers(data.users)
+        // Set default user if none is selected
+        if (!newDeposit.userName && data.users.length > 0) {
+          setNewDeposit(prev => ({
+            ...prev,
+            userName: data.users[0].name
+          }))
+        }
+      }
+    } catch (error) {
+      console.error('Error loading users:', error)
     }
   }
 
@@ -104,6 +130,8 @@ export default function Home() {
         
         // Initialize users if needed
         await fetch('/api/init', { method: 'POST' })
+        // Load users to ensure we have the latest data
+        loadUsers()
       } else {
         toast({
           title: "Invalid PIN",
@@ -196,6 +224,7 @@ export default function Home() {
         // Refresh data
         loadTotals()
         loadDeposits()
+        loadUsers()
       } else {
         const error = await response.json()
         toast({
@@ -434,8 +463,15 @@ export default function Home() {
                         })}
                         className="w-full p-2 border border-white/30 rounded-md white-glossy-input-enhanced"
                       >
-                        <option value="Shobuj">Shobuj</option>
-                        <option value="Shitu">Shitu</option>
+                        {users.length === 0 ? (
+                          <option value="">Loading users...</option>
+                        ) : (
+                          users.map((user) => (
+                            <option key={user.id} value={user.name}>
+                              {user.name}
+                            </option>
+                          ))
+                        )}
                       </select>
                     </div>
                     

@@ -7,7 +7,7 @@ async function main() {
 
   // Create users if they don't exist
   const users = [
-    { name: 'Shobuj' },
+    { name: 'Habib' },
     { name: 'Shitu' }
   ]
 
@@ -32,10 +32,10 @@ async function main() {
   if (!existingSettings) {
     await prisma.settings.create({
       data: {
-        pin: '1234' // Default PIN - users should change this
+        pin: '7042' // Default PIN for HASHI BANK
       }
     })
-    console.log('✅ Created default PIN: 1234')
+    console.log('✅ Created default PIN: 7042')
   } else {
     console.log('ℹ️  Settings already exist')
   }

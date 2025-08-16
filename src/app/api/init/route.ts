@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   try {
     // Create users if they don't exist
     const users = [
-      { name: 'Shobuj' },
+      { name: 'Habib' },
       { name: 'Shitu' }
     ]
 

@@ -9,7 +9,7 @@ import { Overview } from '@/components/dashboard/overview'
 import { RecentTransactions } from '@/components/dashboard/recent-transactions'
 import { DepositForm } from '@/components/dashboard/deposit-form'
 import { WithdrawalForm } from '@/components/dashboard/withdrawal-form'
-import { LayoutDashboard, PlusCircle, MinusCircle } from 'lucide-react'
+import { LayoutDashboard, PlusCircle, MinusCircle, Heart } from 'lucide-react'
 
 interface UserTotal {
   userName: string
@@ -212,26 +212,45 @@ export default function Home() {
     }
   }
 
+  // Background Animation Component
+  const LoveBackground = () => (
+    <div className="love-background">
+      <div className="heart"></div>
+      <div className="heart"></div>
+      <div className="heart"></div>
+      <div className="heart"></div>
+      <div className="heart"></div>
+      <div className="heart"></div>
+      <div className="heart"></div>
+    </div>
+  )
+
   if (!isAuthenticated) {
-    return <LoginForm onLogin={handleLogin} isLoading={isLoading} />
+    return (
+      <>
+        <LoveBackground />
+        <LoginForm onLogin={handleLogin} isLoading={isLoading} />
+      </>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
+    <div className="min-h-screen relative">
+      <LoveBackground />
       <Header onLogout={() => setIsAuthenticated(false)} />
       
-      <main className="container mx-auto p-6 max-w-7xl">
+      <main className="container mx-auto p-6 max-w-7xl relative z-10">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-3 lg:w-[400px] bg-white/50 backdrop-blur-sm border-white/20">
+            <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
               <LayoutDashboard className="h-4 w-4" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="deposit" className="flex items-center gap-2">
+            <TabsTrigger value="deposit" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
               <PlusCircle className="h-4 w-4" />
               Deposit
             </TabsTrigger>
-            <TabsTrigger value="withdraw" className="flex items-center gap-2">
+            <TabsTrigger value="withdraw" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
               <MinusCircle className="h-4 w-4" />
               Withdraw
             </TabsTrigger>

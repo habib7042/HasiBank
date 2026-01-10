@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { LogOut, Building2 } from 'lucide-react'
+import { LogOut, Heart } from 'lucide-react'
 
 interface HeaderProps {
   onLogout: () => void
@@ -7,10 +7,10 @@ interface HeaderProps {
 
 export function Header({ onLogout }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white px-6 shadow-sm">
-      <div className="flex items-center gap-2 font-bold text-xl text-slate-800">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <Building2 className="h-5 w-5" />
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-pink-100 bg-white/70 backdrop-blur-md px-6 shadow-sm">
+      <div className="flex items-center gap-2 font-bold text-xl text-pink-700">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-pink-500 text-white shadow-pink-200 shadow-lg">
+          <Heart className="h-5 w-5 fill-current" />
         </div>
         <span>HASHI BANK</span>
       </div>
@@ -19,7 +19,7 @@ export function Header({ onLogout }: HeaderProps) {
         variant="ghost"
         size="sm"
         onClick={onLogout}
-        className="text-slate-500 hover:text-slate-900"
+        className="text-pink-600 hover:text-pink-800 hover:bg-pink-50"
       >
         <LogOut className="mr-2 h-4 w-4" />
         Logout

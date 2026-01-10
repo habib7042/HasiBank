@@ -57,23 +57,23 @@ export function DepositForm({ users, onDeposit, isLoading }: DepositFormProps) {
   }
 
   return (
-    <Card className="max-w-2xl mx-auto">
+    <Card className="max-w-2xl mx-auto border-pink-100 bg-white/70 backdrop-blur-sm shadow-md">
       <CardHeader>
-        <CardTitle>New Deposit</CardTitle>
-        <CardDescription>
-          Record a new deposit for a member.
+        <CardTitle className="text-pink-800">Add Savings 💰</CardTitle>
+        <CardDescription className="text-pink-600">
+          Record a new deposit for a family member.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="userName">Member</Label>
+              <Label htmlFor="userName" className="text-pink-700">Member</Label>
               <Select
                 value={data.userName}
                 onValueChange={(value) => setData({ ...data, userName: value })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="border-pink-200 focus:ring-pink-400">
                   <SelectValue placeholder="Select member" />
                 </SelectTrigger>
                 <SelectContent>
@@ -87,7 +87,7 @@ export function DepositForm({ users, onDeposit, isLoading }: DepositFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount (৳)</Label>
+              <Label htmlFor="amount" className="text-pink-700">Amount (৳)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -97,16 +97,17 @@ export function DepositForm({ users, onDeposit, isLoading }: DepositFormProps) {
                 min="0.01"
                 step="0.01"
                 required
+                className="border-pink-200 focus-visible:ring-pink-400"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="month">Month</Label>
+              <Label htmlFor="month" className="text-pink-700">Month</Label>
               <Select
                 value={data.month}
                 onValueChange={(value) => setData({ ...data, month: value })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="border-pink-200 focus:ring-pink-400">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -121,20 +122,21 @@ export function DepositForm({ users, onDeposit, isLoading }: DepositFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="year">Year</Label>
+              <Label htmlFor="year" className="text-pink-700">Year</Label>
               <Input
                 id="year"
                 type="number"
                 value={data.year}
                 onChange={(e) => setData({ ...data, year: e.target.value })}
                 required
+                className="border-pink-200 focus-visible:ring-pink-400"
               />
             </div>
           </div>
 
-          <div className="rounded-lg bg-slate-50 p-4 border border-slate-100 space-y-4">
+          <div className="rounded-lg bg-pink-50 p-4 border border-pink-100 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="pin">Authorization PIN</Label>
+              <Label htmlFor="pin" className="text-pink-800">Authorization PIN</Label>
               <Input
                 id="pin"
                 type="password"
@@ -142,7 +144,7 @@ export function DepositForm({ users, onDeposit, isLoading }: DepositFormProps) {
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
                 maxLength={4}
-                className="font-mono text-center tracking-widest max-w-[200px]"
+                className="font-mono text-center tracking-widest max-w-[200px] border-pink-200 focus-visible:ring-pink-400 bg-white"
                 required
               />
             </div>
@@ -153,8 +155,9 @@ export function DepositForm({ users, onDeposit, isLoading }: DepositFormProps) {
                 checked={isConfirmed}
                 onCheckedChange={(checked) => setIsConfirmed(checked as boolean)}
                 required
+                className="border-pink-300 data-[state=checked]:bg-pink-500 data-[state=checked]:border-pink-500"
               />
-              <Label htmlFor="confirm" className="text-sm font-normal text-muted-foreground">
+              <Label htmlFor="confirm" className="text-sm font-normal text-pink-700">
                 I confirm that I have received this amount and authorized this deposit.
               </Label>
             </div>
@@ -162,10 +165,10 @@ export function DepositForm({ users, onDeposit, isLoading }: DepositFormProps) {
 
           <Button
             type="submit"
-            className="w-full bg-emerald-600 hover:bg-emerald-700"
+            className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold"
             disabled={isLoading || !isConfirmed || pin.length < 4}
           >
-            {isLoading ? "Processing..." : "Confirm Deposit"}
+            {isLoading ? "Processing..." : "Confirm Deposit 💖"}
           </Button>
         </form>
       </CardContent>

@@ -57,23 +57,23 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
   }
 
   return (
-    <Card className="max-w-2xl mx-auto border-red-100">
+    <Card className="max-w-2xl mx-auto border-red-100 bg-white/70 backdrop-blur-sm shadow-md">
       <CardHeader>
-        <CardTitle className="text-red-700">Process Withdrawal</CardTitle>
-        <CardDescription>
-          Record a new withdrawal for a member.
+        <CardTitle className="text-red-700">Process Withdrawal 💸</CardTitle>
+        <CardDescription className="text-red-600/80">
+          Record a new withdrawal for a family member.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="userName">Member</Label>
+              <Label htmlFor="userName" className="text-red-900">Member</Label>
               <Select
                 value={data.userName}
                 onValueChange={(value) => setData({ ...data, userName: value })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="border-red-200 focus:ring-red-400">
                   <SelectValue placeholder="Select member" />
                 </SelectTrigger>
                 <SelectContent>
@@ -87,7 +87,7 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount (৳)</Label>
+              <Label htmlFor="amount" className="text-red-900">Amount (৳)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -97,16 +97,17 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
                 min="0.01"
                 step="0.01"
                 required
+                className="border-red-200 focus-visible:ring-red-400"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="month">Month</Label>
+              <Label htmlFor="month" className="text-red-900">Month</Label>
               <Select
                 value={data.month}
                 onValueChange={(value) => setData({ ...data, month: value })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="border-red-200 focus:ring-red-400">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -121,13 +122,14 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="year">Year</Label>
+              <Label htmlFor="year" className="text-red-900">Year</Label>
               <Input
                 id="year"
                 type="number"
                 value={data.year}
                 onChange={(e) => setData({ ...data, year: e.target.value })}
                 required
+                className="border-red-200 focus-visible:ring-red-400"
               />
             </div>
           </div>
@@ -142,7 +144,7 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
                 maxLength={4}
-                className="font-mono text-center tracking-widest max-w-[200px] border-red-200 focus-visible:ring-red-500"
+                className="font-mono text-center tracking-widest max-w-[200px] border-red-200 focus-visible:ring-red-500 bg-white"
                 required
               />
             </div>
@@ -153,7 +155,7 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
                 checked={isConfirmed}
                 onCheckedChange={(checked) => setIsConfirmed(checked as boolean)}
                 required
-                className="data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
+                className="data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600 border-red-300"
               />
               <Label htmlFor="confirm" className="text-sm font-normal text-red-800">
                 I confirm this withdrawal is authorized and funds are being released.
@@ -164,10 +166,10 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
           <Button
             type="submit"
             variant="destructive"
-            className="w-full"
+            className="w-full bg-red-500 hover:bg-red-600"
             disabled={isLoading || !isConfirmed || pin.length < 4}
           >
-            {isLoading ? "Processing..." : "Process Withdrawal"}
+            {isLoading ? "Processing..." : "Process Withdrawal 💔"}
           </Button>
         </form>
       </CardContent>

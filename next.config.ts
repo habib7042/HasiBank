@@ -16,10 +16,8 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-  eslint: {
-    // 构建时忽略ESLint错误
-    ignoreDuringBuilds: true,
-  },
+  // Add empty turbopack config to silence the error as suggested by the error message
+  turbopack: {},
 };
 
 export default nextConfig;

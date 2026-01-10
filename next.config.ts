@@ -16,8 +16,6 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-  // Add empty turbopack config to silence the error as suggested by the error message
-  turbopack: {},
 };
 
 export default nextConfig;

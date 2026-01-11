@@ -9,7 +9,8 @@ import { Overview } from '@/components/dashboard/overview'
 import { RecentTransactions } from '@/components/dashboard/recent-transactions'
 import { DepositForm } from '@/components/dashboard/deposit-form'
 import { WithdrawalForm } from '@/components/dashboard/withdrawal-form'
-import { LayoutDashboard, PlusCircle, MinusCircle, Heart } from 'lucide-react'
+import { Notebook } from '@/components/dashboard/notebook/notebook'
+import { LayoutDashboard, PlusCircle, MinusCircle, BookHeart } from 'lucide-react'
 
 interface UserTotal {
   userName: string
@@ -45,6 +46,7 @@ export default function Home() {
   const [bankTotal, setBankTotal] = useState(0)
   const [deposits, setDeposits] = useState<Deposit[]>([])
   const [users, setUsers] = useState<User[]>([])
+  const [currentUser, setCurrentUser] = useState<string | null>(null)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -158,6 +160,8 @@ export default function Home() {
         loadTotals()
         loadDeposits()
         loadUsers()
+        // If this is the current user, store it for notebook defaults
+        setCurrentUser(data.userName)
       } else {
         const error = await response.json()
         throw new Error(error.error || 'Failed to process deposit')
@@ -168,7 +172,7 @@ export default function Home() {
         description: error.message,
         variant: "destructive",
       })
-      throw error // Re-throw to handle in component
+      throw error
     } finally {
       setIsLoading(false)
     }
@@ -196,6 +200,7 @@ export default function Home() {
         loadTotals()
         loadDeposits()
         loadUsers()
+        setCurrentUser(data.userName)
       } else {
         const error = await response.json()
         throw new Error(error.error || 'Failed to process withdrawal')
@@ -206,7 +211,7 @@ export default function Home() {
         description: error.message,
         variant: "destructive",
       })
-      throw error // Re-throw to handle in component
+      throw error
     } finally {
       setIsLoading(false)
     }
@@ -241,7 +246,7 @@ export default function Home() {
       
       <main className="container mx-auto p-6 max-w-7xl relative z-10">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-[400px] bg-white/50 backdrop-blur-sm border-white/20">
+          <TabsList className="grid w-full grid-cols-4 lg:w-[600px] bg-white/50 backdrop-blur-sm border-white/20">
             <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
               <LayoutDashboard className="h-4 w-4" />
               Overview
@@ -253,6 +258,10 @@ export default function Home() {
             <TabsTrigger value="withdraw" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
               <MinusCircle className="h-4 w-4" />
               Withdraw
+            </TabsTrigger>
+            <TabsTrigger value="notebook" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
+              <BookHeart className="h-4 w-4" />
+              Notebook
             </TabsTrigger>
           </TabsList>
 
@@ -275,6 +284,13 @@ export default function Home() {
               onWithdraw={handleWithdrawal}
               isLoading={isLoading}
             />
+          </TabsContent>
+
+          <TabsContent value="notebook" className="animate-in fade-in-50 duration-500">
+             <Notebook
+               currentUser={currentUser}
+               users={users}
+             />
           </TabsContent>
         </Tabs>
       </main>

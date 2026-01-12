@@ -75,13 +75,18 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
         ))}
       </div>
 
-      <CardHeader className="flex flex-row items-center gap-3 p-4 pb-2">
-        <Avatar className="h-8 w-8 border-2 border-pink-100">
+      <CardHeader className="flex flex-row items-start gap-3 p-4 pb-2">
+        <Avatar className="h-8 w-8 border-2 border-pink-100 mt-1">
           <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${note.user.name}`} />
           <AvatarFallback className="bg-pink-100 text-pink-700">{note.user.name[0]}</AvatarFallback>
         </Avatar>
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold text-pink-900">{note.user.name}</span>
+        <div className="flex flex-col flex-1">
+          <div className="flex justify-between items-start">
+            <span className="text-sm font-semibold text-pink-900">{note.user.name}</span>
+            {note.emoji && (
+              <span className="text-2xl animate-pulse" title="Mood">{note.emoji}</span>
+            )}
+          </div>
           <span className="text-xs text-pink-400">
             {new Date(note.createdAt).toLocaleDateString()} at {new Date(note.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </span>

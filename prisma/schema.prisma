@@ -46,6 +46,7 @@ model Settings {
 model Note {
   id        Int        @id @default(autoincrement())
   content   String
+  emoji     String?    // Added emoji field
   userId    Int
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt

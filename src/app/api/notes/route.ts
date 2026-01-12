@@ -31,7 +31,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { content, userName } = body
+    const { content, userName, emoji } = body
 
     if (!content || !userName) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -48,7 +48,8 @@ export async function POST(request: Request) {
     const note = await prisma.note.create({
       data: {
         content,
-        userId: user.id
+        userId: user.id,
+        emoji: emoji || null
       },
       include: {
         user: {

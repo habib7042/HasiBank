@@ -19,6 +19,7 @@ interface Reaction {
 export interface Note {
   id: number
   content: string
+  emoji: string | null // Added emoji field
   userId: number
   createdAt: string
   user: { name: string }

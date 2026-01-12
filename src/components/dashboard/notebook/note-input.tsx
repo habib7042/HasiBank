@@ -22,16 +22,10 @@ interface NoteInputProps {
 
 export function NoteInput({ currentUser, users, onNoteCreated }: NoteInputProps) {
   const [content, setContent] = useState('')
-  const [authorName, setAuthorName] = useState(currentUser || '')
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [animatingEmoji, setAnimatingEmoji] = useState<string | null>(null)
   const { toast } = useToast()
-
-  // Update local author state if prop changes (e.g. initial load)
-  if (currentUser && authorName !== currentUser && !authorName) {
-    setAuthorName(currentUser)
-  }
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     setSelectedEmoji(emojiData.emoji)
@@ -39,7 +33,7 @@ export function NoteInput({ currentUser, users, onNoteCreated }: NoteInputProps)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!content.trim() || !authorName) return
+    if (!content.trim() || !currentUser) return
 
     setIsSubmitting(true)
     try {
@@ -48,7 +42,7 @@ export function NoteInput({ currentUser, users, onNoteCreated }: NoteInputProps)
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content,
-          userName: authorName,
+          userName: currentUser, // Use the locked currentUser
           emoji: selectedEmoji
         }),
       })
@@ -56,7 +50,7 @@ export function NoteInput({ currentUser, users, onNoteCreated }: NoteInputProps)
       if (response.ok) {
         if (selectedEmoji) {
           setAnimatingEmoji(selectedEmoji)
-          setTimeout(() => setAnimatingEmoji(null), 1000)
+          setTimeout(() => setAnimatingEmoji(null), 2000) // Longer for new animation
         }
         setContent('')
         setSelectedEmoji(null)
@@ -83,34 +77,19 @@ export function NoteInput({ currentUser, users, onNoteCreated }: NoteInputProps)
     <div className="relative">
       {/* Animation Layer */}
       {animatingEmoji && (
-        <div className="absolute left-1/2 -top-10 text-6xl animate-float-emoji z-50 pointer-events-none">
+        <div className="absolute left-1/2 -top-10 text-6xl animate-float-up-sway z-50 pointer-events-none">
           {animatingEmoji}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="author" className="text-pink-700">Posting as</Label>
-          <Select
-            value={authorName}
-            onValueChange={setAuthorName}
-          >
-            <SelectTrigger className="border-pink-200 focus:ring-pink-400 bg-white/50">
-              <SelectValue placeholder="Select who you are..." />
-            </SelectTrigger>
-            <SelectContent>
-              {users.map((user) => (
-                <SelectItem key={user.id} value={user.name}>
-                  {user.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {/* Removed User Select - User is fixed by parent Notebook component */}
 
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-             <Label htmlFor="content" className="text-pink-700">Your Message</Label>
+             <Label htmlFor="content" className="text-pink-700">
+               Message as <span className="font-bold text-pink-900">{currentUser}</span>
+             </Label>
              <Popover>
                <PopoverTrigger asChild>
                  <Button
@@ -140,7 +119,7 @@ export function NoteInput({ currentUser, users, onNoteCreated }: NoteInputProps)
           </div>
           <Textarea
             id="content"
-            placeholder="Share something with the family..."
+            placeholder={`What's on your mind, ${currentUser}?`}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             className="min-h-[100px] border-pink-200 focus-visible:ring-pink-400 bg-white/50 placeholder:text-pink-300/70"
@@ -150,7 +129,7 @@ export function NoteInput({ currentUser, users, onNoteCreated }: NoteInputProps)
         <div className="flex justify-end">
           <Button
             type="submit"
-            disabled={!content.trim() || !authorName || isSubmitting}
+            disabled={!content.trim() || !currentUser || isSubmitting}
             className="bg-pink-500 hover:bg-pink-600 text-white font-medium"
           >
             {isSubmitting ? "Posting..." : (

@@ -31,12 +31,18 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
   const handleReaction = async (type: string, emoji: string) => {
     if (!currentUser) return
 
-    // Trigger animation
+    // Trigger animation - Spawn multiple particles for better effect
     const id = Date.now()
-    setFloatingEmojis(prev => [...prev, { id, emoji }])
+    setFloatingEmojis(prev => [
+      ...prev,
+      { id, emoji },
+      { id: id + 1, emoji },
+      { id: id + 2, emoji }
+    ])
+
     setTimeout(() => {
-      setFloatingEmojis(prev => prev.filter(e => e.id !== id))
-    }, 1000)
+      setFloatingEmojis(prev => prev.filter(e => e.id < id))
+    }, 2000)
 
     setIsReacting(true)
     try {
@@ -65,10 +71,14 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
     <Card className="border-pink-100 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow relative overflow-visible">
        {/* Floating Emojis Container */}
        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-xl">
-        {floatingEmojis.map((e) => (
+        {floatingEmojis.map((e, index) => (
           <div
             key={e.id}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 text-4xl animate-float-emoji z-50"
+            className="absolute bottom-12 left-1/2 text-4xl animate-float-up-sway z-50"
+            style={{
+              animationDelay: `${index * 0.2}s`,
+              left: `${50 + (Math.random() * 20 - 10)}%` // Randomize horizontal start slightly
+            }}
           >
             {e.emoji}
           </div>

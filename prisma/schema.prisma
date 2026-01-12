@@ -22,6 +22,7 @@ model User {
   deposits  Deposit[]
   notes     Note[]
   reactions Reaction[]
+  comments  Comment[]
 }
 
 model Deposit {
@@ -46,13 +47,14 @@ model Settings {
 model Note {
   id        Int        @id @default(autoincrement())
   content   String
-  emoji     String?    // Added emoji field
+  emoji     String?
   userId    Int
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   reactions Reaction[]
+  comments  Comment[]
 }
 
 model Reaction {
@@ -66,4 +68,15 @@ model Reaction {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([noteId, userId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  noteId    Int
+  userId    Int
+  createdAt DateTime @default(now())
+
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

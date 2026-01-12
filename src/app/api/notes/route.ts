@@ -14,6 +14,16 @@ export async function GET() {
               select: { name: true }
             }
           }
+        },
+        comments: {
+          include: {
+            user: {
+              select: { name: true }
+            }
+          },
+          orderBy: {
+            createdAt: 'asc'
+          }
         }
       },
       orderBy: {
@@ -55,7 +65,8 @@ export async function POST(request: Request) {
         user: {
           select: { name: true }
         },
-        reactions: true
+        reactions: true,
+        comments: true
       }
     })
 

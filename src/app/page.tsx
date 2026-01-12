@@ -261,7 +261,7 @@ export default function Home() {
             </TabsTrigger>
             <TabsTrigger value="notebook" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
               <BookHeart className="h-4 w-4" />
-              Notebook
+              KothaBank
             </TabsTrigger>
           </TabsList>
 

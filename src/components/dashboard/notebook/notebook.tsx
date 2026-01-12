@@ -17,6 +17,13 @@ interface Reaction {
   user: { name: string }
 }
 
+interface Comment {
+  id: number
+  content: string
+  createdAt: string
+  user: { name: string }
+}
+
 export interface Note {
   id: number
   content: string
@@ -25,6 +32,7 @@ export interface Note {
   createdAt: string
   user: { name: string }
   reactions: Reaction[]
+  comments: Comment[]
 }
 
 interface NotebookProps {
@@ -87,7 +95,7 @@ export function Notebook({ currentUser: initialUser, users }: NotebookProps) {
       <Card className="border-pink-100 bg-white/70 backdrop-blur-sm shadow-md">
         <CardHeader className="flex flex-row items-center gap-2">
           <CardTitle className="text-pink-800 flex items-center gap-2">
-             Community Notebook <BookHeart className="h-5 w-5 text-pink-500" />
+             KothaBank <BookHeart className="h-5 w-5 text-pink-500" />
           </CardTitle>
           {actingUser && (
             <div className="ml-auto text-sm text-pink-600">

@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Keypad } from '@/components/ui/keypad'
 
 interface User {
   id: string
@@ -33,6 +34,7 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
   })
   const [pin, setPin] = useState('')
   const [isConfirmed, setIsConfirmed] = useState(false)
+  const [showKeypad, setShowKeypad] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,6 +47,7 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
         })
         setPin('')
         setIsConfirmed(false)
+        setShowKeypad(false)
       })
       .catch(() => {
         // Error handling is done in parent
@@ -54,6 +57,14 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
   // Set default user if available and not set
   if (!data.userName && users.length > 0) {
     setData(prev => ({ ...prev, userName: users[0].name }))
+  }
+
+  const handleKeyPress = (key: string) => {
+    setPin(prev => prev + key)
+  }
+
+  const handleDelete = () => {
+    setPin(prev => prev.slice(0, -1))
   }
 
   return (
@@ -141,14 +152,24 @@ export function WithdrawalForm({ users, onWithdraw, isLoading }: WithdrawalFormP
                 id="pin"
                 type="password"
                 autoComplete="off"
-                placeholder="Enter 4-digit PIN"
+                placeholder="Tap to enter PIN"
                 value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                maxLength={4}
-                className="font-mono text-center tracking-widest max-w-[200px] border-red-200 focus-visible:ring-red-500 bg-white"
+                readOnly
+                onClick={() => setShowKeypad(!showKeypad)}
+                className="font-mono text-center tracking-widest max-w-[200px] border-red-200 focus-visible:ring-red-500 bg-white cursor-pointer"
                 required
               />
             </div>
+
+            {showKeypad && (
+              <div className="bg-white p-2 rounded-xl border border-red-100 shadow-sm">
+                <Keypad
+                  onKeyPress={handleKeyPress}
+                  onDelete={handleDelete}
+                  currentLength={pin.length}
+                />
+              </div>
+            )}
 
             <div className="flex items-center space-x-2">
               <Checkbox

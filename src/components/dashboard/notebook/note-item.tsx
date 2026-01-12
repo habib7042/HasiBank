@@ -3,8 +3,9 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Note } from './notebook'
-import { Heart, ThumbsUp, Smile, Frown } from 'lucide-react'
+import { Heart, ThumbsUp, Smile, Frown, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { CommentSection } from './comment-section'
 
 interface NoteItemProps {
   note: Note
@@ -27,11 +28,12 @@ interface FloatingEmoji {
 export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps) {
   const [isReacting, setIsReacting] = useState(false)
   const [floatingEmojis, setFloatingEmojis] = useState<FloatingEmoji[]>([])
+  const [showComments, setShowComments] = useState(false)
 
   const handleReaction = async (type: string, emoji: string) => {
     if (!currentUser) return
 
-    // Trigger animation - Spawn multiple particles for better effect
+    // Trigger animation
     const id = Date.now()
     setFloatingEmojis(prev => [
       ...prev,
@@ -68,7 +70,7 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
   const userReaction = note.reactions.find(r => r.user.name === currentUser)
 
   return (
-    <Card className="border-pink-100 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow relative overflow-visible">
+    <Card className="border-pink-100 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow relative overflow-visible flex flex-col h-full">
        {/* Floating Emojis Container */}
        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-xl">
         {floatingEmojis.map((e, index) => (
@@ -77,7 +79,7 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
             className="absolute bottom-12 left-1/2 text-4xl animate-float-up-sway z-50"
             style={{
               animationDelay: `${index * 0.2}s`,
-              left: `${50 + (Math.random() * 20 - 10)}%` // Randomize horizontal start slightly
+              left: `${50 + (Math.random() * 20 - 10)}%`
             }}
           >
             {e.emoji}
@@ -102,33 +104,56 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
           </span>
         </div>
       </CardHeader>
-      <CardContent className="p-4 pt-2">
+
+      <CardContent className="p-4 pt-2 flex-grow">
         <p className="text-pink-800 whitespace-pre-wrap">{note.content}</p>
       </CardContent>
-      <CardFooter className="p-2 bg-pink-50/50 flex flex-col gap-2 rounded-b-xl">
-        <div className="flex w-full justify-around relative">
-          {REACTION_TYPES.map(({ type, icon: Icon, color, emoji }) => {
-            const isActive = userReaction?.type === type
-            const count = reactionsByType[type] || 0
 
-            return (
-              <Button
-                key={type}
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "flex items-center gap-1 h-8 px-2 hover:bg-white/50 relative",
-                  isActive && "bg-white shadow-sm ring-1 ring-pink-100"
-                )}
-                onClick={() => handleReaction(type, emoji)}
-                disabled={isReacting || !currentUser}
-              >
-                <Icon className={cn("h-4 w-4 transition-all", isActive ? `${color} fill-current scale-110` : "text-slate-400")} />
-                {count > 0 && <span className="text-xs font-medium text-slate-600">{count}</span>}
-              </Button>
-            )
-          })}
+      <CardFooter className="p-2 bg-pink-50/50 flex flex-col gap-2 rounded-b-xl">
+        <div className="flex w-full justify-between items-center px-2">
+          <div className="flex gap-1">
+            {REACTION_TYPES.map(({ type, icon: Icon, color, emoji }) => {
+              const isActive = userReaction?.type === type
+              const count = reactionsByType[type] || 0
+
+              return (
+                <Button
+                  key={type}
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    "flex items-center gap-1 h-8 px-2 hover:bg-white/50 relative",
+                    isActive && "bg-white shadow-sm ring-1 ring-pink-100"
+                  )}
+                  onClick={() => handleReaction(type, emoji)}
+                  disabled={isReacting || !currentUser}
+                >
+                  <Icon className={cn("h-4 w-4 transition-all", isActive ? `${color} fill-current scale-110` : "text-slate-400")} />
+                  {count > 0 && <span className="text-xs font-medium text-slate-600">{count}</span>}
+                </Button>
+              )
+            })}
+          </div>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className={cn("text-pink-600 hover:text-pink-800 hover:bg-pink-100/50 gap-1", showComments && "bg-pink-100/50")}
+            onClick={() => setShowComments(!showComments)}
+          >
+            <MessageCircle className="h-4 w-4" />
+            <span className="text-xs">{note.comments.length}</span>
+          </Button>
         </div>
+
+        {showComments && (
+          <CommentSection
+            noteId={note.id}
+            comments={note.comments}
+            currentUser={currentUser}
+            onCommentAdded={onReactionUpdate}
+          />
+        )}
       </CardFooter>
     </Card>
   )

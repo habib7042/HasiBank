@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Heart } from 'lucide-react'
+import { Keypad } from '@/components/ui/keypad'
 
 interface LoginFormProps {
   onLogin: (pin: string) => Promise<void>
@@ -16,6 +17,14 @@ export function LoginForm({ onLogin, isLoading }: LoginFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onLogin(pin)
+  }
+
+  const handleKeyPress = (key: string) => {
+    setPin(prev => prev + key)
+  }
+
+  const handleDelete = () => {
+    setPin(prev => prev.slice(0, -1))
   }
 
   return (
@@ -48,14 +57,20 @@ export function LoginForm({ onLogin, isLoading }: LoginFormProps) {
                   autoComplete="off"
                   placeholder="••••"
                   value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                  maxLength={4}
-                  className="text-center text-2xl tracking-widest border-pink-200 focus-visible:ring-pink-400 text-pink-800 placeholder:text-pink-300 bg-white/50"
+                  readOnly // Make input read-only to force keypad usage
+                  className="text-center text-2xl tracking-widest border-pink-200 focus-visible:ring-pink-400 text-pink-800 placeholder:text-pink-300 bg-white/50 cursor-default"
                 />
               </div>
+
+              <Keypad
+                onKeyPress={handleKeyPress}
+                onDelete={handleDelete}
+                currentLength={pin.length}
+              />
+
               <Button
                 type="submit"
-                className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold shadow-md shadow-pink-200"
+                className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold shadow-md shadow-pink-200 mt-4"
                 disabled={isLoading || pin.length < 4}
               >
                 {isLoading ? "Verifying..." : "Open My Vault 💝"}

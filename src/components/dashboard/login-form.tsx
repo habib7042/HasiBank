@@ -45,6 +45,7 @@ export function LoginForm({ onLogin, isLoading }: LoginFormProps) {
                 <Input
                   id="pin"
                   type="password"
+                  autoComplete="off"
                   placeholder="••••"
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}

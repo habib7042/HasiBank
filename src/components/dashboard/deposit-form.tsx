@@ -140,6 +140,7 @@ export function DepositForm({ users, onDeposit, isLoading }: DepositFormProps) {
               <Input
                 id="pin"
                 type="password"
+                autoComplete="off"
                 placeholder="Enter 4-digit PIN"
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}

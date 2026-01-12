@@ -13,17 +13,30 @@ interface NoteItemProps {
 }
 
 const REACTION_TYPES = [
-  { type: 'like', icon: ThumbsUp, label: 'Like', color: 'text-blue-500' },
-  { type: 'love', icon: Heart, label: 'Love', color: 'text-red-500' },
-  { type: 'haha', icon: Smile, label: 'Haha', color: 'text-yellow-500' },
-  { type: 'sad', icon: Frown, label: 'Sad', color: 'text-purple-500' },
+  { type: 'like', icon: ThumbsUp, label: 'Like', color: 'text-blue-500', emoji: '👍' },
+  { type: 'love', icon: Heart, label: 'Love', color: 'text-red-500', emoji: '❤️' },
+  { type: 'haha', icon: Smile, label: 'Haha', color: 'text-yellow-500', emoji: '😂' },
+  { type: 'sad', icon: Frown, label: 'Sad', color: 'text-purple-500', emoji: '😢' },
 ]
+
+interface FloatingEmoji {
+  id: number
+  emoji: string
+}
 
 export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps) {
   const [isReacting, setIsReacting] = useState(false)
+  const [floatingEmojis, setFloatingEmojis] = useState<FloatingEmoji[]>([])
 
-  const handleReaction = async (type: string) => {
+  const handleReaction = async (type: string, emoji: string) => {
     if (!currentUser) return
+
+    // Trigger animation
+    const id = Date.now()
+    setFloatingEmojis(prev => [...prev, { id, emoji }])
+    setTimeout(() => {
+      setFloatingEmojis(prev => prev.filter(e => e.id !== id))
+    }, 1000)
 
     setIsReacting(true)
     try {
@@ -49,7 +62,19 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
   const userReaction = note.reactions.find(r => r.user.name === currentUser)
 
   return (
-    <Card className="border-pink-100 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow">
+    <Card className="border-pink-100 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow relative overflow-visible">
+       {/* Floating Emojis Container */}
+       <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-xl">
+        {floatingEmojis.map((e) => (
+          <div
+            key={e.id}
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 text-4xl animate-float-emoji z-50"
+          >
+            {e.emoji}
+          </div>
+        ))}
+      </div>
+
       <CardHeader className="flex flex-row items-center gap-3 p-4 pb-2">
         <Avatar className="h-8 w-8 border-2 border-pink-100">
           <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${note.user.name}`} />
@@ -66,8 +91,8 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
         <p className="text-pink-800 whitespace-pre-wrap">{note.content}</p>
       </CardContent>
       <CardFooter className="p-2 bg-pink-50/50 flex flex-col gap-2 rounded-b-xl">
-        <div className="flex w-full justify-around">
-          {REACTION_TYPES.map(({ type, icon: Icon, color }) => {
+        <div className="flex w-full justify-around relative">
+          {REACTION_TYPES.map(({ type, icon: Icon, color, emoji }) => {
             const isActive = userReaction?.type === type
             const count = reactionsByType[type] || 0
 
@@ -77,10 +102,10 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "flex items-center gap-1 h-8 px-2 hover:bg-white/50",
+                  "flex items-center gap-1 h-8 px-2 hover:bg-white/50 relative",
                   isActive && "bg-white shadow-sm ring-1 ring-pink-100"
                 )}
-                onClick={() => handleReaction(type)}
+                onClick={() => handleReaction(type, emoji)}
                 disabled={isReacting || !currentUser}
               >
                 <Icon className={cn("h-4 w-4 transition-all", isActive ? `${color} fill-current scale-110` : "text-slate-400")} />

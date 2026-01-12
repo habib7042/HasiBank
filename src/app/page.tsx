@@ -11,6 +11,7 @@ import { DepositForm } from '@/components/dashboard/deposit-form'
 import { WithdrawalForm } from '@/components/dashboard/withdrawal-form'
 import { Notebook } from '@/components/dashboard/notebook/notebook'
 import { LayoutDashboard, PlusCircle, MinusCircle, BookHeart } from 'lucide-react'
+import { LoadingScreen } from '@/components/ui/loading-screen'
 
 interface UserTotal {
   userName: string
@@ -42,12 +43,21 @@ interface TransactionData {
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isInitialLoading, setIsInitialLoading] = useState(true)
   const [userTotals, setUserTotals] = useState<UserTotal[]>([])
   const [bankTotal, setBankTotal] = useState(0)
   const [deposits, setDeposits] = useState<Deposit[]>([])
   const [users, setUsers] = useState<User[]>([])
   const [currentUser, setCurrentUser] = useState<string | null>(null)
   const { toast } = useToast()
+
+  useEffect(() => {
+    // Simulate initial app loading for animation
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false)
+    }, 2000)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -230,6 +240,10 @@ export default function Home() {
     </div>
   )
 
+  if (isInitialLoading) {
+    return <LoadingScreen />
+  }
+
   if (!isAuthenticated) {
     return (
       <>
@@ -240,37 +254,74 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative pb-20 md:pb-0">
       <LoveBackground />
       <Header onLogout={() => setIsAuthenticated(false)} />
       
-      <main className="container mx-auto p-6 max-w-7xl relative z-10">
+      <main className="container mx-auto p-4 md:p-6 max-w-7xl relative z-10">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-[600px] bg-white/50 backdrop-blur-sm border-white/20">
-            <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
-              <LayoutDashboard className="h-4 w-4" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="deposit" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
-              <PlusCircle className="h-4 w-4" />
-              Deposit
-            </TabsTrigger>
-            <TabsTrigger value="withdraw" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
-              <MinusCircle className="h-4 w-4" />
-              Withdraw
-            </TabsTrigger>
-            <TabsTrigger value="notebook" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
-              <BookHeart className="h-4 w-4" />
-              KothaBank
-            </TabsTrigger>
-          </TabsList>
+          {/* Mobile Bottom Navigation */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-t border-pink-100 p-2 md:hidden safe-area-pb">
+            <TabsList className="grid w-full grid-cols-4 h-auto bg-transparent p-0 gap-1">
+              <TabsTrigger
+                value="overview"
+                className="flex flex-col items-center gap-1 py-2 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all"
+              >
+                <LayoutDashboard className="h-5 w-5" />
+                <span className="scale-90">Overview</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="deposit"
+                className="flex flex-col items-center gap-1 py-2 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all"
+              >
+                <PlusCircle className="h-5 w-5" />
+                <span className="scale-90">Deposit</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="withdraw"
+                className="flex flex-col items-center gap-1 py-2 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all"
+              >
+                <MinusCircle className="h-5 w-5" />
+                <span className="scale-90">Withdraw</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="notebook"
+                className="flex flex-col items-center gap-1 py-2 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all"
+              >
+                <BookHeart className="h-5 w-5" />
+                <span className="scale-90">KothaBank</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-          <TabsContent value="overview" className="space-y-6 animate-in fade-in-50 duration-500">
+          {/* Desktop Top Navigation */}
+          <div className="hidden md:block">
+            <TabsList className="grid w-full grid-cols-4 lg:w-[600px] bg-white/50 backdrop-blur-sm border-white/20">
+              <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
+                <LayoutDashboard className="h-4 w-4" />
+                Overview
+              </TabsTrigger>
+              <TabsTrigger value="deposit" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
+                <PlusCircle className="h-4 w-4" />
+                Deposit
+              </TabsTrigger>
+              <TabsTrigger value="withdraw" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
+                <MinusCircle className="h-4 w-4" />
+                Withdraw
+              </TabsTrigger>
+              <TabsTrigger value="notebook" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
+                <BookHeart className="h-4 w-4" />
+                KothaBank
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent value="overview" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
             <Overview bankTotal={bankTotal} userTotals={userTotals} />
             <RecentTransactions transactions={deposits} />
           </TabsContent>
 
-          <TabsContent value="deposit" className="animate-in fade-in-50 duration-500">
+          <TabsContent value="deposit" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
             <DepositForm
               users={users}
               onDeposit={handleDeposit}
@@ -278,7 +329,7 @@ export default function Home() {
             />
           </TabsContent>
 
-          <TabsContent value="withdraw" className="animate-in fade-in-50 duration-500">
+          <TabsContent value="withdraw" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
             <WithdrawalForm
               users={users}
               onWithdraw={handleWithdrawal}
@@ -286,7 +337,7 @@ export default function Home() {
             />
           </TabsContent>
 
-          <TabsContent value="notebook" className="animate-in fade-in-50 duration-500">
+          <TabsContent value="notebook" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
              <Notebook
                currentUser={currentUser}
                users={users}

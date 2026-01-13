@@ -34,10 +34,10 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
         toast({
           title: "File too large",
-          description: "Please select an image under 5MB",
+          description: "Please select an image under 10MB",
           variant: "destructive"
         })
         return

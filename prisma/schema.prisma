@@ -23,6 +23,7 @@ model User {
   notes     Note[]
   reactions Reaction[]
   comments  Comment[]
+  memories  Memory[]
 }
 
 model Deposit {
@@ -79,4 +80,15 @@ model Comment {
 
   note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Memory {
+  id          Int      @id @default(autoincrement())
+  imageUrl    String   @db.Text // Base64 string can be large
+  description String
+  date        DateTime
+  userId      Int
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

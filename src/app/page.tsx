@@ -10,7 +10,9 @@ import { RecentTransactions } from '@/components/dashboard/recent-transactions'
 import { DepositForm } from '@/components/dashboard/deposit-form'
 import { WithdrawalForm } from '@/components/dashboard/withdrawal-form'
 import { Notebook } from '@/components/dashboard/notebook/notebook'
-import { LayoutDashboard, PlusCircle, MinusCircle, BookHeart } from 'lucide-react'
+import { Memories } from '@/components/dashboard/memories/memories'
+import { PinGate } from '@/components/dashboard/pin-gate'
+import { LayoutDashboard, PlusCircle, MinusCircle, BookHeart, Image as ImageIcon } from 'lucide-react'
 import { LoadingScreen } from '@/components/ui/loading-screen'
 
 interface UserTotal {
@@ -170,7 +172,6 @@ export default function Home() {
         loadTotals()
         loadDeposits()
         loadUsers()
-        // If this is the current user, store it for notebook defaults
         setCurrentUser(data.userName)
       } else {
         const error = await response.json()
@@ -262,41 +263,48 @@ export default function Home() {
         <Tabs defaultValue="overview" className="space-y-6">
           {/* Mobile Bottom Navigation */}
           <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-t border-pink-100 p-2 md:hidden safe-area-pb">
-            <TabsList className="grid w-full grid-cols-4 h-auto bg-transparent p-0 gap-1">
+            <TabsList className="grid w-full grid-cols-5 h-auto bg-transparent p-0 gap-1">
               <TabsTrigger
                 value="overview"
                 className="flex flex-col items-center gap-1 py-2 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all"
               >
                 <LayoutDashboard className="h-5 w-5" />
-                <span className="scale-90">Overview</span>
+                <span className="scale-75 truncate w-full text-center">Overview</span>
               </TabsTrigger>
               <TabsTrigger
                 value="deposit"
                 className="flex flex-col items-center gap-1 py-2 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all"
               >
                 <PlusCircle className="h-5 w-5" />
-                <span className="scale-90">Deposit</span>
+                <span className="scale-75 truncate w-full text-center">Deposit</span>
               </TabsTrigger>
               <TabsTrigger
                 value="withdraw"
                 className="flex flex-col items-center gap-1 py-2 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all"
               >
                 <MinusCircle className="h-5 w-5" />
-                <span className="scale-90">Withdraw</span>
+                <span className="scale-75 truncate w-full text-center">Withdraw</span>
               </TabsTrigger>
               <TabsTrigger
                 value="notebook"
                 className="flex flex-col items-center gap-1 py-2 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all"
               >
                 <BookHeart className="h-5 w-5" />
-                <span className="scale-90">KothaBank</span>
+                <span className="scale-75 truncate w-full text-center">KothaBank</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="memories"
+                className="flex flex-col items-center gap-1 py-2 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all"
+              >
+                <ImageIcon className="h-5 w-5" />
+                <span className="scale-75 truncate w-full text-center">Memories</span>
               </TabsTrigger>
             </TabsList>
           </div>
 
           {/* Desktop Top Navigation */}
           <div className="hidden md:block">
-            <TabsList className="grid w-full grid-cols-4 lg:w-[600px] bg-white/50 backdrop-blur-sm border-white/20">
+            <TabsList className="grid w-full grid-cols-5 lg:w-[750px] bg-white/50 backdrop-blur-sm border-white/20">
               <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
                 <LayoutDashboard className="h-4 w-4" />
                 Overview
@@ -312,6 +320,10 @@ export default function Home() {
               <TabsTrigger value="notebook" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
                 <BookHeart className="h-4 w-4" />
                 KothaBank
+              </TabsTrigger>
+              <TabsTrigger value="memories" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
+                <ImageIcon className="h-4 w-4" />
+                Memories
               </TabsTrigger>
             </TabsList>
           </div>
@@ -338,10 +350,21 @@ export default function Home() {
           </TabsContent>
 
           <TabsContent value="notebook" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
-             <Notebook
-               currentUser={currentUser}
-               users={users}
-             />
+            <PinGate title="KothaBank Locked" description="Enter PIN to access messages">
+               <Notebook
+                 currentUser={currentUser}
+                 users={users}
+               />
+            </PinGate>
+          </TabsContent>
+
+          <TabsContent value="memories" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
+            <PinGate title="Memories Vault" description="Enter PIN to unlock photos">
+              <Memories
+                currentUser={currentUser}
+                users={users}
+              />
+            </PinGate>
           </TabsContent>
         </Tabs>
       </main>

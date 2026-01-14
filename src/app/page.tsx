@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
 import { LoginForm } from '@/components/dashboard/login-form'
@@ -42,6 +42,8 @@ interface TransactionData {
   year: string
 }
 
+const INACTIVITY_TIMEOUT = 5 * 60 * 1000 // 5 minutes
+
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -52,6 +54,29 @@ export default function Home() {
   const [users, setUsers] = useState<User[]>([])
   const [currentUser, setCurrentUser] = useState<string | null>(null)
   const { toast } = useToast()
+
+  const activityTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    localStorage.removeItem('isAuthenticated')
+    if (activityTimerRef.current) clearTimeout(activityTimerRef.current)
+  }
+
+  const resetInactivityTimer = () => {
+    if (activityTimerRef.current) clearTimeout(activityTimerRef.current)
+
+    if (isAuthenticated) {
+      activityTimerRef.current = setTimeout(() => {
+        handleLogout()
+        toast({
+          title: "Session Expired",
+          description: "You have been logged out due to inactivity.",
+          variant: "destructive"
+        })
+      }, INACTIVITY_TIMEOUT)
+    }
+  }
 
   useEffect(() => {
     // Check local storage for persistent login
@@ -66,6 +91,22 @@ export default function Home() {
     }, 2000)
     return () => clearTimeout(timer)
   }, [])
+
+  // Activity listeners
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    const events = ['mousedown', 'keydown', 'scroll', 'touchstart']
+    const handleActivity = () => resetInactivityTimer()
+
+    events.forEach(event => window.addEventListener(event, handleActivity))
+    resetInactivityTimer() // Start timer
+
+    return () => {
+      events.forEach(event => window.removeEventListener(event, handleActivity))
+      if (activityTimerRef.current) clearTimeout(activityTimerRef.current)
+    }
+  }, [isAuthenticated])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -146,11 +187,6 @@ export default function Home() {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleLogout = () => {
-    setIsAuthenticated(false)
-    localStorage.removeItem('isAuthenticated')
   }
 
   const verifyPin = async (pin: string) => {

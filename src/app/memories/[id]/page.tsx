@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ChevronLeft, ChevronRight, Download, Maximize2, ArrowLeft, Send } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { LoadingScreen } from '@/components/ui/loading-screen'
 
 interface User {
@@ -40,6 +41,7 @@ interface Memory {
 
 export default function MemoryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
+  const router = useRouter()
   const [memory, setMemory] = useState<Memory | null>(null)
   const [users, setUsers] = useState<User[]>([])
   const [currentUser, setCurrentUser] = useState<string>('')
@@ -50,12 +52,17 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
-    // Restore authentication state logic if needed,
-    // though here we just need users for the comment dropdown.
-    // The persistence logic will be in the main layout/page.
+    // Secure the route: Check for authentication
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
+    if (!isAuthenticated) {
+      router.replace('/')
+      return
+    }
 
+    // Fetch users for comment selector
     fetch('/api/users').then(res => res.json()).then(data => setUsers(data.users))
 
+    // Fetch memory
     fetch(`/api/memories/${id}`)
       .then(res => res.json())
       .then(data => {
@@ -68,7 +75,7 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
         console.error(err)
         setLoading(false)
       })
-  }, [id])
+  }, [id, router])
 
   if (loading) return <LoadingScreen />
   if (!memory) return <div className="p-8 text-center text-pink-700">Memory not found</div>

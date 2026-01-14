@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -18,15 +18,13 @@ export function PinGate({ children, title = "Security Check", description = "Ent
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
 
-  const handleVerify = async () => {
-    if (pin.length < 4) return
-
+  const verifyPin = async (code: string) => {
     setIsLoading(true)
     try {
       const response = await fetch('/api/auth/verify-pin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pin }),
+        body: JSON.stringify({ pin: code }),
       })
 
       if (response.ok) {
@@ -49,13 +47,23 @@ export function PinGate({ children, title = "Security Check", description = "Ent
         description: "Verification failed. Please try again.",
         variant: "destructive",
       })
+      setPin('')
     } finally {
       setIsLoading(false)
     }
   }
 
+  // Auto-verify when PIN reaches 4 digits
+  useEffect(() => {
+    if (pin.length === 4) {
+      verifyPin(pin)
+    }
+  }, [pin])
+
   const handleKeyPress = (key: string) => {
-    setPin(prev => prev + key)
+    if (pin.length < 4) {
+      setPin(prev => prev + key)
+    }
   }
 
   const handleDelete = () => {
@@ -82,7 +90,7 @@ export function PinGate({ children, title = "Security Check", description = "Ent
               type="password"
               value={pin}
               readOnly
-              className="text-center text-2xl tracking-[1em] font-bold w-48 border-pink-200 focus:ring-pink-400 bg-white"
+              className="text-center text-2xl tracking-[1em] font-bold w-48 border-pink-200 focus:ring-pink-400 bg-white cursor-default"
               maxLength={4}
             />
           </div>
@@ -95,13 +103,7 @@ export function PinGate({ children, title = "Security Check", description = "Ent
             />
           </div>
 
-          <Button
-            className="w-full bg-pink-500 hover:bg-pink-600 font-bold"
-            onClick={handleVerify}
-            disabled={isLoading || pin.length < 4}
-          >
-            {isLoading ? "Verifying..." : "Unlock 🔓"}
-          </Button>
+          <div className="h-4"></div> {/* Spacer */}
         </CardContent>
       </Card>
     </div>

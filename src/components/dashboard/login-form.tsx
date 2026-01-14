@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,13 +14,22 @@ interface LoginFormProps {
 export function LoginForm({ onLogin, isLoading }: LoginFormProps) {
   const [pin, setPin] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
     onLogin(pin)
   }
 
+  // Auto-submit when PIN reaches 4 digits
+  useEffect(() => {
+    if (pin.length === 4) {
+      onLogin(pin)
+    }
+  }, [pin, onLogin])
+
   const handleKeyPress = (key: string) => {
-    setPin(prev => prev + key)
+    if (pin.length < 4) {
+      setPin(prev => prev + key)
+    }
   }
 
   const handleDelete = () => {
@@ -68,13 +77,7 @@ export function LoginForm({ onLogin, isLoading }: LoginFormProps) {
                 currentLength={pin.length}
               />
 
-              <Button
-                type="submit"
-                className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold shadow-md shadow-pink-200 mt-4"
-                disabled={isLoading || pin.length < 4}
-              >
-                {isLoading ? "Verifying..." : "Open My Vault 💝"}
-              </Button>
+              <div className="h-4"></div> {/* Spacer instead of button */}
             </form>
           </CardContent>
         </Card>

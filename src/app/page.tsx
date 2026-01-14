@@ -60,6 +60,7 @@ export default function Home() {
   const handleLogout = () => {
     setIsAuthenticated(false)
     localStorage.removeItem('isAuthenticated')
+    sessionStorage.clear() // Clear all session data (PinGates)
     if (activityTimerRef.current) clearTimeout(activityTimerRef.current)
   }
 
@@ -83,13 +84,14 @@ export default function Home() {
     const savedAuth = localStorage.getItem('isAuthenticated')
     if (savedAuth === 'true') {
       setIsAuthenticated(true)
+      setIsInitialLoading(false) // Skip initial loading if already authenticated
+    } else {
+      // Simulate initial app loading for animation only on fresh unauth load
+      const timer = setTimeout(() => {
+        setIsInitialLoading(false)
+      }, 2000)
+      return () => clearTimeout(timer)
     }
-
-    // Simulate initial app loading for animation
-    const timer = setTimeout(() => {
-      setIsInitialLoading(false)
-    }, 2000)
-    return () => clearTimeout(timer)
   }, [])
 
   // Activity listeners
@@ -399,7 +401,11 @@ export default function Home() {
           </TabsContent>
 
           <TabsContent value="notebook" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
-            <PinGate title="KothaBank Locked" description="Enter PIN to access messages">
+            <PinGate
+              gateId="kothabank"
+              title="KothaBank Locked"
+              description="Enter PIN to access messages"
+            >
                <Notebook
                  currentUser={currentUser}
                  users={users}
@@ -408,7 +414,11 @@ export default function Home() {
           </TabsContent>
 
           <TabsContent value="memories" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
-            <PinGate title="Memories Vault" description="Enter PIN to unlock photos">
+            <PinGate
+              gateId="memories"
+              title="Memories Vault"
+              description="Enter PIN to unlock photos"
+            >
               <Memories
                 currentUser={currentUser}
                 users={users}

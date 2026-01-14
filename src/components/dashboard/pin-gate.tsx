@@ -3,23 +3,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Keypad } from '@/components/ui/keypad'
-import { Lock } from 'lucide-react'
+import { Lock, Loader2, CheckCircle2, XCircle } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
 interface PinGateProps {
   children: React.ReactNode
   title?: string
   description?: string
+  gateId?: string
 }
 
-export function PinGate({ children, title = "Security Check", description = "Enter PIN to access this section" }: PinGateProps) {
+export function PinGate({ children, title = "Security Check", description = "Enter PIN to access this section", gateId }: PinGateProps) {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [pin, setPin] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'verifying' | 'success' | 'error'>('idle')
   const { toast } = useToast()
 
+  useEffect(() => {
+    if (gateId) {
+      const unlocked = sessionStorage.getItem(`gate_unlocked_${gateId}`)
+      if (unlocked === 'true') {
+        setIsUnlocked(true)
+      }
+    }
+  }, [gateId])
+
   const verifyPin = async (code: string) => {
-    setIsLoading(true)
+    setStatus('verifying')
     try {
       const response = await fetch('/api/auth/verify-pin', {
         method: 'POST',
@@ -28,28 +38,40 @@ export function PinGate({ children, title = "Security Check", description = "Ent
       })
 
       if (response.ok) {
-        setIsUnlocked(true)
-        toast({
-          title: "Access Granted",
-          description: "Welcome back! 🔓",
-        })
+        setStatus('success')
+        setTimeout(() => {
+          setIsUnlocked(true)
+          if (gateId) {
+            sessionStorage.setItem(`gate_unlocked_${gateId}`, 'true')
+          }
+          toast({
+            title: "Access Granted",
+            description: "Welcome back! 🔓",
+          })
+        }, 500)
       } else {
+        setStatus('error')
         toast({
           title: "Access Denied",
           description: "Incorrect PIN. Please try again.",
           variant: "destructive",
         })
-        setPin('')
+        setTimeout(() => {
+          setPin('')
+          setStatus('idle')
+        }, 1000)
       }
     } catch (error) {
+      setStatus('error')
       toast({
         title: "Error",
         description: "Verification failed. Please try again.",
         variant: "destructive",
       })
-      setPin('')
-    } finally {
-      setIsLoading(false)
+      setTimeout(() => {
+        setPin('')
+        setStatus('idle')
+      }, 1000)
     }
   }
 
@@ -61,13 +83,15 @@ export function PinGate({ children, title = "Security Check", description = "Ent
   }, [pin])
 
   const handleKeyPress = (key: string) => {
-    if (pin.length < 4) {
+    if (pin.length < 4 && status !== 'verifying' && status !== 'success') {
       setPin(prev => prev + key)
     }
   }
 
   const handleDelete = () => {
-    setPin(prev => prev.slice(0, -1))
+    if (status !== 'verifying' && status !== 'success') {
+      setPin(prev => prev.slice(0, -1))
+    }
   }
 
   if (isUnlocked) {
@@ -85,14 +109,36 @@ export function PinGate({ children, title = "Security Check", description = "Ent
           <CardDescription className="text-pink-600">{description}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center gap-4">
             <Input
               type="password"
               value={pin}
               readOnly
-              className="text-center text-2xl tracking-[1em] font-bold w-48 border-pink-200 focus:ring-pink-400 bg-white cursor-default"
+              className={`text-center text-2xl tracking-[1em] font-bold w-48 border-pink-200 bg-white cursor-default transition-all duration-300 ${
+                status === 'error' ? 'border-red-400 ring-2 ring-red-200 animate-shake' :
+                status === 'success' ? 'border-green-400 ring-2 ring-green-200' :
+                'focus:ring-pink-400'
+              }`}
               maxLength={4}
             />
+
+            <div className="h-6 flex items-center justify-center text-sm font-medium">
+              {status === 'verifying' && (
+                <span className="text-pink-600 flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Verifying...
+                </span>
+              )}
+              {status === 'success' && (
+                <span className="text-green-600 flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4" /> Access Granted
+                </span>
+              )}
+              {status === 'error' && (
+                <span className="text-red-500 flex items-center gap-2">
+                  <XCircle className="h-4 w-4" /> Incorrect PIN
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="bg-white/50 p-4 rounded-xl border border-pink-100">
@@ -102,8 +148,6 @@ export function PinGate({ children, title = "Security Check", description = "Ent
               currentLength={pin.length}
             />
           </div>
-
-          <div className="h-4"></div> {/* Spacer */}
         </CardContent>
       </Card>
     </div>

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ImagePlus, Loader2, X } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { Progress } from '@/components/ui/progress'
+import imageCompression from 'browser-image-compression'
 
 interface User {
   id: string
@@ -27,6 +28,7 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
   const [userName, setUserName] = useState(currentUser || '')
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
+  const [statusMessage, setStatusMessage] = useState('')
   const { toast } = useToast()
 
   if (currentUser && userName !== currentUser && !userName) {
@@ -38,26 +40,57 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
     if (files && files.length > 0) {
       const newImages: string[] = []
 
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i]
-        if (file.size > 10 * 1024 * 1024) { // 10MB limit
-          toast({
-            title: "File too large",
-            description: `${file.name} is over 10MB`,
-            variant: "destructive"
-          })
-          continue
-        }
-
-        const reader = new FileReader()
-        const promise = new Promise<string>((resolve) => {
-          reader.onloadend = () => resolve(reader.result as string)
-        })
-        reader.readAsDataURL(file)
-        newImages.push(await promise)
+      const options = {
+        maxSizeMB: 0.6, // 600KB target
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
       }
 
-      setSelectedImages(prev => [...prev, ...newImages])
+      setStatusMessage('Compressing images...')
+      setIsUploading(true) // Show loader while compressing
+
+      try {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i]
+
+          try {
+            const compressedFile = await imageCompression(file, options)
+
+            const reader = new FileReader()
+            const promise = new Promise<string>((resolve) => {
+              reader.onloadend = () => resolve(reader.result as string)
+            })
+            reader.readAsDataURL(compressedFile)
+            newImages.push(await promise)
+          } catch (error) {
+            console.error("Compression error:", error)
+            toast({
+              title: "Compression Failed",
+              description: `Could not compress ${file.name}. Using original if small enough.`,
+              variant: "destructive"
+            })
+            // Fallback to original if small enough, otherwise skip
+            if (file.size <= 10 * 1024 * 1024) {
+               const reader = new FileReader()
+               const promise = new Promise<string>((resolve) => {
+                 reader.onloadend = () => resolve(reader.result as string)
+               })
+               reader.readAsDataURL(file)
+               newImages.push(await promise)
+            }
+          }
+        }
+        setSelectedImages(prev => [...prev, ...newImages])
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Something went wrong processing images.",
+          variant: "destructive"
+        })
+      } finally {
+        setIsUploading(false)
+        setStatusMessage('')
+      }
     }
   }
 
@@ -71,8 +104,9 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
 
     setIsUploading(true)
     setUploadProgress(0)
+    setStatusMessage('Uploading to server...')
 
-    // Simulate progress since fetch doesn't support it natively for uploads easily without XHR
+    // Simulate progress
     const interval = setInterval(() => {
       setUploadProgress(prev => {
         if (prev >= 90) return prev
@@ -87,8 +121,8 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
         body: JSON.stringify({
           description,
           date,
-          imageUrl: selectedImages[0], // Legacy support
-          images: selectedImages,      // New multi-image support
+          imageUrl: selectedImages[0], // Legacy
+          images: selectedImages,
           userName
         }),
       })
@@ -115,6 +149,7 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
       })
     } finally {
       setIsUploading(false)
+      setStatusMessage('')
       setTimeout(() => setUploadProgress(0), 1000)
     }
   }
@@ -152,6 +187,7 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
                 accept="image/*"
                 multiple
                 onChange={handleImageChange}
+                disabled={isUploading && statusMessage === 'Compressing images...'}
                 className="bg-white/50 border-pink-200 cursor-pointer"
               />
             </div>
@@ -198,10 +234,10 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
           {isUploading && (
             <div className="space-y-1">
               <div className="flex justify-between text-xs text-pink-600">
-                <span>Uploading...</span>
-                <span>{uploadProgress}%</span>
+                <span>{statusMessage}</span>
+                {statusMessage !== 'Compressing images...' && <span>{uploadProgress}%</span>}
               </div>
-              <Progress value={uploadProgress} className="h-2 bg-pink-100" />
+              <Progress value={statusMessage === 'Compressing images...' ? undefined : uploadProgress} className="h-2 bg-pink-100" />
             </div>
           )}
 

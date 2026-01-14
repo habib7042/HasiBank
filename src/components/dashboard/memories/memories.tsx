@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
 import { MemoryUploader } from './memory-uploader'
 import { MemoryGallery } from './memory-gallery'
+import { useQuery } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
 
 interface User {
   id: string
@@ -34,41 +35,44 @@ interface MemoriesProps {
   users: User[]
 }
 
-export function Memories({ currentUser, users }: MemoriesProps) {
-  const [memories, setMemories] = useState<Memory[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-
-  const loadMemories = async () => {
-    setIsLoading(true)
-    try {
-      const response = await fetch('/api/memories')
-      if (response.ok) {
-        const data = await response.json()
-        setMemories(data.memories)
-      }
-    } catch (error) {
-      console.error('Failed to load memories', error)
-    } finally {
-      setIsLoading(false)
-    }
+async function fetchMemories() {
+  const response = await fetch('/api/memories')
+  if (!response.ok) {
+    throw new Error('Failed to fetch memories')
   }
+  const data = await response.json()
+  return data.memories as Memory[]
+}
 
-  useEffect(() => {
-    loadMemories()
-  }, [])
+export function Memories({ currentUser, users }: MemoriesProps) {
+  const { data: memories = [], isLoading, refetch } = useQuery({
+    queryKey: ['memories'],
+    queryFn: fetchMemories,
+  })
+
+  // Use refetch for actions that update data
+  const handleDataUpdate = () => {
+    refetch()
+  }
 
   return (
     <div className="space-y-8 pb-8">
       <MemoryUploader
         users={users}
-        onUploadComplete={loadMemories}
+        onUploadComplete={handleDataUpdate}
         currentUser={currentUser}
       />
-      <MemoryGallery
-        memories={memories}
-        currentUser={currentUser}
-        onCommentAdded={loadMemories}
-      />
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 className="h-8 w-8 text-pink-500 animate-spin" />
+        </div>
+      ) : (
+        <MemoryGallery
+          memories={memories}
+          currentUser={currentUser}
+          onCommentAdded={handleDataUpdate}
+        />
+      )}
     </div>
   )
 }

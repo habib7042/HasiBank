@@ -50,10 +50,12 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
-    // Fetch users for comment selector
+    // Restore authentication state logic if needed,
+    // though here we just need users for the comment dropdown.
+    // The persistence logic will be in the main layout/page.
+
     fetch('/api/users').then(res => res.json()).then(data => setUsers(data.users))
 
-    // Fetch memory
     fetch(`/api/memories/${id}`)
       .then(res => res.json())
       .then(data => {
@@ -69,7 +71,7 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
   }, [id])
 
   if (loading) return <LoadingScreen />
-  if (!memory) return <div className="p-8 text-center">Memory not found</div>
+  if (!memory) return <div className="p-8 text-center text-pink-700">Memory not found</div>
 
   const allImages = [
     ...(memory.images?.map(img => img.url) || []),
@@ -118,7 +120,6 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
 
       if (response.ok) {
         setComment('')
-        // Refresh memory data to show new comment
         const res = await fetch(`/api/memories/${id}`)
         const data = await res.json()
         if (data.memory) setMemory(data.memory)
@@ -129,29 +130,41 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
   }
 
   return (
-    <div className="min-h-screen bg-pink-50 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen bg-pink-50 p-2 md:p-8 pb-20">
+      <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
         <Link href="/">
-          <Button variant="ghost" className="mb-4 text-pink-700 hover:text-pink-900 hover:bg-pink-100">
+          <Button variant="ghost" className="mb-2 text-pink-700 hover:text-pink-900 hover:bg-pink-100 pl-0 md:pl-4">
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
           </Button>
         </Link>
 
-        <Card className="overflow-hidden border-pink-100 bg-white shadow-xl">
-          <div id="memory-image-container" className={`relative bg-black flex items-center justify-center ${isFullscreen ? 'h-screen w-screen' : 'aspect-video md:aspect-[16/9] lg:h-[600px]'}`}>
+        <Card className="overflow-hidden border-pink-100 bg-white shadow-xl flex flex-col md:block">
+          {/* Image Container - Adjusted aspect ratio for mobile */}
+          <div
+            id="memory-image-container"
+            className={`relative bg-black flex items-center justify-center ${
+              isFullscreen ? 'h-screen w-screen' : 'aspect-square md:aspect-video lg:h-[600px] w-full'
+            }`}
+          >
             <img
               src={displayImages[currentImageIndex]}
               alt={memory.description}
               className={`object-contain max-h-full max-w-full ${isFullscreen ? 'h-full w-full' : ''}`}
             />
 
-            {/* Navigation */}
+            {/* Navigation Buttons - Larger touch targets */}
             {displayImages.length > 1 && (
               <>
-                <button onClick={handlePrevImage} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70">
+                <button
+                  onClick={handlePrevImage}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-3 hover:bg-black/70 active:scale-95 transition-all"
+                >
                   <ChevronLeft className="h-6 w-6" />
                 </button>
-                <button onClick={handleNextImage} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70">
+                <button
+                  onClick={handleNextImage}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-3 hover:bg-black/70 active:scale-95 transition-all"
+                >
                   <ChevronRight className="h-6 w-6" />
                 </button>
               </>
@@ -159,22 +172,22 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
 
             {/* Controls */}
             <div className="absolute top-4 right-4 flex gap-2">
-              <Button variant="secondary" size="icon" className="bg-black/50 text-white hover:bg-black/70" onClick={handleDownload}>
+              <Button variant="secondary" size="icon" className="bg-black/50 text-white hover:bg-black/70 h-10 w-10" onClick={handleDownload}>
                 <Download className="h-5 w-5" />
               </Button>
-              <Button variant="secondary" size="icon" className="bg-black/50 text-white hover:bg-black/70" onClick={toggleFullscreen}>
+              <Button variant="secondary" size="icon" className="bg-black/50 text-white hover:bg-black/70 h-10 w-10" onClick={toggleFullscreen}>
                 <Maximize2 className="h-5 w-5" />
               </Button>
             </div>
           </div>
 
-          <CardContent className="p-6 space-y-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <h1 className="text-2xl font-bold text-pink-900">{memory.description}</h1>
+          <CardContent className="p-4 md:p-6 space-y-6">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
+              <div className="flex-1">
+                <h1 className="text-xl md:text-2xl font-bold text-pink-900 break-words">{memory.description}</h1>
                 <p className="text-pink-500 text-sm mt-1">Uploaded by {memory.user.name}</p>
               </div>
-              <Badge className="bg-pink-100 text-pink-700 hover:bg-pink-200 text-base px-3 py-1">
+              <Badge className="bg-pink-100 text-pink-700 hover:bg-pink-200 text-sm px-3 py-1 w-fit whitespace-nowrap">
                 {new Date(memory.date).toLocaleDateString()}
               </Badge>
             </div>
@@ -182,26 +195,26 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
             <div className="border-t border-pink-100 pt-6">
               <h3 className="text-lg font-semibold text-pink-800 mb-4">Comments</h3>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-1">
                 {memory.comments?.map((comment) => (
                   <div key={comment.id} className="flex gap-3 items-start">
-                    <Avatar className="h-8 w-8 border border-pink-100 mt-1">
+                    <Avatar className="h-8 w-8 border border-pink-100 mt-1 shrink-0">
                       <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.name}`} />
                       <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
                     </Avatar>
-                    <div className="bg-pink-50 rounded-xl p-3 flex-1">
+                    <div className="bg-pink-50 rounded-xl p-3 flex-1 min-w-0">
                       <span className="font-bold text-pink-900 block text-sm mb-1">{comment.user.name}</span>
-                      <p className="text-pink-800 text-sm">{comment.content}</p>
+                      <p className="text-pink-800 text-sm break-words whitespace-pre-wrap">{comment.content}</p>
                     </div>
                   </div>
                 ))}
-                {memory.comments?.length === 0 && <p className="text-pink-400 italic">No comments yet.</p>}
+                {memory.comments?.length === 0 && <p className="text-pink-400 italic text-sm">No comments yet.</p>}
               </div>
 
               <div className="flex flex-col gap-3 bg-pink-50/50 p-4 rounded-xl">
                 <label className="text-sm font-medium text-pink-700">Comment as:</label>
                 <Select value={currentUser} onValueChange={setCurrentUser}>
-                  <SelectTrigger className="bg-white border-pink-200 w-[200px]">
+                  <SelectTrigger className="bg-white border-pink-200 w-full md:w-[200px]">
                     <SelectValue placeholder="Select user" />
                   </SelectTrigger>
                   <SelectContent>
@@ -216,12 +229,12 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Write a comment..."
-                    className="bg-white border-pink-200"
+                    className="bg-white border-pink-200 flex-1"
                   />
                   <Button
                     onClick={handleCommentSubmit}
                     disabled={!comment.trim() || !currentUser || isSubmitting}
-                    className="bg-pink-500 hover:bg-pink-600"
+                    className="bg-pink-500 hover:bg-pink-600 shrink-0"
                   >
                     <Send className="h-4 w-4" />
                   </Button>

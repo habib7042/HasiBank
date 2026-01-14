@@ -54,6 +54,12 @@ export default function Home() {
   const { toast } = useToast()
 
   useEffect(() => {
+    // Check local storage for persistent login
+    const savedAuth = localStorage.getItem('isAuthenticated')
+    if (savedAuth === 'true') {
+      setIsAuthenticated(true)
+    }
+
     // Simulate initial app loading for animation
     const timer = setTimeout(() => {
       setIsInitialLoading(false)
@@ -121,6 +127,7 @@ export default function Home() {
           description: "Welcome to Hashi Bank Dashboard.",
         })
         setIsAuthenticated(true)
+        localStorage.setItem('isAuthenticated', 'true')
         await fetch('/api/init', { method: 'POST' })
         loadUsers()
       } else {
@@ -139,6 +146,11 @@ export default function Home() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    localStorage.removeItem('isAuthenticated')
   }
 
   const verifyPin = async (pin: string) => {
@@ -172,6 +184,7 @@ export default function Home() {
         loadTotals()
         loadDeposits()
         loadUsers()
+        // If this is the current user, store it for notebook defaults
         setCurrentUser(data.userName)
       } else {
         const error = await response.json()
@@ -257,7 +270,7 @@ export default function Home() {
   return (
     <div className="min-h-screen relative pb-20 md:pb-0">
       <LoveBackground />
-      <Header onLogout={() => setIsAuthenticated(false)} />
+      <Header onLogout={handleLogout} />
       
       <main className="container mx-auto p-4 md:p-6 max-w-7xl relative z-10">
         <Tabs defaultValue="overview" className="space-y-6">

@@ -7,12 +7,26 @@ interface User {
   name: string
 }
 
+interface MemoryComment {
+  id: number
+  content: string
+  createdAt: string
+  user: { name: string }
+}
+
+interface MemoryImage {
+  id: number
+  url: string
+}
+
 interface Memory {
   id: number
-  imageUrl: string
+  imageUrl: string | null
   description: string
   date: string
   user: { name: string }
+  images: MemoryImage[]
+  comments: MemoryComment[]
 }
 
 interface MemoriesProps {
@@ -50,7 +64,11 @@ export function Memories({ currentUser, users }: MemoriesProps) {
         onUploadComplete={loadMemories}
         currentUser={currentUser}
       />
-      <MemoryGallery memories={memories} />
+      <MemoryGallery
+        memories={memories}
+        currentUser={currentUser}
+        onCommentAdded={loadMemories}
+      />
     </div>
   )
 }

@@ -24,6 +24,7 @@ model User {
   reactions Reaction[]
   comments  Comment[]
   memories  Memory[]
+  memoryComments MemoryComment[]
 }
 
 model Deposit {
@@ -84,11 +85,32 @@ model Comment {
 
 model Memory {
   id          Int      @id @default(autoincrement())
-  imageUrl    String   @db.Text // Base64 string can be large
+  imageUrl    String?  @db.Text // Deprecated: Kept for backward compatibility
   description String
   date        DateTime
   userId      Int
   createdAt   DateTime @default(now())
 
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images      MemoryImage[]
+  comments    MemoryComment[]
+}
+
+model MemoryImage {
+  id        Int      @id @default(autoincrement())
+  url       String   @db.Text
+  memoryId  Int
+
+  memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+}
+
+model MemoryComment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  memoryId  Int
+  userId    Int
+  createdAt DateTime @default(now())
+
+  memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

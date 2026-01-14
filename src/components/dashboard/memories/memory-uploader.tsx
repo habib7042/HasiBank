@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ImagePlus, Loader2 } from 'lucide-react'
+import { ImagePlus, Loader2, X } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { Progress } from '@/components/ui/progress'
 
 interface User {
   id: string
@@ -22,40 +23,63 @@ interface MemoryUploaderProps {
 export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryUploaderProps) {
   const [description, setDescription] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedImages, setSelectedImages] = useState<string[]>([])
   const [userName, setUserName] = useState(currentUser || '')
   const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
   const { toast } = useToast()
 
   if (currentUser && userName !== currentUser && !userName) {
     setUserName(currentUser)
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        toast({
-          title: "File too large",
-          description: "Please select an image under 10MB",
-          variant: "destructive"
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files && files.length > 0) {
+      const newImages: string[] = []
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        if (file.size > 10 * 1024 * 1024) { // 10MB limit
+          toast({
+            title: "File too large",
+            description: `${file.name} is over 10MB`,
+            variant: "destructive"
+          })
+          continue
+        }
+
+        const reader = new FileReader()
+        const promise = new Promise<string>((resolve) => {
+          reader.onloadend = () => resolve(reader.result as string)
         })
-        return
+        reader.readAsDataURL(file)
+        newImages.push(await promise)
       }
 
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+      setSelectedImages(prev => [...prev, ...newImages])
     }
+  }
+
+  const removeImage = (index: number) => {
+    setSelectedImages(prev => prev.filter((_, i) => i !== index))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!selectedImage || !description || !date || !userName) return
+    if (selectedImages.length === 0 || !description || !date || !userName) return
 
     setIsUploading(true)
+    setUploadProgress(0)
+
+    // Simulate progress since fetch doesn't support it natively for uploads easily without XHR
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 90) return prev
+        return prev + 10
+      })
+    }, 500)
+
     try {
       const response = await fetch('/api/memories', {
         method: 'POST',
@@ -63,18 +87,22 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
         body: JSON.stringify({
           description,
           date,
-          imageUrl: selectedImage,
+          imageUrl: selectedImages[0], // Legacy support
+          images: selectedImages,      // New multi-image support
           userName
         }),
       })
 
+      clearInterval(interval)
+      setUploadProgress(100)
+
       if (response.ok) {
         toast({
           title: "Memory Saved 📸",
-          description: "Your photo has been added to the gallery.",
+          description: "Your photos have been added to the gallery.",
         })
         setDescription('')
-        setSelectedImage(null)
+        setSelectedImages([])
         onUploadComplete()
       } else {
         throw new Error('Failed to upload')
@@ -87,6 +115,7 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
       })
     } finally {
       setIsUploading(false)
+      setTimeout(() => setUploadProgress(0), 1000)
     }
   }
 
@@ -116,18 +145,32 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
           )}
 
           <div className="space-y-2">
-            <Label className="text-pink-700">Photo</Label>
+            <Label className="text-pink-700">Photos</Label>
             <div className="flex items-center gap-4">
               <Input
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={handleImageChange}
                 className="bg-white/50 border-pink-200 cursor-pointer"
               />
             </div>
-            {selectedImage && (
-              <div className="mt-2 relative h-40 w-full overflow-hidden rounded-lg border-2 border-pink-100">
-                <img src={selectedImage} alt="Preview" className="h-full w-full object-cover" />
+
+            {/* Image Preview Grid */}
+            {selectedImages.length > 0 && (
+              <div className="mt-4 grid grid-cols-3 md:grid-cols-4 gap-2">
+                {selectedImages.map((img, idx) => (
+                  <div key={idx} className="relative h-24 w-full rounded-md overflow-hidden border border-pink-200 group">
+                    <img src={img} alt={`Preview ${idx}`} className="h-full w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -152,10 +195,20 @@ export function MemoryUploader({ users, onUploadComplete, currentUser }: MemoryU
             />
           </div>
 
+          {isUploading && (
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs text-pink-600">
+                <span>Uploading...</span>
+                <span>{uploadProgress}%</span>
+              </div>
+              <Progress value={uploadProgress} className="h-2 bg-pink-100" />
+            </div>
+          )}
+
           <Button
             type="submit"
             className="w-full bg-pink-500 hover:bg-pink-600"
-            disabled={isUploading || !selectedImage || !description || !userName}
+            disabled={isUploading || selectedImages.length === 0 || !description || !userName}
           >
             {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Memory 💖"}
           </Button>

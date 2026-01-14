@@ -7,12 +7,26 @@ export async function GET() {
       include: {
         user: {
           select: { name: true }
+        },
+        images: true,
+        comments: {
+          include: {
+            user: {
+              select: { name: true }
+            }
+          },
+          orderBy: {
+            createdAt: 'asc'
+          }
         }
       },
       orderBy: {
         date: 'desc'
       }
     })
+
+    // Normalize data structure for backward compatibility or easier frontend consumption
+    // If imageUrl exists but no images array, populate it (migration helper logic if needed)
 
     return NextResponse.json({ memories })
   } catch (error) {
@@ -24,9 +38,10 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { description, date, imageUrl, userName } = body
+    // Support legacy single imageUrl and new images array
+    const { description, date, imageUrl, images, userName } = body
 
-    if (!description || !date || !imageUrl || !userName) {
+    if (!description || !date || (!imageUrl && (!images || images.length === 0)) || !userName) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
@@ -38,17 +53,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
+    // Prepare images data
+    const imagesToCreate = images && Array.isArray(images)
+      ? images.map((url: string) => ({ url }))
+      : imageUrl ? [{ url: imageUrl }] : []
+
     const memory = await prisma.memory.create({
       data: {
         description,
         date: new Date(date),
-        imageUrl,
-        userId: user.id
+        imageUrl: imageUrl || null, // Keep legacy field populated if single image
+        userId: user.id,
+        images: {
+          create: imagesToCreate
+        }
       },
       include: {
         user: {
           select: { name: true }
-        }
+        },
+        images: true,
+        comments: true
       }
     })
 

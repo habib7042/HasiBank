@@ -60,8 +60,16 @@ export default function Home() {
   const handleLogout = () => {
     setIsAuthenticated(false)
     localStorage.removeItem('isAuthenticated')
-    sessionStorage.clear() // Clear all session data (PinGates)
+    localStorage.removeItem('lastActivity')
+    sessionStorage.clear()
     if (activityTimerRef.current) clearTimeout(activityTimerRef.current)
+  }
+
+  const updateActivity = () => {
+    if (isAuthenticated) {
+      localStorage.setItem('lastActivity', Date.now().toString())
+      resetInactivityTimer()
+    }
   }
 
   const resetInactivityTimer = () => {
@@ -82,11 +90,23 @@ export default function Home() {
   useEffect(() => {
     // Check local storage for persistent login
     const savedAuth = localStorage.getItem('isAuthenticated')
+    const lastActivity = localStorage.getItem('lastActivity')
+
     if (savedAuth === 'true') {
+      // Check if session expired while closed
+      if (lastActivity) {
+        const timeSinceActivity = Date.now() - parseInt(lastActivity)
+        if (timeSinceActivity > INACTIVITY_TIMEOUT) {
+          handleLogout()
+          setIsInitialLoading(false)
+          return
+        }
+      }
+
       setIsAuthenticated(true)
-      setIsInitialLoading(false) // Skip initial loading if already authenticated
+      updateActivity() // Refresh activity on load
+      setIsInitialLoading(false)
     } else {
-      // Simulate initial app loading for animation only on fresh unauth load
       const timer = setTimeout(() => {
         setIsInitialLoading(false)
       }, 2000)
@@ -99,7 +119,7 @@ export default function Home() {
     if (!isAuthenticated) return
 
     const events = ['mousedown', 'keydown', 'scroll', 'touchstart']
-    const handleActivity = () => resetInactivityTimer()
+    const handleActivity = () => updateActivity()
 
     events.forEach(event => window.addEventListener(event, handleActivity))
     resetInactivityTimer() // Start timer
@@ -171,6 +191,7 @@ export default function Home() {
         })
         setIsAuthenticated(true)
         localStorage.setItem('isAuthenticated', 'true')
+        updateActivity()
         await fetch('/api/init', { method: 'POST' })
         loadUsers()
       } else {

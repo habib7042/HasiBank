@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { TotpItem } from './totp-item'
 import { AddTotpForm } from './add-totp-form'
-import { Card, CardContent } from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
 
 interface TotpSecret {
@@ -12,7 +11,7 @@ interface TotpSecret {
 }
 
 interface CodePageProps {
-  currentUser: string | null
+  currentUser?: string | null
 }
 
 export function CodePage({ currentUser }: CodePageProps) {
@@ -20,10 +19,11 @@ export function CodePage({ currentUser }: CodePageProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const loadSecrets = async () => {
-    if (!currentUser) return
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/totp?userName=${currentUser}`)
+      // If currentUser is present, use it, otherwise fetch all (API defaults to all if no userName)
+      const url = currentUser ? `/api/totp?userName=${currentUser}` : '/api/totp'
+      const response = await fetch(url)
       if (response.ok) {
         const data = await response.json()
         setSecrets(data.secrets)
@@ -39,17 +39,9 @@ export function CodePage({ currentUser }: CodePageProps) {
     loadSecrets()
   }, [currentUser])
 
-  if (!currentUser) {
-    return (
-      <div className="text-center py-12 text-pink-400">
-        Please select a user identity in KothaBank first.
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-6">
-      <AddTotpForm currentUser={currentUser} onSuccess={loadSecrets} />
+      <AddTotpForm currentUser={currentUser || null} onSuccess={loadSecrets} />
 
       {isLoading ? (
         <div className="flex justify-center py-12">

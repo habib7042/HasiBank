@@ -1,13 +1,18 @@
 import { Note } from './notebook'
 import { NoteItem } from './note-item'
 
+interface User {
+  id: string
+  name: string
+}
+
 interface NoteListProps {
   notes: Note[]
-  currentUser: string | null
+  users: User[]
   onReactionUpdate: () => void
 }
 
-export function NoteList({ notes, currentUser, onReactionUpdate }: NoteListProps) {
+export function NoteList({ notes, users, onReactionUpdate }: NoteListProps) {
   if (notes.length === 0) {
     return (
       <div className="text-center py-12 text-pink-400">
@@ -22,7 +27,7 @@ export function NoteList({ notes, currentUser, onReactionUpdate }: NoteListProps
         <NoteItem
           key={note.id}
           note={note}
-          currentUser={currentUser}
+          users={users}
           onReactionUpdate={onReactionUpdate}
         />
       ))}

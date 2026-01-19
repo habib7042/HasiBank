@@ -3,13 +3,19 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Note } from './notebook'
-import { Heart, ThumbsUp, Smile, Frown, MessageCircle } from 'lucide-react'
+import { Heart, ThumbsUp, Smile, Frown, MessageCircle, User as UserIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CommentSection } from './comment-section'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+
+interface User {
+  id: string
+  name: string
+}
 
 interface NoteItemProps {
   note: Note
-  currentUser: string | null
+  users: User[]
   onReactionUpdate: () => void
 }
 
@@ -25,13 +31,17 @@ interface FloatingEmoji {
   emoji: string
 }
 
-export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps) {
+export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
   const [isReacting, setIsReacting] = useState(false)
   const [floatingEmojis, setFloatingEmojis] = useState<FloatingEmoji[]>([])
   const [showComments, setShowComments] = useState(false)
 
+  // Try to persist/guess the user identity locally if possible, or just default to first available
+  // ideally this should be shared state but for now local is okay for simple interactions
+  const [reactingUser, setReactingUser] = useState<string>(users.length > 0 ? users[0].name : '')
+
   const handleReaction = async (type: string, emoji: string) => {
-    if (!currentUser) return
+    if (!reactingUser) return
 
     // Trigger animation
     const id = Date.now()
@@ -51,7 +61,7 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
       await fetch(`/api/notes/${note.id}/react`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userName: currentUser, type }),
+        body: JSON.stringify({ userName: reactingUser, type }),
       })
       onReactionUpdate()
     } catch (error) {
@@ -67,7 +77,7 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
     return acc
   }, {} as Record<string, number>)
 
-  const userReaction = note.reactions.find(r => r.user.name === currentUser)
+  const userReaction = note.reactions.find(r => r.user.name === reactingUser)
 
   return (
     <Card className="border-pink-100 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow relative overflow-visible flex flex-col h-full">
@@ -111,7 +121,8 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
 
       <CardFooter className="p-2 bg-pink-50/50 flex flex-col gap-2 rounded-b-xl">
         <div className="flex w-full justify-between items-center px-2">
-          <div className="flex gap-1">
+          {/* Reaction Buttons */}
+          <div className="flex gap-1 items-center">
             {REACTION_TYPES.map(({ type, icon: Icon, color, emoji }) => {
               const isActive = userReaction?.type === type
               const count = reactionsByType[type] || 0
@@ -126,13 +137,38 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
                     isActive && "bg-white shadow-sm ring-1 ring-pink-100"
                   )}
                   onClick={() => handleReaction(type, emoji)}
-                  disabled={isReacting || !currentUser}
+                  disabled={isReacting || !reactingUser}
                 >
                   <Icon className={cn("h-4 w-4 transition-all", isActive ? `${color} fill-current scale-110` : "text-slate-400")} />
                   {count > 0 && <span className="text-xs font-medium text-slate-600">{count}</span>}
                 </Button>
               )
             })}
+
+            {/* Identity Switcher for Reactions */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-6 w-6 ml-1 text-pink-400 hover:text-pink-600">
+                  <UserIcon className="h-3 w-3" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-40 p-2" align="start">
+                <div className="text-xs font-medium text-pink-500 mb-2">Reacting as:</div>
+                <div className="flex flex-col gap-1">
+                  {users.map((u) => (
+                    <Button
+                      key={u.id}
+                      variant={reactingUser === u.name ? "secondary" : "ghost"}
+                      size="sm"
+                      className="justify-start h-7 text-xs"
+                      onClick={() => setReactingUser(u.name)}
+                    >
+                      {u.name}
+                    </Button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <Button
@@ -150,7 +186,7 @@ export function NoteItem({ note, currentUser, onReactionUpdate }: NoteItemProps)
           <CommentSection
             noteId={note.id}
             comments={note.comments}
-            currentUser={currentUser}
+            currentUser={reactingUser} // Pass the locally selected user
             onCommentAdded={onReactionUpdate}
           />
         )}

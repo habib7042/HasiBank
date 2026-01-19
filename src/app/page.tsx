@@ -53,6 +53,9 @@ export default function Home() {
   const [bankTotal, setBankTotal] = useState(0)
   const [deposits, setDeposits] = useState<Deposit[]>([])
   const [users, setUsers] = useState<User[]>([])
+  // currentUser logic is simplified - we mostly let components pick their user identity
+  // but we can still track it if a user explicitly selects one in a form, though for now
+  // we are removing the global dependency.
   const [currentUser, setCurrentUser] = useState<string | null>(null)
   const { toast } = useToast()
 
@@ -440,7 +443,6 @@ export default function Home() {
               description="Enter PIN to access messages"
             >
                <Notebook
-                 currentUser={currentUser}
                  users={users}
                />
             </PinGate>

@@ -508,7 +508,11 @@ export default function Home() {
             {currentView === 'contacts' && (
               <>
                 <PageHeader title="Contact Book" onBack={() => setCurrentView('home')} />
-                <ContactBook currentUser={currentUser} />
+                <IdentityGate users={users} gateId="contacts-identity" title="Who is adding this contact?">
+                  {(selectedUser) => (
+                    <ContactBook currentUser={selectedUser} />
+                  )}
+                </IdentityGate>
               </>
             )}
           </div>

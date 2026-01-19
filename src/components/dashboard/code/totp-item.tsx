@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Copy, Check, Clock } from 'lucide-react'
+import { Copy, Check } from 'lucide-react'
 import { TOTP } from 'otpauth'
 
 interface TotpItemProps {
@@ -18,14 +18,24 @@ export function TotpItem({ label, secret, issuer }: TotpItemProps) {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    const totp = new TOTP({
-      issuer: issuer || 'App',
-      label: label,
-      algorithm: 'SHA1',
-      digits: 6,
-      period: 30,
-      secret: secret
-    })
+    // Basic secret cleaning
+    const cleanSecret = secret.replace(/\s/g, '').toUpperCase()
+
+    // Attempt to create TOTP object
+    let totp: TOTP;
+    try {
+      totp = new TOTP({
+        issuer: issuer || 'App',
+        label: label,
+        algorithm: 'SHA1',
+        digits: 6,
+        period: 30,
+        secret: cleanSecret
+      })
+    } catch (e) {
+      setCode('INVALID')
+      return
+    }
 
     const update = () => {
       setCode(totp.generate())
@@ -42,6 +52,7 @@ export function TotpItem({ label, secret, issuer }: TotpItemProps) {
   }, [label, secret, issuer])
 
   const handleCopy = () => {
+    if (code === 'INVALID') return
     navigator.clipboard.writeText(code)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
@@ -51,7 +62,10 @@ export function TotpItem({ label, secret, issuer }: TotpItemProps) {
   const formattedCode = code.match(/.{1,3}/g)?.join(' ') || code
 
   return (
-    <Card className="border-pink-100 bg-white/80 hover:shadow-md transition-shadow overflow-hidden">
+    <Card
+      className="border-pink-100 bg-white/80 hover:shadow-md transition-all overflow-hidden cursor-pointer active:scale-[0.98]"
+      onClick={handleCopy}
+    >
       <CardContent className="p-4 flex justify-between items-center relative">
         {/* Progress Background (Subtle) */}
         <div
@@ -101,7 +115,6 @@ export function TotpItem({ label, secret, issuer }: TotpItemProps) {
             variant="ghost"
             size="icon"
             className="h-8 w-8 text-pink-400 hover:text-pink-600 hover:bg-pink-50"
-            onClick={handleCopy}
           >
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           </Button>

@@ -25,6 +25,7 @@ model User {
   comments  Comment[]
   memories  Memory[]
   memoryComments MemoryComment[]
+  totpSecrets TotpSecret[]
 }
 
 model Deposit {
@@ -112,5 +113,16 @@ model MemoryComment {
   createdAt DateTime @default(now())
 
   memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model TotpSecret {
+  id        Int      @id @default(autoincrement())
+  label     String
+  secret    String
+  issuer    String?
+  userId    Int
+  createdAt DateTime @default(now())
+
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

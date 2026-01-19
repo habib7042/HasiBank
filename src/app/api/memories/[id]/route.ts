@@ -20,6 +20,13 @@ export async function GET(
           include: {
             user: {
               select: { name: true }
+            },
+            reactions: {
+              include: {
+                user: {
+                  select: { name: true }
+                }
+              }
             }
           },
           orderBy: {
@@ -37,5 +44,31 @@ export async function GET(
   } catch (error) {
     console.error('Error fetching memory:', error)
     return NextResponse.json({ error: 'Failed to fetch memory' }, { status: 500 })
+  }
+}
+
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+    const memoryId = parseInt(id)
+    const body = await request.json()
+    const { description } = body
+
+    if (!description) {
+      return NextResponse.json({ error: 'Description is required' }, { status: 400 })
+    }
+
+    const memory = await prisma.memory.update({
+      where: { id: memoryId },
+      data: { description }
+    })
+
+    return NextResponse.json({ memory })
+  } catch (error) {
+    console.error('Error updating memory:', error)
+    return NextResponse.json({ error: 'Failed to update memory' }, { status: 500 })
   }
 }

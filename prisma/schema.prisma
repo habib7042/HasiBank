@@ -26,6 +26,9 @@ model User {
   memories  Memory[]
   memoryComments MemoryComment[]
   totpSecrets TotpSecret[]
+  contacts  Contact[]
+  commentReactions CommentReaction[]
+  memoryCommentReactions MemoryCommentReaction[]
 }
 
 model Deposit {
@@ -82,6 +85,20 @@ model Comment {
 
   note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reactions CommentReaction[]
+}
+
+model CommentReaction {
+  id        Int      @id @default(autoincrement())
+  type      String   // like, love, etc
+  commentId Int
+  userId    Int
+  createdAt DateTime @default(now())
+
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
 }
 
 model Memory {
@@ -114,6 +131,20 @@ model MemoryComment {
 
   memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reactions MemoryCommentReaction[]
+}
+
+model MemoryCommentReaction {
+  id              Int           @id @default(autoincrement())
+  type            String
+  memoryCommentId Int
+  userId          Int
+  createdAt       DateTime      @default(now())
+
+  memoryComment   MemoryComment @relation(fields: [memoryCommentId], references: [id], onDelete: Cascade)
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([memoryCommentId, userId])
 }
 
 model TotpSecret {
@@ -121,6 +152,17 @@ model TotpSecret {
   label     String
   secret    String
   issuer    String?
+  userId    Int
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  number    String
+  isActive  Boolean  @default(true)
   userId    Int
   createdAt DateTime @default(now())
 

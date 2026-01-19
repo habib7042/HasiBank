@@ -3,10 +3,11 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Note } from './notebook'
-import { Heart, ThumbsUp, Smile, Frown, MessageCircle, User as UserIcon } from 'lucide-react'
+import { Heart, ThumbsUp, Smile, Frown, MessageCircle, User as UserIcon, Edit2, Check, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CommentSection } from './comment-section'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Textarea } from '@/components/ui/textarea'
 
 interface User {
   id: string
@@ -36,14 +37,16 @@ export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
   const [floatingEmojis, setFloatingEmojis] = useState<FloatingEmoji[]>([])
   const [showComments, setShowComments] = useState(false)
 
-  // Try to persist/guess the user identity locally if possible, or just default to first available
-  // ideally this should be shared state but for now local is okay for simple interactions
   const [reactingUser, setReactingUser] = useState<string>(users.length > 0 ? users[0].name : '')
+
+  // Edit State
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedContent, setEditedContent] = useState(note.content)
+  const [isSaving, setIsSaving] = useState(false)
 
   const handleReaction = async (type: string, emoji: string) => {
     if (!reactingUser) return
 
-    // Trigger animation
     const id = Date.now()
     setFloatingEmojis(prev => [
       ...prev,
@@ -68,6 +71,31 @@ export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
       console.error('Failed to react', error)
     } finally {
       setIsReacting(false)
+    }
+  }
+
+  const handleSaveEdit = async () => {
+    if (!editedContent.trim() || editedContent === note.content) {
+      setIsEditing(false)
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      const response = await fetch(`/api/notes/${note.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: editedContent }),
+      })
+
+      if (response.ok) {
+        setIsEditing(false)
+        onReactionUpdate() // Refetch to update UI
+      }
+    } catch (error) {
+      console.error('Failed to save edit', error)
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -105,9 +133,25 @@ export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
         <div className="flex flex-col flex-1">
           <div className="flex justify-between items-start">
             <span className="text-sm font-semibold text-pink-900">{note.user.name}</span>
-            {note.emoji && (
-              <span className="text-2xl animate-pulse" title="Mood">{note.emoji}</span>
-            )}
+            <div className="flex items-center gap-2">
+              {note.emoji && (
+                <span className="text-2xl animate-pulse" title="Mood">{note.emoji}</span>
+              )}
+              {/* Edit button: Ideally only show if current user is author, but since identity is fluid/shared, show for all */}
+              {!isEditing && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 text-pink-300 hover:text-pink-600"
+                  onClick={() => {
+                    setEditedContent(note.content)
+                    setIsEditing(true)
+                  }}
+                >
+                  <Edit2 className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
           </div>
           <span className="text-xs text-pink-400">
             {new Date(note.createdAt).toLocaleDateString()} at {new Date(note.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -116,7 +160,35 @@ export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
       </CardHeader>
 
       <CardContent className="p-4 pt-2 flex-grow">
-        <p className="text-pink-800 whitespace-pre-wrap">{note.content}</p>
+        {isEditing ? (
+          <div className="flex flex-col gap-2">
+            <Textarea
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+              className="bg-white/50 border-pink-200 min-h-[80px]"
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setIsEditing(false)}
+                className="h-7 w-7 p-0 text-red-500 hover:bg-red-50"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSaveEdit}
+                disabled={isSaving}
+                className="h-7 w-7 p-0 bg-green-500 hover:bg-green-600 text-white"
+              >
+                <Check className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <p className="text-pink-800 whitespace-pre-wrap">{note.content}</p>
+        )}
       </CardContent>
 
       <CardFooter className="p-2 bg-pink-50/50 flex flex-col gap-2 rounded-b-xl">
@@ -186,7 +258,7 @@ export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
           <CommentSection
             noteId={note.id}
             comments={note.comments}
-            currentUser={reactingUser} // Pass the locally selected user
+            currentUser={reactingUser}
             onCommentAdded={onReactionUpdate}
           />
         )}

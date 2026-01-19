@@ -7,14 +7,23 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ChevronLeft, ChevronRight, Download, Maximize2, ArrowLeft, Send } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, Maximize2, ArrowLeft, Send, Heart, Edit2, Check, X } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { LoadingScreen } from '@/components/ui/loading-screen'
+import { cn } from '@/lib/utils'
+import { Textarea } from '@/components/ui/textarea'
 
 interface User {
   id: string
   name: string
+}
+
+interface MemoryCommentReaction {
+  id: number
+  type: string
+  userId: number
+  user: { name: string }
 }
 
 interface MemoryComment {
@@ -22,6 +31,7 @@ interface MemoryComment {
   content: string
   createdAt: string
   user: { name: string }
+  reactions?: MemoryCommentReaction[]
 }
 
 interface MemoryImage {
@@ -50,24 +60,33 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
   const [comment, setComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [reactingCommentId, setReactingCommentId] = useState<number | null>(null)
+
+  // Edit State
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedDesc, setEditedDesc] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
-    // Secure the route: Check for authentication
+    // Secure the route
     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
     if (!isAuthenticated) {
       router.replace('/')
       return
     }
 
-    // Fetch users for comment selector
     fetch('/api/users').then(res => res.json()).then(data => setUsers(data.users))
 
-    // Fetch memory
+    fetchMemory()
+  }, [id, router])
+
+  const fetchMemory = () => {
     fetch(`/api/memories/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.memory) {
           setMemory(data.memory)
+          setEditedDesc(data.memory.description)
         }
         setLoading(false)
       })
@@ -75,7 +94,7 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
         console.error(err)
         setLoading(false)
       })
-  }, [id, router])
+  }
 
   if (loading) return <LoadingScreen />
   if (!memory) return <div className="p-8 text-center text-pink-700">Memory not found</div>
@@ -127,12 +146,53 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
 
       if (response.ok) {
         setComment('')
-        const res = await fetch(`/api/memories/${id}`)
-        const data = await res.json()
-        if (data.memory) setMemory(data.memory)
+        fetchMemory()
       }
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleCommentReaction = async (commentId: number) => {
+    if (!currentUser) return
+    setReactingCommentId(commentId)
+
+    try {
+      await fetch(`/api/memories/comments/${commentId}/react`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userName: currentUser, type: 'love' }),
+      })
+      fetchMemory()
+    } catch (error) {
+      console.error('Failed to react to comment', error)
+    } finally {
+      setReactingCommentId(null)
+    }
+  }
+
+  const handleSaveEdit = async () => {
+    if (!editedDesc.trim() || editedDesc === memory.description) {
+      setIsEditing(false)
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      const response = await fetch(`/api/memories/${memory.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: editedDesc }),
+      })
+
+      if (response.ok) {
+        setIsEditing(false)
+        fetchMemory()
+      }
+    } catch (error) {
+      console.error('Failed to save edit', error)
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -189,32 +249,90 @@ export default function MemoryDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           <CardContent className="p-4 md:p-6 space-y-6">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
-              <div className="flex-1">
-                <h1 className="text-xl md:text-2xl font-bold text-pink-900 break-words">{memory.description}</h1>
-                <p className="text-pink-500 text-sm mt-1">Uploaded by {memory.user.name}</p>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
+                <div className="flex-1 w-full">
+                  {isEditing ? (
+                    <div className="flex flex-col gap-2 w-full">
+                      <Textarea
+                        value={editedDesc}
+                        onChange={(e) => setEditedDesc(e.target.value)}
+                        className="bg-white border-pink-200 min-h-[80px] w-full"
+                      />
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setIsEditing(false)}
+                          className="h-8 w-8 p-0 text-red-500 hover:bg-red-50"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={handleSaveEdit}
+                          disabled={isSaving}
+                          className="h-8 w-8 p-0 bg-green-500 hover:bg-green-600 text-white"
+                        >
+                          <Check className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-start w-full">
+                      <h1 className="text-xl md:text-2xl font-bold text-pink-900 break-words flex-1 pr-2">{memory.description}</h1>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-pink-300 hover:text-pink-600 shrink-0 -mt-1"
+                        onClick={() => setIsEditing(true)}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                  <p className="text-pink-500 text-sm mt-1">Uploaded by {memory.user.name}</p>
+                </div>
+                <Badge className="bg-pink-100 text-pink-700 hover:bg-pink-200 text-sm px-3 py-1 w-fit whitespace-nowrap self-start">
+                  {new Date(memory.date).toLocaleDateString()}
+                </Badge>
               </div>
-              <Badge className="bg-pink-100 text-pink-700 hover:bg-pink-200 text-sm px-3 py-1 w-fit whitespace-nowrap">
-                {new Date(memory.date).toLocaleDateString()}
-              </Badge>
             </div>
 
             <div className="border-t border-pink-100 pt-6">
               <h3 className="text-lg font-semibold text-pink-800 mb-4">Comments</h3>
 
               <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-1">
-                {memory.comments?.map((comment) => (
-                  <div key={comment.id} className="flex gap-3 items-start">
-                    <Avatar className="h-8 w-8 border border-pink-100 mt-1 shrink-0">
-                      <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.name}`} />
-                      <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div className="bg-pink-50 rounded-xl p-3 flex-1 min-w-0">
-                      <span className="font-bold text-pink-900 block text-sm mb-1">{comment.user.name}</span>
-                      <p className="text-pink-800 text-sm break-words whitespace-pre-wrap">{comment.content}</p>
+                {memory.comments?.map((comment) => {
+                  const reactionsCount = comment.reactions?.length || 0
+                  const hasReacted = comment.reactions?.some(r => r.user.name === currentUser)
+
+                  return (
+                    <div key={comment.id} className="flex gap-3 items-start group">
+                      <Avatar className="h-8 w-8 border border-pink-100 mt-1 shrink-0">
+                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.name}`} />
+                        <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="bg-pink-50 rounded-xl p-3 flex-1 min-w-0 relative">
+                        <span className="font-bold text-pink-900 block text-sm mb-1">{comment.user.name}</span>
+                        <p className="text-pink-800 text-sm break-words whitespace-pre-wrap">{comment.content}</p>
+
+                        {/* Reaction Button */}
+                        <button
+                          onClick={() => handleCommentReaction(comment.id)}
+                          disabled={!currentUser || reactingCommentId === comment.id}
+                          className={cn(
+                            "absolute -right-2 -bottom-2 bg-white border border-pink-100 rounded-full p-1 shadow-sm flex items-center gap-1 hover:bg-pink-50 transition-all",
+                            (reactionsCount > 0 || hasReacted) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                          )}
+                        >
+                          <Heart className={cn("h-3 w-3", hasReacted ? "fill-red-500 text-red-500" : "text-pink-300")} />
+                          {reactionsCount > 0 && <span className="text-[10px] text-pink-600 font-bold">{reactionsCount}</span>}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
                 {memory.comments?.length === 0 && <p className="text-pink-400 italic text-sm">No comments yet.</p>}
               </div>
 

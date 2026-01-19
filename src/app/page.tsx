@@ -11,8 +11,10 @@ import { WithdrawalForm } from '@/components/dashboard/withdrawal-form'
 import { Notebook } from '@/components/dashboard/notebook/notebook'
 import { Memories } from '@/components/dashboard/memories/memories'
 import { PinGate } from '@/components/dashboard/pin-gate'
+import { IdentityGate } from '@/components/dashboard/identity/identity-gate'
 import { CodePage } from '@/components/dashboard/code/code-page'
 import { ContactBook } from '@/components/dashboard/contacts/contact-book'
+import { FloatingWhatsApp } from '@/components/dashboard/ui/floating-whatsapp'
 import { AppIcon } from '@/components/dashboard/ui/app-icon'
 import { PageHeader } from '@/components/dashboard/ui/page-header'
 import {
@@ -461,7 +463,11 @@ export default function Home() {
                   title="KothaBank Locked"
                   description="Enter PIN to access messages"
                 >
-                   <Notebook users={users} />
+                  <IdentityGate users={users} gateId="kothabank-identity" title="Who is accessing KothaBank?">
+                    {(selectedUser) => (
+                      <Notebook users={users} currentUser={selectedUser} />
+                    )}
+                  </IdentityGate>
                 </PinGate>
               </>
             )}
@@ -474,10 +480,14 @@ export default function Home() {
                   title="Memories Vault"
                   description="Enter PIN to unlock photos"
                 >
-                  <Memories
-                    currentUser={currentUser}
-                    users={users}
-                  />
+                   <IdentityGate users={users} gateId="memories-identity" title="Who is viewing Memories?">
+                    {(selectedUser) => (
+                      <Memories
+                        currentUser={selectedUser}
+                        users={users}
+                      />
+                    )}
+                  </IdentityGate>
                 </PinGate>
               </>
             )}
@@ -504,6 +514,7 @@ export default function Home() {
           </div>
         )}
       </main>
+      <FloatingWhatsApp />
     </div>
   )
 }

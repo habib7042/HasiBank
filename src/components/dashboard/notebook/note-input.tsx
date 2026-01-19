@@ -15,23 +15,17 @@ interface User {
 }
 
 interface NoteInputProps {
-  // currentUser: string | null  // Removed as we allow inline selection
+  currentUser: string
   users: User[]
   onNoteCreated: () => void
 }
 
-export function NoteInput({ users, onNoteCreated }: NoteInputProps) {
+export function NoteInput({ users, onNoteCreated, currentUser }: NoteInputProps) {
   const [content, setContent] = useState('')
-  const [authorName, setAuthorName] = useState('')
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [animatingEmoji, setAnimatingEmoji] = useState<string | null>(null)
   const { toast } = useToast()
-
-  // Auto-select first user if available and not set
-  if (users.length > 0 && !authorName) {
-    setAuthorName(users[0].name)
-  }
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     setSelectedEmoji(emojiData.emoji)
@@ -39,7 +33,7 @@ export function NoteInput({ users, onNoteCreated }: NoteInputProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!content.trim() || !authorName) return
+    if (!content.trim() || !currentUser) return
 
     setIsSubmitting(true)
     try {
@@ -48,7 +42,7 @@ export function NoteInput({ users, onNoteCreated }: NoteInputProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content,
-          userName: authorName,
+          userName: currentUser,
           emoji: selectedEmoji
         }),
       })
@@ -89,26 +83,6 @@ export function NoteInput({ users, onNoteCreated }: NoteInputProps) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* User Selection Inline */}
-        <div className="space-y-2">
-          <Label htmlFor="author" className="text-pink-700">Posting as</Label>
-          <Select
-            value={authorName}
-            onValueChange={setAuthorName}
-          >
-            <SelectTrigger className="border-pink-200 focus:ring-pink-400 bg-white/50">
-              <SelectValue placeholder="Select user" />
-            </SelectTrigger>
-            <SelectContent>
-              {users.map((user) => (
-                <SelectItem key={user.id} value={user.name}>
-                  {user.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
         <div className="space-y-2">
           <div className="flex justify-between items-center">
              <Label htmlFor="content" className="text-pink-700">Your Message</Label>
@@ -148,10 +122,11 @@ export function NoteInput({ users, onNoteCreated }: NoteInputProps) {
           />
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end items-center gap-2">
+          <span className="text-sm text-pink-600">Posting as <b>{currentUser}</b></span>
           <Button
             type="submit"
-            disabled={!content.trim() || !authorName || isSubmitting}
+            disabled={!content.trim() || !currentUser || isSubmitting}
             className="bg-pink-500 hover:bg-pink-600 text-white font-medium"
           >
             {isSubmitting ? "Posting..." : (

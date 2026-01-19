@@ -10,9 +10,10 @@ interface NoteListProps {
   notes: Note[]
   users: User[]
   onReactionUpdate: () => void
+  currentUser: string
 }
 
-export function NoteList({ notes, users, onReactionUpdate }: NoteListProps) {
+export function NoteList({ notes, users, onReactionUpdate, currentUser }: NoteListProps) {
   if (notes.length === 0) {
     return (
       <div className="text-center py-12 text-pink-400">
@@ -29,6 +30,7 @@ export function NoteList({ notes, users, onReactionUpdate }: NoteListProps) {
           note={note}
           users={users}
           onReactionUpdate={onReactionUpdate}
+          currentUser={currentUser}
         />
       ))}
     </div>

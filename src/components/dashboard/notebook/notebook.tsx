@@ -41,9 +41,10 @@ export interface Note {
 
 interface NotebookProps {
   users: User[]
+  currentUser: string
 }
 
-export function Notebook({ users }: NotebookProps) {
+export function Notebook({ users, currentUser }: NotebookProps) {
   const [notes, setNotes] = useState<Note[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [page, setPage] = useState(1)
@@ -95,11 +96,6 @@ export function Notebook({ users }: NotebookProps) {
   }
 
   const handleReactionUpdate = () => {
-    // Ideally update specific note, but for simplicity reload current view or just invalidation
-    // With pagination, full reload might lose position.
-    // React Query would be better here but following the existing pattern for now.
-    // I'll stick to a silent update or just let the user pull to refresh if I had that.
-    // For now, re-fetching the first page to show updates at top is safest.
     loadNotes(true)
   }
 
@@ -173,6 +169,7 @@ export function Notebook({ users }: NotebookProps) {
           <NoteInput
             users={users}
             onNoteCreated={handleNoteCreated}
+            currentUser={currentUser}
           />
         </CardContent>
       </Card>
@@ -181,6 +178,7 @@ export function Notebook({ users }: NotebookProps) {
         notes={notes}
         onReactionUpdate={handleReactionUpdate}
         users={users}
+        currentUser={currentUser}
       />
 
       {hasMore && (

@@ -18,6 +18,7 @@ interface NoteItemProps {
   note: Note
   users: User[]
   onReactionUpdate: () => void
+  currentUser: string
 }
 
 const REACTION_TYPES = [
@@ -32,12 +33,10 @@ interface FloatingEmoji {
   emoji: string
 }
 
-export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
+export function NoteItem({ note, users, onReactionUpdate, currentUser }: NoteItemProps) {
   const [isReacting, setIsReacting] = useState(false)
   const [floatingEmojis, setFloatingEmojis] = useState<FloatingEmoji[]>([])
   const [showComments, setShowComments] = useState(false)
-
-  const [reactingUser, setReactingUser] = useState<string>(users.length > 0 ? users[0].name : '')
 
   // Edit State
   const [isEditing, setIsEditing] = useState(false)
@@ -45,7 +44,7 @@ export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
   const [isSaving, setIsSaving] = useState(false)
 
   const handleReaction = async (type: string, emoji: string) => {
-    if (!reactingUser) return
+    if (!currentUser) return
 
     const id = Date.now()
     setFloatingEmojis(prev => [
@@ -64,7 +63,7 @@ export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
       await fetch(`/api/notes/${note.id}/react`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userName: reactingUser, type }),
+        body: JSON.stringify({ userName: currentUser, type }),
       })
       onReactionUpdate()
     } catch (error) {
@@ -105,7 +104,7 @@ export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
     return acc
   }, {} as Record<string, number>)
 
-  const userReaction = note.reactions.find(r => r.user.name === reactingUser)
+  const userReaction = note.reactions.find(r => r.user.name === currentUser)
 
   return (
     <Card className="border-pink-100 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow relative overflow-visible flex flex-col h-full">
@@ -209,38 +208,13 @@ export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
                     isActive && "bg-white shadow-sm ring-1 ring-pink-100"
                   )}
                   onClick={() => handleReaction(type, emoji)}
-                  disabled={isReacting || !reactingUser}
+                  disabled={isReacting || !currentUser}
                 >
                   <Icon className={cn("h-4 w-4 transition-all", isActive ? `${color} fill-current scale-110` : "text-slate-400")} />
                   {count > 0 && <span className="text-xs font-medium text-slate-600">{count}</span>}
                 </Button>
               )
             })}
-
-            {/* Identity Switcher for Reactions */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-6 w-6 ml-1 text-pink-400 hover:text-pink-600">
-                  <UserIcon className="h-3 w-3" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-40 p-2" align="start">
-                <div className="text-xs font-medium text-pink-500 mb-2">Reacting as:</div>
-                <div className="flex flex-col gap-1">
-                  {users.map((u) => (
-                    <Button
-                      key={u.id}
-                      variant={reactingUser === u.name ? "secondary" : "ghost"}
-                      size="sm"
-                      className="justify-start h-7 text-xs"
-                      onClick={() => setReactingUser(u.name)}
-                    >
-                      {u.name}
-                    </Button>
-                  ))}
-                </div>
-              </PopoverContent>
-            </Popover>
           </div>
 
           <Button
@@ -258,7 +232,7 @@ export function NoteItem({ note, users, onReactionUpdate }: NoteItemProps) {
           <CommentSection
             noteId={note.id}
             comments={note.comments}
-            currentUser={reactingUser}
+            currentUser={currentUser}
             onCommentAdded={onReactionUpdate}
           />
         )}

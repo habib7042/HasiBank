@@ -1,5 +1,6 @@
 import { MemoryUploader } from './memory-uploader'
 import { MemoryGallery } from './memory-gallery'
+import { MemoryDetailModal } from './memory-detail-modal'
 import { useQuery } from '@tanstack/react-query'
 import { Loader2, Filter } from 'lucide-react'
 import { useState } from 'react'
@@ -46,6 +47,8 @@ export function Memories({ currentUser, users }: MemoriesProps) {
   const [filterUser, setFilterUser] = useState<string>('all')
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
+  const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   // React Query key includes filters to auto-refetch
   const { data, isLoading, isFetching, refetch } = useQuery({
@@ -74,6 +77,11 @@ export function Memories({ currentUser, users }: MemoriesProps) {
   // Use refetch for actions that update data
   const handleDataUpdate = () => {
     refetch()
+  }
+
+  const handleMemoryClick = (memory: Memory) => {
+    setSelectedMemory(memory)
+    setIsModalOpen(true)
   }
 
   return (
@@ -156,8 +164,7 @@ export function Memories({ currentUser, users }: MemoriesProps) {
         <>
           <MemoryGallery
             memories={memories}
-            currentUser={currentUser}
-            onCommentAdded={handleDataUpdate}
+            onMemoryClick={handleMemoryClick}
           />
 
           <div className="flex justify-center gap-2 mt-8">
@@ -185,6 +192,15 @@ export function Memories({ currentUser, users }: MemoriesProps) {
           </div>
         </>
       )}
+
+      <MemoryDetailModal
+        memory={selectedMemory}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        currentUser={currentUser}
+        users={users}
+        onUpdate={handleDataUpdate}
+      />
     </div>
   )
 }

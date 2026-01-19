@@ -103,12 +103,16 @@ export function CommentSection({ noteId, comments, currentUser, onCommentAdded }
                     onClick={() => handleReaction(comment.id)}
                     disabled={!currentUser || reactingCommentId === comment.id}
                     className={cn(
-                      "absolute -right-2 -bottom-2 bg-white border border-pink-100 rounded-full p-1 shadow-sm flex items-center gap-1 hover:bg-pink-50 transition-all",
-                      (reactionsCount > 0 || hasReacted) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                      "absolute -right-2 -bottom-2 bg-white border shadow-sm rounded-full py-0.5 px-1.5 flex items-center gap-1 transition-all hover:scale-110 active:scale-95 z-10",
+                      hasReacted ? "border-pink-200 bg-pink-50" : "border-gray-200",
+                      (reactionsCount > 0 || hasReacted) ? "opacity-100 scale-100" : "opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100"
                     )}
+                    title="Love this comment"
                   >
-                    <Heart className={cn("h-3 w-3", hasReacted ? "fill-red-500 text-red-500" : "text-pink-300")} />
-                    {reactionsCount > 0 && <span className="text-[10px] text-pink-600 font-bold">{reactionsCount}</span>}
+                    <div className={cn("p-0.5 rounded-full", hasReacted ? "bg-red-100" : "bg-gray-100")}>
+                      <Heart className={cn("h-3 w-3", hasReacted ? "fill-red-500 text-red-500" : "text-gray-400")} />
+                    </div>
+                    {reactionsCount > 0 && <span className="text-[10px] font-bold text-gray-600 pr-0.5">{reactionsCount}</span>}
                   </button>
                 </div>
               </div>

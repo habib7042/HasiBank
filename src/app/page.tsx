@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -409,6 +410,11 @@ export default function Home() {
               >
                 {isLoading ? "Verifying..." : "Access Account 🚀"}
               </Button>
+              <div className="pt-2 text-center">
+                <Link href="/android" className="text-sm text-slate-600 hover:text-cyan-600 font-medium transition-colors">
+                  Switch to Mobile App View 📱
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -442,13 +448,23 @@ export default function Home() {
               We save for the future ✨
             </p>
           </div>
-          <Button 
-            onClick={handleLogout} 
-            variant="outline"
-            className="white-glossy-button-enhanced font-medium"
-          >
-            Logout 🚪
-          </Button>
+          <div className="flex gap-2">
+            <Link href="/android">
+              <Button
+                variant="outline"
+                className="white-glossy-button-enhanced font-medium"
+              >
+                Mobile App 📱
+              </Button>
+            </Link>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="white-glossy-button-enhanced font-medium"
+            >
+              Logout 🚪
+            </Button>
+          </div>
         </div>
 
         <Tabs defaultValue="totals" className="space-y-6">

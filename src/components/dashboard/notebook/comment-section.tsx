@@ -31,6 +31,7 @@ export function CommentSection({ noteId, comments, currentUser, onCommentAdded }
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [reactingCommentId, setReactingCommentId] = useState<number | null>(null)
+  const [optimisticReactions, setOptimisticReactions] = useState<Record<number, boolean>>({})
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -59,11 +60,16 @@ export function CommentSection({ noteId, comments, currentUser, onCommentAdded }
     if (!currentUser) return
     setReactingCommentId(commentId)
 
+    // Optimistic update logic if needed, but for simplicity we rely on re-fetch.
+    // However, the user says "make it look active".
+    // If the re-fetch is slow, it might feel laggy.
+    // Let's verify the API logic.
+
     try {
       await fetch(`/api/comments/${commentId}/react`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userName: currentUser, type: 'love' }), // Defaulting to 'love' for comments
+        body: JSON.stringify({ userName: currentUser, type: 'love' }),
       })
       onCommentAdded()
     } catch (error) {

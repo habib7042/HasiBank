@@ -12,6 +12,7 @@ import { Notebook } from '@/components/dashboard/notebook/notebook'
 import { Memories } from '@/components/dashboard/memories/memories'
 import { PinGate } from '@/components/dashboard/pin-gate'
 import { CodePage } from '@/components/dashboard/code/code-page'
+import { ContactBook } from '@/components/dashboard/contacts/contact-book'
 import { AppIcon } from '@/components/dashboard/ui/app-icon'
 import { PageHeader } from '@/components/dashboard/ui/page-header'
 import {
@@ -22,7 +23,8 @@ import {
   Image as ImageIcon,
   Key,
   CreditCard,
-  Settings
+  Settings,
+  Contact
 } from 'lucide-react'
 import { LoadingScreen } from '@/components/ui/loading-screen'
 
@@ -55,7 +57,7 @@ interface TransactionData {
 
 const INACTIVITY_TIMEOUT = 5 * 60 * 1000 // 5 minutes
 
-type View = 'home' | 'overview' | 'deposit' | 'withdraw' | 'notebook' | 'memories' | 'code'
+type View = 'home' | 'overview' | 'deposit' | 'withdraw' | 'notebook' | 'memories' | 'code' | 'contacts'
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -354,7 +356,7 @@ export default function Home() {
         {currentView === 'home' && (
           <div className="animate-in fade-in zoom-in-95 duration-500">
             <h2 className="text-2xl font-bold text-pink-900 mb-6 text-center md:text-left">Dashboard</h2>
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8 justify-items-center">
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 md:gap-8 justify-items-center">
               <AppIcon
                 icon={LayoutDashboard}
                 label="Overview"
@@ -390,6 +392,12 @@ export default function Home() {
                 label="Code"
                 onClick={() => setCurrentView('code')}
                 gradient="from-slate-700 to-slate-900"
+              />
+              <AppIcon
+                icon={Contact}
+                label="Contacts"
+                onClick={() => setCurrentView('contacts')}
+                gradient="from-teal-400 to-cyan-500"
               />
             </div>
 
@@ -484,6 +492,13 @@ export default function Home() {
                 >
                   <CodePage currentUser={currentUser} />
                 </PinGate>
+              </>
+            )}
+
+            {currentView === 'contacts' && (
+              <>
+                <PageHeader title="Contact Book" onBack={() => setCurrentView('home')} />
+                <ContactBook currentUser={currentUser} />
               </>
             )}
           </div>

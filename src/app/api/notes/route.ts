@@ -1,9 +1,41 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { Prisma } from '@prisma/client'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url)
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '10')
+    const startDate = searchParams.get('startDate')
+    const endDate = searchParams.get('endDate')
+    const filterUser = searchParams.get('filterUser')
+
+    const skip = (page - 1) * limit
+
+    const where: Prisma.NoteWhereInput = {}
+
+    if (filterUser) {
+      where.user = { name: filterUser }
+    }
+
+    if (startDate || endDate) {
+      where.createdAt = {}
+      if (startDate) {
+        where.createdAt.gte = new Date(startDate)
+      }
+      if (endDate) {
+        // Adjust end date to include the full day
+        const end = new Date(endDate)
+        end.setHours(23, 59, 59, 999)
+        where.createdAt.lte = end
+      }
+    }
+
     const notes = await prisma.note.findMany({
+      where,
+      skip,
+      take: limit,
       include: {
         user: {
           select: { name: true }
@@ -19,6 +51,13 @@ export async function GET() {
           include: {
             user: {
               select: { name: true }
+            },
+            reactions: {
+              include: {
+                user: {
+                  select: { name: true }
+                }
+              }
             }
           },
           orderBy: {
@@ -31,7 +70,16 @@ export async function GET() {
       }
     })
 
-    return NextResponse.json({ notes })
+    const total = await prisma.note.count({ where })
+
+    return NextResponse.json({
+      notes,
+      pagination: {
+        total,
+        pages: Math.ceil(total / limit),
+        currentPage: page
+      }
+    })
   } catch (error) {
     console.error('Error fetching notes:', error)
     return NextResponse.json({ error: 'Failed to fetch notes' }, { status: 500 })

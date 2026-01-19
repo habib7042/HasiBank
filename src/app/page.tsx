@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
 import { LoginForm } from '@/components/dashboard/login-form'
 import { Header } from '@/components/dashboard/header'
@@ -13,7 +12,18 @@ import { Notebook } from '@/components/dashboard/notebook/notebook'
 import { Memories } from '@/components/dashboard/memories/memories'
 import { PinGate } from '@/components/dashboard/pin-gate'
 import { CodePage } from '@/components/dashboard/code/code-page'
-import { LayoutDashboard, PlusCircle, MinusCircle, BookHeart, Image as ImageIcon, Key } from 'lucide-react'
+import { AppIcon } from '@/components/dashboard/ui/app-icon'
+import { PageHeader } from '@/components/dashboard/ui/page-header'
+import {
+  LayoutDashboard,
+  PlusCircle,
+  MinusCircle,
+  BookHeart,
+  Image as ImageIcon,
+  Key,
+  CreditCard,
+  Settings
+} from 'lucide-react'
 import { LoadingScreen } from '@/components/ui/loading-screen'
 
 interface UserTotal {
@@ -45,24 +55,26 @@ interface TransactionData {
 
 const INACTIVITY_TIMEOUT = 5 * 60 * 1000 // 5 minutes
 
+type View = 'home' | 'overview' | 'deposit' | 'withdraw' | 'notebook' | 'memories' | 'code'
+
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [currentView, setCurrentView] = useState<View>('home')
+  const [isLoading, setIsLoading] = useState(false)
+
   const [userTotals, setUserTotals] = useState<UserTotal[]>([])
   const [bankTotal, setBankTotal] = useState(0)
   const [deposits, setDeposits] = useState<Deposit[]>([])
   const [users, setUsers] = useState<User[]>([])
-  // currentUser logic is simplified - we mostly let components pick their user identity
-  // but we can still track it if a user explicitly selects one in a form, though for now
-  // we are removing the global dependency.
   const [currentUser, setCurrentUser] = useState<string | null>(null)
-  const { toast } = useToast()
 
+  const { toast } = useToast()
   const activityTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const handleLogout = () => {
     setIsAuthenticated(false)
+    setCurrentView('home')
     localStorage.removeItem('isAuthenticated')
     localStorage.removeItem('lastActivity')
     sessionStorage.clear()
@@ -247,8 +259,8 @@ export default function Home() {
         loadTotals()
         loadDeposits()
         loadUsers()
-        // If this is the current user, store it for notebook defaults
         setCurrentUser(data.userName)
+        setCurrentView('home') // Return to home on success
       } else {
         const error = await response.json()
         throw new Error(error.error || 'Failed to process deposit')
@@ -288,6 +300,7 @@ export default function Home() {
         loadDeposits()
         loadUsers()
         setCurrentUser(data.userName)
+        setCurrentView('home') // Return to home on success
       } else {
         const error = await response.json()
         throw new Error(error.error || 'Failed to process withdrawal')
@@ -331,146 +344,150 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen relative pb-20 md:pb-0">
+    <div className="min-h-screen relative pb-6 md:pb-0">
       <LoveBackground />
       <Header onLogout={handleLogout} />
       
       <main className="container mx-auto p-4 md:p-6 max-w-7xl relative z-10">
-        <Tabs defaultValue="overview" className="space-y-6">
-          {/* Mobile Bottom Navigation */}
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-t border-pink-100 p-2 md:hidden safe-area-pb overflow-x-auto">
-            <TabsList className="flex w-full h-auto bg-transparent p-0 gap-1 min-w-max justify-around">
-              <TabsTrigger
-                value="overview"
-                className="flex flex-col items-center gap-1 py-2 px-1 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all min-w-[60px]"
-              >
-                <LayoutDashboard className="h-5 w-5" />
-                <span className="scale-75 truncate w-full text-center">Overview</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="deposit"
-                className="flex flex-col items-center gap-1 py-2 px-1 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all min-w-[60px]"
-              >
-                <PlusCircle className="h-5 w-5" />
-                <span className="scale-75 truncate w-full text-center">Deposit</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="withdraw"
-                className="flex flex-col items-center gap-1 py-2 px-1 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all min-w-[60px]"
-              >
-                <MinusCircle className="h-5 w-5" />
-                <span className="scale-75 truncate w-full text-center">Withdraw</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="notebook"
-                className="flex flex-col items-center gap-1 py-2 px-1 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all min-w-[60px]"
-              >
-                <BookHeart className="h-5 w-5" />
-                <span className="scale-75 truncate w-full text-center">KothaBank</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="memories"
-                className="flex flex-col items-center gap-1 py-2 px-1 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all min-w-[60px]"
-              >
-                <ImageIcon className="h-5 w-5" />
-                <span className="scale-75 truncate w-full text-center">Memories</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="code"
-                className="flex flex-col items-center gap-1 py-2 px-1 text-xs data-[state=active]:text-pink-600 data-[state=active]:bg-pink-50 rounded-lg transition-all min-w-[60px]"
-              >
-                <Key className="h-5 w-5" />
-                <span className="scale-75 truncate w-full text-center">Code</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
 
-          {/* Desktop Top Navigation */}
-          <div className="hidden md:block">
-            <TabsList className="grid w-full grid-cols-6 lg:w-[900px] bg-white/50 backdrop-blur-sm border-white/20">
-              <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
-                <LayoutDashboard className="h-4 w-4" />
-                Overview
-              </TabsTrigger>
-              <TabsTrigger value="deposit" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
-                <PlusCircle className="h-4 w-4" />
-                Deposit
-              </TabsTrigger>
-              <TabsTrigger value="withdraw" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
-                <MinusCircle className="h-4 w-4" />
-                Withdraw
-              </TabsTrigger>
-              <TabsTrigger value="notebook" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
-                <BookHeart className="h-4 w-4" />
-                KothaBank
-              </TabsTrigger>
-              <TabsTrigger value="memories" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
-                <ImageIcon className="h-4 w-4" />
-                Memories
-              </TabsTrigger>
-              <TabsTrigger value="code" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-600">
-                <Key className="h-4 w-4" />
-                Code
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
-          <TabsContent value="overview" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
-            <Overview bankTotal={bankTotal} userTotals={userTotals} />
-            <RecentTransactions transactions={deposits} />
-          </TabsContent>
-
-          <TabsContent value="deposit" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
-            <DepositForm
-              users={users}
-              onDeposit={handleDeposit}
-              isLoading={isLoading}
-            />
-          </TabsContent>
-
-          <TabsContent value="withdraw" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
-            <WithdrawalForm
-              users={users}
-              onWithdraw={handleWithdrawal}
-              isLoading={isLoading}
-            />
-          </TabsContent>
-
-          <TabsContent value="notebook" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
-            <PinGate
-              gateId="kothabank"
-              title="KothaBank Locked"
-              description="Enter PIN to access messages"
-            >
-               <Notebook
-                 users={users}
-               />
-            </PinGate>
-          </TabsContent>
-
-          <TabsContent value="memories" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
-            <PinGate
-              gateId="memories"
-              title="Memories Vault"
-              description="Enter PIN to unlock photos"
-            >
-              <Memories
-                currentUser={currentUser}
-                users={users}
+        {/* Home Screen Grid */}
+        {currentView === 'home' && (
+          <div className="animate-in fade-in zoom-in-95 duration-500">
+            <h2 className="text-2xl font-bold text-pink-900 mb-6 text-center md:text-left">Dashboard</h2>
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8 justify-items-center">
+              <AppIcon
+                icon={LayoutDashboard}
+                label="Overview"
+                onClick={() => setCurrentView('overview')}
+                gradient="from-blue-400 to-indigo-500"
               />
-            </PinGate>
-          </TabsContent>
+              <AppIcon
+                icon={PlusCircle}
+                label="Deposit"
+                onClick={() => setCurrentView('deposit')}
+                gradient="from-emerald-400 to-green-500"
+              />
+              <AppIcon
+                icon={MinusCircle}
+                label="Withdraw"
+                onClick={() => setCurrentView('withdraw')}
+                gradient="from-orange-400 to-red-500"
+              />
+              <AppIcon
+                icon={BookHeart}
+                label="KothaBank"
+                onClick={() => setCurrentView('notebook')}
+                gradient="from-pink-400 to-rose-500"
+              />
+              <AppIcon
+                icon={ImageIcon}
+                label="Memories"
+                onClick={() => setCurrentView('memories')}
+                gradient="from-purple-400 to-fuchsia-500"
+              />
+              <AppIcon
+                icon={Key}
+                label="Code"
+                onClick={() => setCurrentView('code')}
+                gradient="from-slate-700 to-slate-900"
+              />
+            </div>
 
-          <TabsContent value="code" className="animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
-            <PinGate
-              gateId="code"
-              title="Authenticator Locked"
-              description="Enter PIN to access 2FA codes"
-            >
-              <CodePage currentUser={currentUser} />
-            </PinGate>
-          </TabsContent>
-        </Tabs>
+            {/* Quick Summary Widget could go here */}
+            <div className="mt-12 p-6 bg-white/60 backdrop-blur-sm rounded-3xl border border-pink-100 shadow-sm">
+              <h3 className="text-lg font-semibold text-pink-800 mb-4">Quick Summary</h3>
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm text-pink-600">Total Savings</p>
+                  <p className="text-3xl font-bold text-pink-900">৳{bankTotal.toFixed(2)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-pink-600">Active Members</p>
+                  <p className="text-2xl font-bold text-pink-900">{users.length}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Sub Pages */}
+        {currentView !== 'home' && (
+          <div className="animate-in slide-in-from-right-10 duration-300">
+            {currentView === 'overview' && (
+              <>
+                <PageHeader title="Overview" onBack={() => setCurrentView('home')} />
+                <Overview bankTotal={bankTotal} userTotals={userTotals} />
+                <div className="mt-6">
+                  <RecentTransactions transactions={deposits} />
+                </div>
+              </>
+            )}
+
+            {currentView === 'deposit' && (
+              <>
+                <PageHeader title="Add Deposit" onBack={() => setCurrentView('home')} />
+                <DepositForm
+                  users={users}
+                  onDeposit={handleDeposit}
+                  isLoading={isLoading}
+                />
+              </>
+            )}
+
+            {currentView === 'withdraw' && (
+              <>
+                <PageHeader title="Withdraw Funds" onBack={() => setCurrentView('home')} />
+                <WithdrawalForm
+                  users={users}
+                  onWithdraw={handleWithdrawal}
+                  isLoading={isLoading}
+                />
+              </>
+            )}
+
+            {currentView === 'notebook' && (
+              <>
+                <PageHeader title="KothaBank" onBack={() => setCurrentView('home')} />
+                <PinGate
+                  gateId="kothabank"
+                  title="KothaBank Locked"
+                  description="Enter PIN to access messages"
+                >
+                   <Notebook users={users} />
+                </PinGate>
+              </>
+            )}
+
+            {currentView === 'memories' && (
+              <>
+                <PageHeader title="Memories" onBack={() => setCurrentView('home')} />
+                <PinGate
+                  gateId="memories"
+                  title="Memories Vault"
+                  description="Enter PIN to unlock photos"
+                >
+                  <Memories
+                    currentUser={currentUser}
+                    users={users}
+                  />
+                </PinGate>
+              </>
+            )}
+
+            {currentView === 'code' && (
+              <>
+                <PageHeader title="Authenticator" onBack={() => setCurrentView('home')} />
+                <PinGate
+                  gateId="code"
+                  title="Authenticator Locked"
+                  description="Enter PIN to access 2FA codes"
+                >
+                  <CodePage currentUser={currentUser} />
+                </PinGate>
+              </>
+            )}
+          </div>
+        )}
       </main>
     </div>
   )

@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Note } from './notebook'
-import { NoteItem } from './note-item'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { CommentSection } from './comment-section'
-import { Heart, ThumbsUp, Smile, Frown, MessageCircle, Edit2, Check, X } from 'lucide-react'
+import { Heart, ThumbsUp, Smile, Frown, Edit2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface User {
@@ -97,46 +95,48 @@ export function NoteDetailModal({ note, isOpen, onClose, users, onReactionUpdate
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col p-0 gap-0 bg-white/95 backdrop-blur-xl border-pink-100">
-        <div className="p-6 pb-2 border-b border-pink-100">
-            <div className="flex flex-row items-start gap-4">
+      <DialogContent className="w-[95vw] sm:w-full sm:max-w-2xl max-h-[90vh] flex flex-col p-0 gap-0 bg-white/95 backdrop-blur-xl border-pink-100 overflow-hidden">
+        {/* Header - Fixed */}
+        <div className="p-4 sm:p-6 pb-2 border-b border-pink-100 bg-white/50 backdrop-blur-md z-10">
+            <div className="flex flex-row items-start gap-3 sm:gap-4">
                 <Avatar className="h-10 w-10 border-2 border-pink-100">
-                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${note.user.name}`} />
-                <AvatarFallback className="bg-pink-100 text-pink-700">{note.user.name[0]}</AvatarFallback>
+                  <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${note.user.name}`} />
+                  <AvatarFallback className="bg-pink-100 text-pink-700">{note.user.name[0]}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col flex-1">
-                <div className="flex justify-between items-start">
-                    <span className="text-base font-bold text-pink-900">{note.user.name}</span>
-                    <div className="flex items-center gap-2">
-                    {note.emoji && (
-                        <span className="text-2xl animate-pulse" title="Mood">{note.emoji}</span>
-                    )}
-                    {!isEditing && (
-                        <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 text-pink-300 hover:text-pink-600"
-                        onClick={() => setIsEditing(true)}
-                        >
-                        <Edit2 className="h-4 w-4" />
-                        </Button>
-                    )}
-                    </div>
-                </div>
-                <span className="text-xs text-pink-400">
-                    {new Date(note.createdAt).toLocaleDateString()} at {new Date(note.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
+                  <div className="flex justify-between items-start">
+                      <span className="text-base font-bold text-pink-900">{note.user.name}</span>
+                      <div className="flex items-center gap-2">
+                        {note.emoji && (
+                            <span className="text-2xl animate-pulse" title="Mood">{note.emoji}</span>
+                        )}
+                        {!isEditing && (
+                            <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 text-pink-300 hover:text-pink-600"
+                            onClick={() => setIsEditing(true)}
+                            >
+                            <Edit2 className="h-4 w-4" />
+                            </Button>
+                        )}
+                      </div>
+                  </div>
+                  <span className="text-xs text-pink-400">
+                      {new Date(note.createdAt).toLocaleDateString()} at {new Date(note.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
                 </div>
             </div>
         </div>
 
-        <ScrollArea className="flex-1 p-6">
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 overscroll-contain">
             {isEditing ? (
             <div className="flex flex-col gap-2">
                 <Textarea
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
-                className="bg-white border-pink-200 min-h-[150px] text-lg p-4"
+                className="bg-white border-pink-200 min-h-[150px] text-lg p-4 focus-visible:ring-pink-400"
                 />
                 <div className="flex justify-end gap-2 mt-2">
                 <Button
@@ -158,7 +158,7 @@ export function NoteDetailModal({ note, isOpen, onClose, users, onReactionUpdate
                 </div>
             </div>
             ) : (
-            <p className="text-pink-900 whitespace-pre-wrap text-lg leading-relaxed">{note.content}</p>
+            <p className="text-pink-900 whitespace-pre-wrap text-base sm:text-lg leading-relaxed">{note.content}</p>
             )}
 
             <div className="my-6 border-t border-pink-100" />
@@ -169,10 +169,11 @@ export function NoteDetailModal({ note, isOpen, onClose, users, onReactionUpdate
                 currentUser={currentUser}
                 onCommentAdded={onReactionUpdate}
             />
-        </ScrollArea>
+        </div>
 
-        <div className="p-4 bg-pink-50/50 border-t border-pink-100 flex justify-between items-center rounded-b-lg">
-             <div className="flex gap-1 items-center">
+        {/* Footer - Fixed */}
+        <div className="p-3 sm:p-4 bg-pink-50/80 backdrop-blur-md border-t border-pink-100 flex justify-between items-center z-10">
+             <div className="flex gap-1 items-center overflow-x-auto no-scrollbar mask-gradient-right">
                 {REACTION_TYPES.map(({ type, icon: Icon, color }) => {
                 const isActive = userReaction?.type === type
                 const count = reactionsByType[type] || 0
@@ -183,7 +184,7 @@ export function NoteDetailModal({ note, isOpen, onClose, users, onReactionUpdate
                     variant="ghost"
                     size="sm"
                     className={cn(
-                        "flex items-center gap-1.5 h-9 px-3 hover:bg-white/80 transition-all",
+                        "flex items-center gap-1.5 h-9 px-2 sm:px-3 hover:bg-white/80 transition-all shrink-0",
                         isActive && "bg-white shadow-sm ring-1 ring-pink-200 scale-105"
                     )}
                     onClick={() => handleReaction(type)}
@@ -195,7 +196,7 @@ export function NoteDetailModal({ note, isOpen, onClose, users, onReactionUpdate
                 )
                 })}
             </div>
-             <div className="text-xs text-pink-400 font-medium">
+             <div className="text-xs text-pink-400 font-medium whitespace-nowrap pl-2">
                 {note.comments.length} comments
             </div>
         </div>

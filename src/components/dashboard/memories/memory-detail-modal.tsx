@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ChevronLeft, ChevronRight, Download, Maximize2, Send, Heart, Edit2, Check, X, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Textarea } from '@/components/ui/textarea'
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 
 interface User {
   id: string
@@ -203,10 +202,10 @@ export function MemoryDetailModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-5xl h-[90vh] md:h-auto p-0 gap-0 overflow-hidden bg-white border-none flex flex-col md:flex-row">
-        <VisuallyHidden>
+        <div className="sr-only">
             <DialogTitle>{memory.description}</DialogTitle>
             <DialogDescription>Memory details and comments</DialogDescription>
-        </VisuallyHidden>
+        </div>
 
         {/* Image Section */}
         <div

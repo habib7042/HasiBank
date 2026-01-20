@@ -56,7 +56,7 @@ interface TransactionData {
   year: string
 }
 
-const INACTIVITY_TIMEOUT = 5 * 60 * 1000 // 5 minutes
+const SESSION_TIMEOUT = 5 * 60 * 1000 // 5 minutes strict
 
 type View = 'home' | 'overview' | 'deposit' | 'withdraw' | 'notebook' | 'memories' | 'code' | 'contacts'
 
@@ -73,57 +73,61 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState<string | null>(null)
 
   const { toast } = useToast()
-  const activityTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const sessionTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const handleLogout = () => {
     setIsAuthenticated(false)
     setCurrentView('home')
     localStorage.removeItem('isAuthenticated')
-    localStorage.removeItem('lastActivity')
     sessionStorage.clear()
-    if (activityTimerRef.current) clearTimeout(activityTimerRef.current)
+    if (sessionTimerRef.current) clearTimeout(sessionTimerRef.current)
   }
 
-  const updateActivity = () => {
-    if (isAuthenticated) {
-      localStorage.setItem('lastActivity', Date.now().toString())
-      resetInactivityTimer()
-    }
-  }
+  // Strict Session Timer & Visibility Handler
+  useEffect(() => {
+    if (!isAuthenticated) return
 
-  const resetInactivityTimer = () => {
-    if (activityTimerRef.current) clearTimeout(activityTimerRef.current)
+    // 1. Strict 5-minute session timer
+    sessionTimerRef.current = setTimeout(() => {
+      handleLogout()
+      toast({
+        title: "Session Expired",
+        description: "Your session has timed out for security.",
+        variant: "destructive"
+      })
+    }, SESSION_TIMEOUT)
 
-    if (isAuthenticated) {
-      activityTimerRef.current = setTimeout(() => {
+    // 2. Logout on minimize/hidden
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
         handleLogout()
-        toast({
-          title: "Session Expired",
-          description: "You have been logged out due to inactivity.",
-          variant: "destructive"
-        })
-      }, INACTIVITY_TIMEOUT)
+      }
     }
-  }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      if (sessionTimerRef.current) clearTimeout(sessionTimerRef.current)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [isAuthenticated])
 
   useEffect(() => {
-    // Check local storage for persistent login
+    // Check local storage for persistent login (only if active recently not handled by visibility logic which clears it?)
+    // Actually, strict requirement says "minimize he will logout".
+    // So persistent login across refreshes is fine, but minimize kills it.
+    // If I refresh the page, it's not minimized.
+    // But `localStorage.getItem('isAuthenticated')` restores session.
+    // The previous logic checked `lastActivity`.
+    // Now we want strict session. If user refreshes, should they stay logged in?
+    // "App session timeout time 5 minutes" usually means strict.
+    // But "minimize he will logout" implies session persistence is very fragile.
+    // Let's keep `isAuthenticated` in localStorage for refresh, but visibility kills it.
+
     const savedAuth = localStorage.getItem('isAuthenticated')
-    const lastActivity = localStorage.getItem('lastActivity')
 
     if (savedAuth === 'true') {
-      // Check if session expired while closed
-      if (lastActivity) {
-        const timeSinceActivity = Date.now() - parseInt(lastActivity)
-        if (timeSinceActivity > INACTIVITY_TIMEOUT) {
-          handleLogout()
-          setIsInitialLoading(false)
-          return
-        }
-      }
-
       setIsAuthenticated(true)
-      updateActivity() // Refresh activity on load
       setIsInitialLoading(false)
     } else {
       const timer = setTimeout(() => {
@@ -132,22 +136,6 @@ export default function Home() {
       return () => clearTimeout(timer)
     }
   }, [])
-
-  // Activity listeners
-  useEffect(() => {
-    if (!isAuthenticated) return
-
-    const events = ['mousedown', 'keydown', 'scroll', 'touchstart']
-    const handleActivity = () => updateActivity()
-
-    events.forEach(event => window.addEventListener(event, handleActivity))
-    resetInactivityTimer() // Start timer
-
-    return () => {
-      events.forEach(event => window.removeEventListener(event, handleActivity))
-      if (activityTimerRef.current) clearTimeout(activityTimerRef.current)
-    }
-  }, [isAuthenticated])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -206,24 +194,23 @@ export default function Home() {
       if (response.ok) {
         toast({
           title: "Access Granted",
-          description: "Welcome to Hashi Bank Dashboard.",
+          description: "Welcome to Hashi Bank.",
         })
         setIsAuthenticated(true)
         localStorage.setItem('isAuthenticated', 'true')
-        updateActivity()
         await fetch('/api/init', { method: 'POST' })
         loadUsers()
       } else {
         toast({
           title: "Access Denied",
-          description: "Invalid security PIN provided.",
+          description: "Invalid security PIN.",
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
         title: "System Error",
-        description: "Unable to verify credentials. Please try again.",
+        description: "Unable to verify credentials.",
         variant: "destructive",
       })
     } finally {
@@ -263,7 +250,7 @@ export default function Home() {
         loadDeposits()
         loadUsers()
         setCurrentUser(data.userName)
-        setCurrentView('home') // Return to home on success
+        setCurrentView('home')
       } else {
         const error = await response.json()
         throw new Error(error.error || 'Failed to process deposit')
@@ -303,7 +290,7 @@ export default function Home() {
         loadDeposits()
         loadUsers()
         setCurrentUser(data.userName)
-        setCurrentView('home') // Return to home on success
+        setCurrentView('home')
       } else {
         const error = await response.json()
         throw new Error(error.error || 'Failed to process withdrawal')
@@ -320,7 +307,7 @@ export default function Home() {
     }
   }
 
-  // Background Animation Component
+  // Background Animation Component - Only for authenticated view
   const LoveBackground = () => (
     <div className="love-background">
       <div className="heart"></div>
@@ -338,11 +325,21 @@ export default function Home() {
   }
 
   if (!isAuthenticated) {
+    // Professional Banking Theme Wrapper
     return (
-      <>
-        <LoveBackground />
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center relative overflow-hidden">
+        {/* Abstract Professional Background Shapes */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-blue-100/50 blur-3xl" />
+          <div className="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-indigo-100/50 blur-3xl" />
+        </div>
+
         <LoginForm onLogin={handleLogin} isLoading={isLoading} />
-      </>
+
+        <footer className="absolute bottom-4 text-center text-slate-400 text-xs">
+           © {new Date().getFullYear()} Hashi Bank. Secure. Reliable.
+        </footer>
+      </div>
     )
   }
 
@@ -402,7 +399,7 @@ export default function Home() {
               />
             </div>
 
-            {/* Quick Summary Widget could go here */}
+            {/* Quick Summary Widget */}
             <div className="mt-12 p-6 bg-white/60 backdrop-blur-sm rounded-3xl border border-pink-100 shadow-sm">
               <h3 className="text-lg font-semibold text-pink-800 mb-4">Quick Summary</h3>
               <div className="flex justify-between items-center">

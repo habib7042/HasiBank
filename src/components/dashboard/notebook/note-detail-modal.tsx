@@ -1,0 +1,205 @@
+import { useState, useEffect } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Note } from './notebook'
+import { NoteItem } from './note-item'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { CommentSection } from './comment-section'
+import { Heart, ThumbsUp, Smile, Frown, MessageCircle, Edit2, Check, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+interface User {
+  id: string
+  name: string
+}
+
+interface NoteDetailModalProps {
+  note: Note | null
+  isOpen: boolean
+  onClose: () => void
+  users: User[]
+  onReactionUpdate: () => void
+  currentUser: string
+}
+
+const REACTION_TYPES = [
+  { type: 'like', icon: ThumbsUp, label: 'Like', color: 'text-blue-500', emoji: '👍' },
+  { type: 'love', icon: Heart, label: 'Love', color: 'text-red-500', emoji: '❤️' },
+  { type: 'haha', icon: Smile, label: 'Haha', color: 'text-yellow-500', emoji: '😂' },
+  { type: 'sad', icon: Frown, label: 'Sad', color: 'text-purple-500', emoji: '😢' },
+]
+
+export function NoteDetailModal({ note, isOpen, onClose, users, onReactionUpdate, currentUser }: NoteDetailModalProps) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedContent, setEditedContent] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+  const [isReacting, setIsReacting] = useState(false)
+
+  useEffect(() => {
+    if (note) {
+      setEditedContent(note.content)
+      setIsEditing(false)
+    }
+  }, [note])
+
+  if (!note) return null
+
+  const handleSaveEdit = async () => {
+    if (!editedContent.trim() || editedContent === note.content) {
+      setIsEditing(false)
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      const response = await fetch(`/api/notes/${note.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: editedContent }),
+      })
+
+      if (response.ok) {
+        setIsEditing(false)
+        onReactionUpdate()
+      }
+    } catch (error) {
+      console.error('Failed to save edit', error)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleReaction = async (type: string) => {
+    if (!currentUser) return
+    setIsReacting(true)
+    try {
+      await fetch(`/api/notes/${note.id}/react`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userName: currentUser, type }),
+      })
+      onReactionUpdate()
+    } catch (error) {
+      console.error('Failed to react', error)
+    } finally {
+      setIsReacting(false)
+    }
+  }
+
+  const reactionsByType = note.reactions.reduce((acc, reaction) => {
+    acc[reaction.type] = (acc[reaction.type] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+
+  const userReaction = note.reactions.find(r => r.user.name === currentUser)
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col p-0 gap-0 bg-white/95 backdrop-blur-xl border-pink-100">
+        <div className="p-6 pb-2 border-b border-pink-100">
+            <div className="flex flex-row items-start gap-4">
+                <Avatar className="h-10 w-10 border-2 border-pink-100">
+                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${note.user.name}`} />
+                <AvatarFallback className="bg-pink-100 text-pink-700">{note.user.name[0]}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col flex-1">
+                <div className="flex justify-between items-start">
+                    <span className="text-base font-bold text-pink-900">{note.user.name}</span>
+                    <div className="flex items-center gap-2">
+                    {note.emoji && (
+                        <span className="text-2xl animate-pulse" title="Mood">{note.emoji}</span>
+                    )}
+                    {!isEditing && (
+                        <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 text-pink-300 hover:text-pink-600"
+                        onClick={() => setIsEditing(true)}
+                        >
+                        <Edit2 className="h-4 w-4" />
+                        </Button>
+                    )}
+                    </div>
+                </div>
+                <span className="text-xs text-pink-400">
+                    {new Date(note.createdAt).toLocaleDateString()} at {new Date(note.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+                </div>
+            </div>
+        </div>
+
+        <ScrollArea className="flex-1 p-6">
+            {isEditing ? (
+            <div className="flex flex-col gap-2">
+                <Textarea
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
+                className="bg-white border-pink-200 min-h-[150px] text-lg p-4"
+                />
+                <div className="flex justify-end gap-2 mt-2">
+                <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setIsEditing(false)}
+                    className="text-red-500 hover:bg-red-50"
+                >
+                    Cancel
+                </Button>
+                <Button
+                    size="sm"
+                    onClick={handleSaveEdit}
+                    disabled={isSaving}
+                    className="bg-green-500 hover:bg-green-600 text-white"
+                >
+                    {isSaving ? 'Saving...' : 'Save Changes'}
+                </Button>
+                </div>
+            </div>
+            ) : (
+            <p className="text-pink-900 whitespace-pre-wrap text-lg leading-relaxed">{note.content}</p>
+            )}
+
+            <div className="my-6 border-t border-pink-100" />
+
+            <CommentSection
+                noteId={note.id}
+                comments={note.comments}
+                currentUser={currentUser}
+                onCommentAdded={onReactionUpdate}
+            />
+        </ScrollArea>
+
+        <div className="p-4 bg-pink-50/50 border-t border-pink-100 flex justify-between items-center rounded-b-lg">
+             <div className="flex gap-1 items-center">
+                {REACTION_TYPES.map(({ type, icon: Icon, color }) => {
+                const isActive = userReaction?.type === type
+                const count = reactionsByType[type] || 0
+
+                return (
+                    <Button
+                    key={type}
+                    variant="ghost"
+                    size="sm"
+                    className={cn(
+                        "flex items-center gap-1.5 h-9 px-3 hover:bg-white/80 transition-all",
+                        isActive && "bg-white shadow-sm ring-1 ring-pink-200 scale-105"
+                    )}
+                    onClick={() => handleReaction(type)}
+                    disabled={isReacting || !currentUser}
+                    >
+                    <Icon className={cn("h-5 w-5 transition-all", isActive ? `${color} fill-current` : "text-slate-400")} />
+                    {count > 0 && <span className="text-sm font-bold text-slate-600">{count}</span>}
+                    </Button>
+                )
+                })}
+            </div>
+             <div className="text-xs text-pink-400 font-medium">
+                {note.comments.length} comments
+            </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}

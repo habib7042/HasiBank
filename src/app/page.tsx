@@ -14,7 +14,6 @@ import { PinGate } from '@/components/dashboard/pin-gate'
 import { IdentityGate } from '@/components/dashboard/identity/identity-gate'
 import { CodePage } from '@/components/dashboard/code/code-page'
 import { ContactBook } from '@/components/dashboard/contacts/contact-book'
-import { FloatingWhatsApp } from '@/components/dashboard/ui/floating-whatsapp'
 import { AppIcon } from '@/components/dashboard/ui/app-icon'
 import { PageHeader } from '@/components/dashboard/ui/page-header'
 import {
@@ -518,7 +517,6 @@ export default function Home() {
           </div>
         )}
       </main>
-      <FloatingWhatsApp />
     </div>
   )
 }

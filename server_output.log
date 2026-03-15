@@ -1,0 +1,198 @@
+
+> nextjs_tailwind_shadcn_ts@0.1.0 dev
+> nodemon --exec "npx tsx server.ts" --watch server.ts --watch src --ext ts,tsx,js,jsx 2>&1 | tee dev.log
+
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): server.ts src/**/*[39m
+[33m[nodemon] watching extensions: ts,tsx,js,jsx[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+> Ready on http://0.0.0.0:3000
+> Socket.IO server running at ws://0.0.0.0:3000/api/socketio
+ ○ Compiling / ...
+ ✓ Compiled / in 6s (1263 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 7945ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 120ms
+ ○ Compiling /api/auth/verify-pin ...
+ ✓ Compiled /api/auth/verify-pin in 750ms (1284 modules)
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 3506ms
+ ✓ Compiled /api/init in 341ms (1286 modules)
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+ ○ Compiling /api/deposits ...
+ POST /api/init 200 in 1171ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+ ✓ Compiled /api/deposits in 729ms (1292 modules)
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 OFFSET $1
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 2591ms
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE 1=1 ORDER BY "public"."Deposit"."createdAt" DESC OFFSET $1
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 232ms
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+ GET /api/totals 200 in 2986ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+ GET /api/deposits 200 in 3178ms
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 455ms
+ ✓ Compiled /api/memories in 474ms (1294 modules)
+prisma:query SELECT "public"."Memory"."id", "public"."Memory"."imageUrl", "public"."Memory"."description", "public"."Memory"."date", "public"."Memory"."userId", "public"."Memory"."createdAt" FROM "public"."Memory" WHERE 1=1 ORDER BY "public"."Memory"."date" DESC LIMIT $1 OFFSET $2
+prisma:query SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."MemoryImage"."id", "public"."MemoryImage"."url", "public"."MemoryImage"."memoryId" FROM "public"."MemoryImage" WHERE "public"."MemoryImage"."memoryId" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) OFFSET $11
+prisma:query SELECT "public"."MemoryComment"."id", "public"."MemoryComment"."content", "public"."MemoryComment"."memoryId", "public"."MemoryComment"."userId", "public"."MemoryComment"."createdAt" FROM "public"."MemoryComment" WHERE "public"."MemoryComment"."memoryId" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ORDER BY "public"."MemoryComment"."createdAt" ASC OFFSET $11
+prisma:query SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."MemoryCommentReaction"."id", "public"."MemoryCommentReaction"."type", "public"."MemoryCommentReaction"."memoryCommentId", "public"."MemoryCommentReaction"."userId", "public"."MemoryCommentReaction"."createdAt" FROM "public"."MemoryCommentReaction" WHERE "public"."MemoryCommentReaction"."memoryCommentId" IN ($1,$2,$3,$4,$5,$6) OFFSET $7
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Memory"."id" FROM "public"."Memory" WHERE 1=1 OFFSET $1) AS "sub"
+ GET /api/memories?page=1&limit=10 200 in 5933ms
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 234ms
+ ✓ Compiled /api/notes in 476ms (1296 modules)
+prisma:query SELECT 1
+prisma:query SELECT "public"."Note"."id", "public"."Note"."content", "public"."Note"."emoji", "public"."Note"."userId", "public"."Note"."createdAt", "public"."Note"."updatedAt" FROM "public"."Note" WHERE 1=1 ORDER BY "public"."Note"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+ GET /api/notes?page=1&limit=10 200 in 2022ms
+prisma:query SELECT "public"."Reaction"."id", "public"."Reaction"."type", "public"."Reaction"."noteId", "public"."Reaction"."userId", "public"."Reaction"."createdAt" FROM "public"."Reaction" WHERE "public"."Reaction"."noteId" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) OFFSET $11
+prisma:query SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."Comment"."id", "public"."Comment"."content", "public"."Comment"."noteId", "public"."Comment"."userId", "public"."Comment"."createdAt" FROM "public"."Comment" WHERE "public"."Comment"."noteId" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ORDER BY "public"."Comment"."createdAt" ASC OFFSET $11
+prisma:query SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."CommentReaction"."id", "public"."CommentReaction"."type", "public"."CommentReaction"."commentId", "public"."CommentReaction"."userId", "public"."CommentReaction"."createdAt" FROM "public"."CommentReaction" WHERE "public"."CommentReaction"."commentId" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9) OFFSET $10
+prisma:query SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Note"."id" FROM "public"."Note" WHERE 1=1 OFFSET $1) AS "sub"
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 561ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 84ms
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 1843ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+ POST /api/init 200 in 686ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 1815ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 OFFSET $1
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE 1=1 ORDER BY "public"."Deposit"."createdAt" DESC OFFSET $1
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+ GET /api/totals 200 in 2247ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 456ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+ GET /api/deposits 200 in 2495ms
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 457ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 97ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 86ms
+prisma:query SELECT 1
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 482ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+ POST /api/init 200 in 696ms
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 472ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 250ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 OFFSET $1
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE 1=1 ORDER BY "public"."Deposit"."createdAt" DESC OFFSET $1
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+ GET /api/deposits 200 in 1368ms
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+ GET /api/totals 200 in 1372ms
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 237ms
+prisma:query SELECT 1
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 465ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 97ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 80ms
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 2433ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+ POST /api/init 200 in 688ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 1777ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 OFFSET $1
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 228ms
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE 1=1 ORDER BY "public"."Deposit"."createdAt" DESC OFFSET $1
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+ GET /api/totals 200 in 2226ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+ GET /api/deposits 200 in 2511ms
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 460ms
+prisma:query SELECT 1
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 462ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 94ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 88ms
+prisma:query SELECT 1
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 475ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+ POST /api/init 200 in 685ms
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 OFFSET $1
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 678ms
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE 1=1 ORDER BY "public"."Deposit"."createdAt" DESC OFFSET $1
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 448ms
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+ GET /api/totals 200 in 1124ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+ GET /api/deposits 200 in 1322ms
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 450ms
+prisma:query SELECT 1
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 453ms

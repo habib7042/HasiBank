@@ -19,7 +19,7 @@ const validateDatabaseUrl = () => {
   return databaseUrl
 }
 
-export const db =
+export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
     log: ['query'],
@@ -30,4 +30,6 @@ export const db =
     }
   })
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export const db = prisma; // Backward compatibility

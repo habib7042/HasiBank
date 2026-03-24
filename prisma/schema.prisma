@@ -29,6 +29,19 @@ model User {
   contacts  Contact[]
   commentReactions CommentReaction[]
   memoryCommentReactions MemoryCommentReaction[]
+  promises  Promise[]
+}
+
+model Promise {
+  id        Int      @id @default(autoincrement())
+  content   String
+  userId    Int
+  startDate DateTime @default(now())
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Deposit {

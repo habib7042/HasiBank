@@ -14,35 +14,98 @@
  ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
  ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
- GET / 200 in 7945ms
- ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
- ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
- GET / 200 in 120ms
- ○ Compiling /api/auth/verify-pin ...
- ✓ Compiled /api/auth/verify-pin in 750ms (1284 modules)
-prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
- POST /api/auth/verify-pin 200 in 3506ms
- ✓ Compiled /api/init in 341ms (1286 modules)
-prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
- ○ Compiling /api/deposits ...
- POST /api/init 200 in 1171ms
-prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
- ✓ Compiled /api/deposits in 729ms (1292 modules)
-prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
-prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
- GET /api/users 200 in 2591ms
-prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE 1=1 ORDER BY "public"."Deposit"."createdAt" DESC OFFSET $1
-prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
- GET /api/users 200 in 232ms
-prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
- GET /api/totals 200 in 2986ms
-prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
- GET /api/deposits 200 in 3178ms
-prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+Read more: https://nextjs.org/docs/app/api-reference/functio[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+ ⨯ uncaughtException: Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+ ⨯ uncaughtException:  Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+ ⨯ uncaughtException: Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+ ⨯ uncaughtException:  Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+ ⨯ uncaughtException: Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+ ⨯ uncaughtException:  Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+ ⨯ uncaughtException: Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+ ⨯ uncaughtException:  Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+ ⨯ uncaughtException: Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+ ⨯ uncaughtException:  Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+ublic"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
  POST /api/auth/verify-pin 200 in 455ms
  ✓ Compiled /api/memories in 474ms (1294 modules)
 prisma:query SELECT "public"."Memory"."id", "public"."Memory"."imageUrl", "public"."Memory"."description", "public"."Memory"."date", "public"."Memory"."userId", "public"."Memory"."createdAt" FROM "public"."Memory" WHERE 1=1 ORDER BY "public"."Memory"."date" DESC LIMIT $1 OFFSET $2
@@ -196,3 +259,142 @@ prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public
 prisma:query SELECT 1
 prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
  POST /api/auth/verify-pin 200 in 453ms
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+ ⨯ uncaughtException: Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+ ⨯ uncaughtException:  Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+ ⨯ uncaughtException: Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+ ⨯ uncaughtException:  Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+> Ready on http://0.0.0.0:3000
+> Socket.IO server running at ws://0.0.0.0:3000/api/socketio
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+ ⨯ uncaughtException: Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+ ⨯ uncaughtException:  Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `npx tsx server.ts`[39m
+> Ready on http://0.0.0.0:3000
+> Socket.IO server running at ws://0.0.0.0:3000/api/socketio
+ ○ Compiling / ...
+ ✓ Compiled / in 6.3s (1285 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 8653ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 115ms
+ ○ Compiling /api/auth/verify-pin ...
+ ✓ Compiled /api/auth/verify-pin in 910ms (1292 modules)
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 3696ms
+ ○ Compiling /api/users ...
+ ✓ Compiled /api/deposits in 1265ms (1300 modules)
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 OFFSET $1
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 2780ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+ POST /api/init 200 in 3359ms
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE 1=1 ORDER BY "public"."Deposit"."createdAt" DESC OFFSET $1
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 236ms
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+ GET /api/totals 200 in 3226ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+ GET /api/deposits 200 in 3388ms
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 467ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 655ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 248ms
+prisma:query SELECT 1
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 467ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."name" = $1 LIMIT $2 OFFSET $3
+ POST /api/init 200 in 680ms
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 673ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 OFFSET $1
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."name" ASC OFFSET $1
+ GET /api/users 200 in 231ms
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE 1=1 ORDER BY "public"."Deposit"."createdAt" DESC OFFSET $1
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE "public"."User"."id" IN ($1,$2) OFFSET $3
+ GET /api/deposits 200 in 1328ms
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+prisma:query SELECT "public"."Deposit"."id", "public"."Deposit"."amount", "public"."Deposit"."month", "public"."Deposit"."year", "public"."Deposit"."userId", "public"."Deposit"."createdAt", "public"."Deposit"."updatedAt" FROM "public"."Deposit" WHERE "public"."Deposit"."userId" = $1 OFFSET $2
+ GET /api/totals 200 in 1352ms
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."pin", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE 1=1 LIMIT $1 OFFSET $2
+ POST /api/auth/verify-pin 200 in 459ms
+ ○ Compiling /api/promises ...
+ ✓ Compiled /api/promises in 1364ms (1316 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 181ms
+prisma:query SELECT "public"."Promise"."id", "public"."Promise"."content", "public"."Promise"."userId", "public"."Promise"."startDate", "public"."Promise"."isActive", "public"."Promise"."createdAt", "public"."Promise"."updatedAt" FROM "public"."Promise" WHERE 1=1 ORDER BY "public"."Promise"."startDate" DESC OFFSET $1
+ GET /api/promises 200 in 1969ms

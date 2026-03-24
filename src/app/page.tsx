@@ -15,6 +15,7 @@ import { PinGate } from '@/components/dashboard/pin-gate'
 import { IdentityGate } from '@/components/dashboard/identity/identity-gate'
 import { CodePage } from '@/components/dashboard/code/code-page'
 import { ContactBook } from '@/components/dashboard/contacts/contact-book'
+import { PromiseManager } from '@/components/dashboard/promises/promises-manager'
 import { AppIcon } from '@/components/dashboard/ui/app-icon'
 import { PageHeader } from '@/components/dashboard/ui/page-header'
 import {
@@ -26,7 +27,8 @@ import {
   Key,
   CreditCard,
   Settings,
-  Contact
+  Contact,
+  ShieldCheck
 } from 'lucide-react'
 import { LoadingScreen } from '@/components/ui/loading-screen'
 
@@ -59,7 +61,7 @@ interface TransactionData {
 
 const SESSION_TIMEOUT = 5 * 60 * 1000 // 5 minutes strict
 
-type View = 'home' | 'overview' | 'deposit' | 'withdraw' | 'notebook' | 'memories' | 'code' | 'contacts'
+type View = 'home' | 'overview' | 'deposit' | 'withdraw' | 'notebook' | 'memories' | 'code' | 'contacts' | 'promises'
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -410,6 +412,12 @@ export default function Home() {
                 onClick={() => setCurrentView('contacts')}
                 gradient="from-teal-400 to-cyan-500"
               />
+              <AppIcon
+                icon={ShieldCheck}
+                label="Promises"
+                onClick={() => setCurrentView('promises')}
+                gradient="from-yellow-400 to-amber-500"
+              />
             </div>
 
             {/* Quick Summary Widget */}
@@ -522,6 +530,23 @@ export default function Home() {
                     <ContactBook currentUser={selectedUser} />
                   )}
                 </IdentityGate>
+              </>
+            )}
+
+            {currentView === 'promises' && (
+              <>
+                <PageHeader title="Promises" onBack={() => setCurrentView('home')} />
+                <PinGate
+                  gateId="promises"
+                  title="Promises Locked"
+                  description="Enter PIN to access promises"
+                >
+                  <IdentityGate users={users} gateId="promises-identity" title="Who is making this promise?">
+                    {(selectedUser) => (
+                      <PromiseManager currentUser={selectedUser} />
+                    )}
+                  </IdentityGate>
+                </PinGate>
               </>
             )}
           </div>

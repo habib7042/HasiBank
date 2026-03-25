@@ -7,8 +7,7 @@ export async function DELETE(
 ) {
   try {
     const resolvedParams = await params
-    const id = parseInt(resolvedParams.id, 10);
-    const prioDakId = parseInt(id, 10);
+    const prioDakId = parseInt(resolvedParams.id, 10);
 
     if (isNaN(prioDakId)) {
       return NextResponse.json({ error: "Invalid ID format" }, { status: 400 });

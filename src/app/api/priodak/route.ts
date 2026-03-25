@@ -3,7 +3,15 @@ import { db as prisma } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   try {
+    const searchParams = req.nextUrl.searchParams;
+    const viewerName = searchParams.get('viewerName');
+
+    const whereClause = viewerName
+      ? { user: { name: { not: viewerName } } }
+      : {};
+
     const prioDaks = await prisma.prioDak.findMany({
+      where: whereClause,
       include: {
         user: {
           select: { name: true },

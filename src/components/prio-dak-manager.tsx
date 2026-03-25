@@ -22,8 +22,20 @@ export function PrioDakManager({ currentUser }: PrioDakManagerProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [holdingCardId, setHoldingCardId] = useState<number | null>(null);
 
+  const playClickAudio = () => {
+    try {
+      const audio = new Audio("/priodak-audio.m4a");
+      audio.volume = 1.0;
+      audio.currentTime = 0; // Reset to start
+      audio.play().catch(e => console.error("Audio playback failed:", e));
+    } catch (e) {
+      console.error("Audio instantiation failed:", e);
+    }
+  };
+
   const handlePointerDown = (id: number) => {
     setHoldingCardId(id);
+    playClickAudio();
   };
 
   const handlePointerUp = () => {

@@ -3,26 +3,12 @@ import { db as prisma } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const userNameStr = searchParams.get("userName");
-
-    if (!userNameStr) {
-      return NextResponse.json(
-        { error: "userName is required" },
-        { status: 400 }
-      );
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { name: userNameStr },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
     const prioDaks = await prisma.prioDak.findMany({
-      where: { userId: user.id },
+      include: {
+        user: {
+          select: { name: true },
+        },
+      },
       orderBy: { createdAt: "desc" },
     });
 

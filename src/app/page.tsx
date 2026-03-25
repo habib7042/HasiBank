@@ -561,11 +561,17 @@ export default function Home() {
             {currentView === 'priodak' && (
               <>
                 <PageHeader title="PrioDak" onBack={() => setCurrentView('home')} />
-                <IdentityGate users={users} gateId="priodak-identity" title="Who is adding this PrioDak?">
-                  {(selectedUser) => (
-                    <PrioDakManager currentUser={selectedUser} />
-                  )}
-                </IdentityGate>
+                <PinGate
+                  gateId="priodak"
+                  title="PrioDak Locked"
+                  description="Enter PIN to access PrioDak"
+                >
+                  <IdentityGate users={users} gateId="priodak-identity" title="Who is adding this PrioDak?">
+                    {(selectedUser) => (
+                      <PrioDakManager currentUser={selectedUser} />
+                    )}
+                  </IdentityGate>
+                </PinGate>
               </>
             )}
           </div>

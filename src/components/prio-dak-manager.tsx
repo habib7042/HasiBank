@@ -13,14 +13,31 @@ interface PrioDakManagerProps {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function PrioDakManager({ currentUser }: PrioDakManagerProps) {
-  const { data: prioDaks, error, mutate } = useSWR<PrioDak[]>(
-    `/api/priodak?userName=${encodeURIComponent(currentUser)}`,
+  const { data: prioDaks, error, mutate } = useSWR<(PrioDak & { user: { name: string } })[]>(
+    `/api/priodak`,
     fetcher
   );
 
   const [newName, setNewName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeCardId, setActiveCardId] = useState<number | null>(null);
+
+  const playKissSound = () => {
+    try {
+      const audio = new Audio("/kiss.ogg");
+      audio.volume = 0.5;
+      audio.play().catch(e => console.error("Audio playback failed:", e));
+    } catch (e) {
+      console.error("Audio instantiation failed:", e);
+    }
+  };
+
+  const handleCardClick = (id: number) => {
+    if (activeCardId !== id) {
+      playKissSound();
+    }
+    setActiveCardId(activeCardId === id ? null : id);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,7 +143,7 @@ export function PrioDakManager({ currentUser }: PrioDakManagerProps) {
                   exit={{ opacity: 0, scale: 0.8 }}
                   whileHover={{ scale: 1.05, y: -5 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveCardId(activeCardId === dak.id ? null : dak.id)}
+                  onClick={() => handleCardClick(dak.id)}
                   className="relative group cursor-pointer"
                 >
                   <div

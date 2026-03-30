@@ -120,6 +120,9 @@ export function NoteInput({ users, onNoteCreated, currentUser }: NoteInputProps)
             onChange={(e) => setContent(e.target.value)}
             className="min-h-[100px] border-pink-200 focus-visible:ring-pink-400 bg-white/50 placeholder:text-pink-300/70"
           />
+          <p className="text-[10px] text-pink-400/80 pl-1">
+            💡 Hint: Use **bold** or [color:red]colored[/color] text. URLs become clickable links!
+          </p>
         </div>
 
         <div className="flex justify-end items-center gap-2">

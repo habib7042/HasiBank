@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Note } from './notebook'
 import { Heart, ThumbsUp, Smile, Frown, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { FormattedText } from './formatted-text'
 
 interface User {
   id: string
@@ -80,9 +81,12 @@ export function NoteItem({ note, users, onReactionUpdate, currentUser, onOpen }:
       </CardHeader>
 
       <CardContent className="p-4 pt-2 flex-grow">
-        <p className="text-pink-800 whitespace-pre-wrap line-clamp-3 text-sm leading-relaxed opacity-90">
-            {note.content}
-        </p>
+        <div className="line-clamp-3">
+          <FormattedText
+             text={note.content}
+             className="text-pink-800 text-sm leading-relaxed opacity-90"
+          />
+        </div>
         <div className="mt-2 text-xs text-pink-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
             Read more...
         </div>

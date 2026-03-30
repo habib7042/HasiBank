@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { CommentSection } from './comment-section'
 import { Heart, ThumbsUp, Smile, Frown, Edit2, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { FormattedText } from './formatted-text'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -180,7 +181,11 @@ export function NoteDetailModal({ note, isOpen, onClose, users, onReactionUpdate
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
                 className="bg-white border-pink-200 min-h-[150px] text-lg p-4 focus-visible:ring-pink-400"
+                placeholder="Write your note here..."
                 />
+                <p className="text-xs text-pink-400/80 px-2 mt-1">
+                  💡 Hint: Format with **bold** or use [color:red]colored text[/color]. Links become clickable automatically!
+                </p>
                 <div className="flex justify-end gap-2 mt-2">
                 <Button
                     size="sm"
@@ -201,7 +206,10 @@ export function NoteDetailModal({ note, isOpen, onClose, users, onReactionUpdate
                 </div>
             </div>
             ) : (
-            <p className="text-pink-900 whitespace-pre-wrap text-base sm:text-lg leading-relaxed">{note.content}</p>
+            <FormattedText
+                text={note.content}
+                className="text-pink-900 text-base sm:text-lg leading-relaxed"
+            />
             )}
 
             <div className="my-6 border-t border-pink-100" />

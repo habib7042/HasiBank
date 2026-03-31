@@ -586,11 +586,17 @@ export default function Home() {
             {currentView === 'chat' && (
               <>
                 <PageHeader title="যোগাযোগ" onBack={() => setCurrentView('home')} />
-                <IdentityGate users={users} gateId="chat-identity" title="কে চ্যাটে ঢুকছেন?">
-                  {(selectedUser) => (
-                    <ChatRoom currentUser={selectedUser} />
-                  )}
-                </IdentityGate>
+                <PinGate
+                  gateId="chat"
+                  title="Chat Locked"
+                  description="Enter PIN to access secure chat"
+                >
+                  <IdentityGate users={users} gateId="chat-identity" title="কে চ্যাটে ঢুকছেন?">
+                    {(selectedUser) => (
+                      <ChatRoom currentUser={selectedUser} />
+                    )}
+                  </IdentityGate>
+                </PinGate>
               </>
             )}
           </div>

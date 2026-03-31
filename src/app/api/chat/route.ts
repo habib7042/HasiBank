@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db as prisma } from "@/lib/db";
+import { encrypt, decrypt } from "@/lib/encryption";
 
 export async function GET(req: NextRequest) {
   try {
@@ -30,7 +31,14 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "asc" }, // Oldest first (bottom up in UI)
     });
 
-    return NextResponse.json(messages);
+    // Decrypt content and image urls
+    const decryptedMessages = messages.map(msg => ({
+      ...msg,
+      content: msg.content ? decrypt(msg.content) : null,
+      imageUrl: msg.imageUrl ? decrypt(msg.imageUrl) : null,
+    }));
+
+    return NextResponse.json(decryptedMessages);
   } catch (error) {
     console.error("Error fetching chat messages:", error);
     return NextResponse.json(
@@ -63,8 +71,8 @@ export async function POST(req: NextRequest) {
 
     const message = await prisma.chatMessage.create({
       data: {
-        content: content || null,
-        imageUrl: imageUrl || null,
+        content: content ? encrypt(content) : null,
+        imageUrl: imageUrl ? encrypt(imageUrl) : null,
         userId: user.id,
       },
       include: {

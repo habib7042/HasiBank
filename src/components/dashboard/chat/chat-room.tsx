@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react"
 import useSWR from "swr"
-import { Send, Image as ImageIcon, Smile, X } from "lucide-react"
+import { Send, Image as ImageIcon, Smile, X, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -34,6 +35,7 @@ export function ChatRoom({ currentUser }: ChatRoomProps) {
   const [newMessage, setNewMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [viewingImage, setViewingImage] = useState<string | null>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -196,8 +198,9 @@ export function ChatRoom({ currentUser }: ChatRoomProps) {
                       <img
                         src={msg.imageUrl}
                         alt="Shared image"
-                        className="rounded-xl max-w-[200px] sm:max-w-[250px] w-full object-cover mb-1 border border-pink-100/50 shadow-sm"
+                        className="rounded-xl max-w-[200px] sm:max-w-[250px] w-full object-cover mb-1 border border-pink-100/50 shadow-sm cursor-pointer hover:opacity-95 transition-opacity"
                         loading="lazy"
+                        onClick={() => setViewingImage(msg.imageUrl)}
                       />
                     )}
                     {msg.content && <span className="whitespace-pre-wrap">{msg.content}</span>}
@@ -285,6 +288,38 @@ export function ChatRoom({ currentUser }: ChatRoomProps) {
           <Send className="w-4 h-4 ml-0.5" />
         </Button>
       </form>
+
+      {/* Full Screen Image Viewer Modal */}
+      <Dialog open={!!viewingImage} onOpenChange={(open) => !open && setViewingImage(null)}>
+        <DialogContent className="max-w-4xl w-full p-1 bg-black/95 border-none shadow-2xl flex flex-col justify-center items-center h-[90vh]">
+          {viewingImage && (
+            <>
+              <div className="w-full flex justify-end p-2 absolute top-0 right-0 z-50">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="bg-white/10 hover:bg-white/20 text-white border-none gap-2"
+                  onClick={() => {
+                    const a = document.createElement("a");
+                    a.href = viewingImage;
+                    a.download = `chat-image-${new Date().getTime()}.jpg`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                  }}
+                >
+                  <Download className="w-4 h-4" /> Download
+                </Button>
+              </div>
+              <img
+                src={viewingImage}
+                alt="Full screen preview"
+                className="max-h-[85vh] max-w-full object-contain"
+              />
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

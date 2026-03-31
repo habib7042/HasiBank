@@ -31,6 +31,17 @@ model User {
   memoryCommentReactions MemoryCommentReaction[]
   promises  Promise[]
   prioDaks  PrioDak[]
+  messages  ChatMessage[]
+}
+
+model ChatMessage {
+  id        Int      @id @default(autoincrement())
+  content   String?  @db.Text
+  imageUrl  String?  @db.Text
+  userId    Int
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model PrioDak {

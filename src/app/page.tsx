@@ -17,6 +17,7 @@ import { CodePage } from '@/components/dashboard/code/code-page'
 import { ContactBook } from '@/components/dashboard/contacts/contact-book'
 import { PromiseManager } from '@/components/dashboard/promises/promises-manager'
 import { PrioDakManager } from '@/components/prio-dak-manager'
+import { ChatRoom } from '@/components/dashboard/chat/chat-room'
 import { AppIcon } from '@/components/dashboard/ui/app-icon'
 import { PageHeader } from '@/components/dashboard/ui/page-header'
 import {
@@ -30,7 +31,8 @@ import {
   Settings,
   Contact,
   ShieldCheck,
-  HeartHandshake
+  HeartHandshake,
+  MessageCircleHeart
 } from 'lucide-react'
 import { LoadingScreen } from '@/components/ui/loading-screen'
 
@@ -63,7 +65,7 @@ interface TransactionData {
 
 const SESSION_TIMEOUT = 5 * 60 * 1000 // 5 minutes strict
 
-type View = 'home' | 'overview' | 'deposit' | 'withdraw' | 'notebook' | 'memories' | 'code' | 'contacts' | 'promises' | 'priodak'
+type View = 'home' | 'overview' | 'deposit' | 'withdraw' | 'notebook' | 'memories' | 'code' | 'contacts' | 'promises' | 'priodak' | 'chat'
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -426,6 +428,12 @@ export default function Home() {
                 onClick={() => setCurrentView('priodak')}
                 gradient="from-rose-400 to-pink-600"
               />
+              <AppIcon
+                icon={MessageCircleHeart}
+                label="যোগাযোগ"
+                onClick={() => setCurrentView('chat')}
+                gradient="from-fuchsia-400 to-purple-600"
+              />
             </div>
 
             {/* Quick Summary Widget */}
@@ -572,6 +580,17 @@ export default function Home() {
                     )}
                   </IdentityGate>
                 </PinGate>
+              </>
+            )}
+
+            {currentView === 'chat' && (
+              <>
+                <PageHeader title="যোগাযোগ" onBack={() => setCurrentView('home')} />
+                <IdentityGate users={users} gateId="chat-identity" title="কে চ্যাটে ঢুকছেন?">
+                  {(selectedUser) => (
+                    <ChatRoom currentUser={selectedUser} />
+                  )}
+                </IdentityGate>
               </>
             )}
           </div>

@@ -132,12 +132,22 @@ export function ChatRoom({ currentUser }: ChatRoomProps) {
   return (
     <div className="flex flex-col h-[70vh] max-h-[800px] bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-pink-100 overflow-hidden relative">
       {/* Header */}
-      <div className="bg-gradient-to-r from-pink-400 to-rose-400 p-4 shrink-0 shadow-sm z-10 flex justify-between items-center">
+      <div className="bg-gradient-to-r from-pink-400 to-rose-400 p-4 shrink-0 shadow-sm z-10 flex justify-between items-center gap-2">
         <div>
-          <h2 className="text-white font-bold text-lg leading-tight">যোগাযোগ</h2>
-          <p className="text-pink-100 text-xs font-medium">Messages disappear after 7 days</p>
+          <div className="flex items-center gap-3">
+            <h2 className="text-white font-bold text-lg leading-tight">যোগাযোগ</h2>
+            <a
+              href="https://hashica8.onrender.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white/20 hover:bg-white/30 text-white text-xs font-medium py-1 px-3 rounded-full transition-colors flex items-center gap-1 border border-white/20 shadow-sm"
+            >
+              <Send className="w-3 h-3" /> Quick Chat
+            </a>
+          </div>
+          <p className="text-pink-100 text-xs font-medium mt-1">Messages disappear after 7 days</p>
         </div>
-        <div className="bg-white/20 px-3 py-1 rounded-full text-white text-xs font-medium backdrop-blur-md">
+        <div className="bg-white/20 px-3 py-1 rounded-full text-white text-xs font-medium backdrop-blur-md shrink-0">
           {currentUser}
         </div>
       </div>

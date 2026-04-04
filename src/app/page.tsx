@@ -15,6 +15,7 @@ import { PinGate } from '@/components/dashboard/pin-gate'
 import { IdentityGate } from '@/components/dashboard/identity/identity-gate'
 import { CodePage } from '@/components/dashboard/code/code-page'
 import { ContactBook } from '@/components/dashboard/contacts/contact-book'
+import Script from 'next/script'
 import { PromiseManager } from '@/components/dashboard/promises/promises-manager'
 import { PrioDakManager } from '@/components/prio-dak-manager'
 import { ChatRoom } from '@/components/dashboard/chat/chat-room'
@@ -333,6 +334,22 @@ export default function Home() {
     </div>
   )
 
+  const TawkToScript = () => (
+    <Script id="tawk-to" strategy="lazyOnload">
+      {`
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/69d14f099680621c337898ca/1jlcppg74';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
+      `}
+    </Script>
+  )
+
   if (isInitialLoading) {
     return <LoadingScreen />
   }
@@ -341,6 +358,7 @@ export default function Home() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center relative overflow-hidden">
+        <TawkToScript />
         {/* Abstract Professional Background Shapes */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
           <div className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-blue-100/50 blur-3xl" />
@@ -358,12 +376,18 @@ export default function Home() {
 
   // 2. Authenticated but Security Check Failed -> Security Question
   if (!isSecurityVerified) {
-    return <SecurityQuestion onSuccess={handleSecuritySuccess} />
+    return (
+      <>
+        <TawkToScript />
+        <SecurityQuestion onSuccess={handleSecuritySuccess} />
+      </>
+    )
   }
 
   // 3. Fully Authenticated -> Dashboard
   return (
     <div className="min-h-screen relative pb-6 md:pb-0">
+      <TawkToScript />
       <LoveBackground />
       <Header onLogout={handleLogout} />
 

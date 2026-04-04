@@ -137,7 +137,7 @@ export function ChatRoom({ currentUser }: ChatRoomProps) {
           <div className="flex items-center gap-3">
             <h2 className="text-white font-bold text-lg leading-tight">যোগাযোগ</h2>
             <a
-              href="https://hashica8.onrender.com"
+              href="https://tawk.to/chat/69d14f099680621c337898ca/1jlcppg74?"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white/20 hover:bg-white/30 text-white text-xs font-medium py-1 px-3 rounded-full transition-colors flex items-center gap-1 border border-white/20 shadow-sm"

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { Plus, Phone, MessageCircle, User, Search, Loader2 } from 'lucide-react'
+import { Plus, Phone, MessageCircle, User, Search, Loader2, Send } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
@@ -170,6 +170,24 @@ export function ContactBook({ currentUser }: ContactBookProps) {
             </div>
             <Button size="icon" variant="ghost" className="text-green-600 hover:bg-green-100 rounded-full">
               <MessageCircle className="h-5 w-5" />
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Static Quick Chat (Tawk.to) Card */}
+        <Card className="border-blue-100 bg-blue-50/50 hover:shadow-md transition-all cursor-pointer group" onClick={() => window.open('https://tawk.to/chat/69d14f099680621c337898ca/1jlcppg74?', '_blank')}>
+          <CardContent className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200">
+                <Send className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-blue-900">Quick Chat</h3>
+                <p className="text-sm text-blue-700">Live conversation</p>
+              </div>
+            </div>
+            <Button size="icon" variant="ghost" className="text-blue-600 hover:bg-blue-100 rounded-full">
+              <Send className="h-5 w-5" />
             </Button>
           </CardContent>
         </Card>

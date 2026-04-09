@@ -32,6 +32,17 @@ model User {
   promises  Promise[]
   prioDaks  PrioDak[]
   messages  ChatMessage[]
+  locations LocationPin[]
+}
+
+model LocationPin {
+  id        Int      @id @default(autoincrement())
+  name      String
+  userId    Int      @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ChatMessage {
@@ -116,11 +127,15 @@ model Comment {
   content   String
   noteId    Int
   userId    Int
+  parentId  Int?
   createdAt DateTime @default(now())
 
   note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   reactions CommentReaction[]
+
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
 }
 
 model CommentReaction {
@@ -162,11 +177,15 @@ model MemoryComment {
   content   String
   memoryId  Int
   userId    Int
+  parentId  Int?
   createdAt DateTime @default(now())
 
   memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   reactions MemoryCommentReaction[]
+
+  parent    MemoryComment? @relation("MemoryCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   MemoryComment[] @relation("MemoryCommentReplies")
 }
 
 model MemoryCommentReaction {

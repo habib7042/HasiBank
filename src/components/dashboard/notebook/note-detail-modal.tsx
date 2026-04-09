@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { CommentSection } from './comment-section'
-import { Heart, ThumbsUp, Smile, Frown, Edit2, Trash2 } from 'lucide-react'
+import { Heart, ThumbsUp, Smile, Frown, Edit2, Trash2, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { FormattedText } from './formatted-text'
 import {
@@ -140,7 +140,7 @@ export function NoteDetailModal({ note, isOpen, onClose, users, onReactionUpdate
                 <div className="flex flex-col flex-1">
                   <div className="flex justify-between items-start">
                       <span className="text-base font-bold text-pink-900">{note.user.name}</span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 md:gap-2">
                         {note.emoji && (
                             <span className="text-2xl animate-pulse" title="Mood">{note.emoji}</span>
                         )}
@@ -164,6 +164,14 @@ export function NoteDetailModal({ note, isOpen, onClose, users, onReactionUpdate
                               </Button>
                             </>
                         )}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 text-gray-400 hover:text-gray-600 ml-1"
+                          onClick={onClose}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
                       </div>
                   </div>
                   <span className="text-xs text-pink-400">

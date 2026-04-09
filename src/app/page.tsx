@@ -18,6 +18,7 @@ import { ContactBook } from '@/components/dashboard/contacts/contact-book'
 import { PromiseManager } from '@/components/dashboard/promises/promises-manager'
 import { PrioDakManager } from '@/components/prio-dak-manager'
 import { ChatRoom } from '@/components/dashboard/chat/chat-room'
+import { PinMeManager } from '@/components/dashboard/pinme/pin-me-manager'
 import { AppIcon } from '@/components/dashboard/ui/app-icon'
 import { PageHeader } from '@/components/dashboard/ui/page-header'
 import {
@@ -32,7 +33,8 @@ import {
   Contact,
   ShieldCheck,
   HeartHandshake,
-  MessageCircleHeart
+  MessageCircleHeart,
+  MapPin
 } from 'lucide-react'
 import { LoadingScreen } from '@/components/ui/loading-screen'
 
@@ -65,7 +67,7 @@ interface TransactionData {
 
 const SESSION_TIMEOUT = 5 * 60 * 1000 // 5 minutes strict
 
-type View = 'home' | 'overview' | 'deposit' | 'withdraw' | 'notebook' | 'memories' | 'code' | 'contacts' | 'promises' | 'priodak' | 'chat'
+type View = 'home' | 'overview' | 'deposit' | 'withdraw' | 'notebook' | 'memories' | 'code' | 'contacts' | 'promises' | 'priodak' | 'chat' | 'pinme'
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -434,6 +436,12 @@ export default function Home() {
                 onClick={() => setCurrentView('chat')}
                 gradient="from-fuchsia-400 to-purple-600"
               />
+              <AppIcon
+                icon={MapPin}
+                label="Pin Me"
+                onClick={() => setCurrentView('pinme')}
+                gradient="from-blue-400 to-cyan-500"
+              />
             </div>
 
             {/* Quick Summary Widget */}
@@ -597,6 +605,17 @@ export default function Home() {
                     )}
                   </IdentityGate>
                 </PinGate>
+              </>
+            )}
+
+            {currentView === 'pinme' && (
+              <>
+                <PageHeader title="Pin Me" onBack={() => setCurrentView('home')} />
+                <IdentityGate users={users} gateId="pinme-identity" title="Who is updating location?">
+                  {(selectedUser) => (
+                    <PinMeManager currentUser={selectedUser} users={users} />
+                  )}
+                </IdentityGate>
               </>
             )}
           </div>

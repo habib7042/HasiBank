@@ -9,7 +9,7 @@ export async function POST(
     const { id } = await params
     const memoryId = parseInt(id)
     const body = await request.json()
-    const { content, userName } = body
+    const { content, userName, parentId } = body
 
     if (!content || !userName) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -27,7 +27,8 @@ export async function POST(
       data: {
         content,
         memoryId,
-        userId: user.id
+        userId: user.id,
+        parentId: parentId || null
       },
       include: {
         user: {

@@ -39,6 +39,7 @@ interface MemoryComment {
   createdAt: string
   user: { name: string }
   reactions?: MemoryCommentReaction[]
+  parentId?: number | null
 }
 
 interface MemoryImage {
@@ -82,6 +83,7 @@ export function MemoryDetailModal({
 
   // Local user selection state for the comment section if currentUser is not passed or needs override
   const [commentAsUser, setCommentAsUser] = useState<string>(currentUser || '')
+  const [replyingTo, setReplyingTo] = useState<number | null>(null)
 
   // Edit State
   const [isEditing, setIsEditing] = useState(false)
@@ -158,11 +160,12 @@ export function MemoryDetailModal({
       const response = await fetch(`/api/memories/${memory.id}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: comment, userName: commentAsUser }),
+        body: JSON.stringify({ content: comment, userName: commentAsUser, parentId: replyingTo }),
       })
 
       if (response.ok) {
         setComment('')
+        setReplyingTo(null)
         fetchMemory()
       }
     } finally {
@@ -304,36 +307,42 @@ export function MemoryDetailModal({
 
         {/* Details Section */}
         <div className="flex-1 flex flex-col h-[50vh] md:h-[80vh] bg-white">
-          <div className="p-4 md:p-6 border-b border-pink-100 shrink-0">
-            <div className="flex flex-col gap-3">
-               <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8 ring-2 ring-pink-100">
-                      <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${memory.user.name}`} />
-                      <AvatarFallback>{memory.user.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-bold text-pink-900">{memory.user.name}</p>
-                      <p className="text-xs text-pink-400">{new Date(memory.date).toLocaleDateString()}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-1 md:-mr-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50"
-                      onClick={() => setShowDeleteConfirm(true)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                    {/* Close button for non-fullscreen mode */}
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-600 md:hidden" onClick={onClose}>
-                        <X className="h-5 w-5" />
-                    </Button>
-                  </div>
+          {/* Fixed Header */}
+          <div className="p-4 md:p-6 border-b border-pink-100 shrink-0 bg-white z-10">
+            <div className="flex justify-between items-start">
+               <div className="flex items-center gap-2">
+                 <Avatar className="h-8 w-8 ring-2 ring-pink-100">
+                   <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${memory.user.name}`} />
+                   <AvatarFallback>{memory.user.name[0]}</AvatarFallback>
+                 </Avatar>
+                 <div>
+                   <p className="text-sm font-bold text-pink-900">{memory.user.name}</p>
+                   <p className="text-xs text-pink-400">{new Date(memory.date).toLocaleDateString()}</p>
+                 </div>
                </div>
 
+               <div className="flex gap-1 md:-mr-2">
+                 <Button
+                   variant="ghost"
+                   size="icon"
+                   className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50"
+                   onClick={() => setShowDeleteConfirm(true)}
+                 >
+                   <Trash2 className="h-4 w-4" />
+                 </Button>
+                 {/* Close button for non-fullscreen mode */}
+                 <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-600 md:hidden" onClick={onClose}>
+                     <X className="h-5 w-5" />
+                 </Button>
+               </div>
+            </div>
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-gray-50/30">
+
+             {/* Description Block */}
+             <div className="bg-white p-4 rounded-2xl border border-pink-100 shadow-sm relative group">
                {isEditing ? (
                   <div className="flex flex-col gap-2 w-full animate-in fade-in zoom-in-95 duration-200">
                     <Textarea
@@ -341,12 +350,12 @@ export function MemoryDetailModal({
                       onChange={(e) => setEditedDesc(e.target.value)}
                       className="bg-pink-50/50 border-pink-200 min-h-[80px] w-full text-sm focus-visible:ring-pink-400"
                     />
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-2 mt-2">
                       <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => setIsEditing(false)}
-                        className="h-7 px-3 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                        className="h-8 px-4 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
                       >
                         Cancel
                       </Button>
@@ -354,52 +363,65 @@ export function MemoryDetailModal({
                         size="sm"
                         onClick={handleSaveEdit}
                         disabled={isSaving}
-                        className="h-7 px-3 bg-pink-500 hover:bg-pink-600 text-white gap-1"
+                        className="h-8 px-4 bg-pink-500 hover:bg-pink-600 text-white gap-2"
                       >
-                        <Check className="h-3 w-3" /> Save
+                        <Check className="h-4 w-4" /> Save
                       </Button>
                     </div>
                   </div>
                 ) : (
-                  <div className="group relative">
-                    <p className="text-pink-900 text-sm md:text-base leading-relaxed pr-6">{memory.description}</p>
+                  <>
+                    <p className="text-pink-900 text-sm md:text-base leading-relaxed pr-6 whitespace-pre-wrap">{memory.description}</p>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute top-0 right-0 h-6 w-6 text-pink-300 opacity-0 group-hover:opacity-100 transition-opacity hover:text-pink-600 hover:bg-pink-50"
+                      className="absolute top-2 right-2 h-8 w-8 text-pink-300 opacity-0 group-hover:opacity-100 transition-opacity hover:text-pink-600 hover:bg-pink-50"
                       onClick={() => setIsEditing(true)}
                     >
-                      <Edit2 className="h-3 w-3" />
+                      <Edit2 className="h-4 w-4" />
                     </Button>
-                  </div>
+                  </>
                 )}
-            </div>
-          </div>
+             </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
+             <div className="border-t border-pink-100 w-full" />
+
+             {/* Comments List */}
              {memory.comments?.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-gray-300 space-y-2">
                    <Heart className="h-12 w-12 stroke-1" />
                    <p className="text-sm">No comments yet. Be the first to show some love!</p>
                 </div>
              ) : (
-                memory.comments?.map((comment) => {
-                  const reactionsCount = comment.reactions?.length || 0
-                  const hasReacted = comment.reactions?.some(r => r.user.name === commentAsUser)
+                (() => {
+                  const rootComments = memory.comments?.filter(c => !c.parentId) || []
+                  const repliesByParentId = memory.comments?.reduce((acc, comment) => {
+                    if (comment.parentId) {
+                      if (!acc[comment.parentId]) acc[comment.parentId] = []
+                      acc[comment.parentId].push(comment)
+                    }
+                    return acc
+                  }, {} as Record<number, MemoryComment[]>) || {}
 
-                  return (
-                    <div key={comment.id} className="flex gap-3 group">
-                      <Avatar className="h-8 w-8 mt-1 border border-white shadow-sm">
-                         <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.name}`} />
-                         <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 max-w-[85%]">
-                         <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 relative group/comment">
-                            <span className="font-bold text-xs text-pink-700 block mb-1">{comment.user.name}</span>
-                            <p className="text-sm text-gray-700 break-words leading-snug">{comment.content}</p>
+                  const renderComment = (comment: MemoryComment, isReply = false) => {
+                    const reactionsCount = comment.reactions?.length || 0
+                    const hasReacted = comment.reactions?.some(r => r.user.name === commentAsUser)
+                    const replies = repliesByParentId[comment.id] || []
 
-                            {/* Improved Reaction Button */}
-                            <button
+                    return (
+                      <div key={comment.id} className={cn("flex flex-col gap-2 group", isReply ? "mt-3" : "mt-4")}>
+                        <div className="flex gap-3">
+                          <Avatar className={cn("mt-1 border border-white shadow-sm shrink-0", isReply ? "h-6 w-6" : "h-8 w-8")}>
+                            <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.name}`} />
+                            <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 max-w-[85%]">
+                            <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 relative group/comment">
+                              <span className="font-bold text-xs text-pink-700 block mb-1">{comment.user.name}</span>
+                              <p className="text-sm text-gray-700 break-words leading-snug">{comment.content}</p>
+
+                              {/* Improved Reaction Button */}
+                              <button
                                 onClick={() => handleCommentReaction(comment.id)}
                                 disabled={!commentAsUser || reactingCommentId === comment.id}
                                 className={cn(
@@ -408,18 +430,38 @@ export function MemoryDetailModal({
                                 (reactionsCount > 0 || hasReacted) ? "opacity-100 scale-100" : "opacity-0 scale-75 group-hover/comment:opacity-100 group-hover/comment:scale-100"
                                 )}
                                 title="Love this comment"
-                            >
+                              >
                                 <div className={cn("p-1 rounded-full", hasReacted ? "bg-red-100" : "bg-gray-100")}>
-                                   <Heart className={cn("h-3 w-3", hasReacted ? "fill-red-500 text-red-500" : "text-gray-400")} />
+                                    <Heart className={cn("h-3 w-3", hasReacted ? "fill-red-500 text-red-500" : "text-gray-400")} />
                                 </div>
                                 {reactionsCount > 0 && <span className="text-[10px] font-bold text-gray-600 pr-0.5">{reactionsCount}</span>}
-                            </button>
-                         </div>
-                         <span className="text-[10px] text-gray-400 ml-2 mt-1 block">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                              </button>
+                            </div>
+                            <div className="flex items-center gap-3 mt-1 ml-2">
+                              <span className="text-[10px] text-gray-400">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                              {!isReply && (
+                                <button
+                                  onClick={() => setReplyingTo(comment.id)}
+                                  className="text-[10px] font-medium text-gray-500 hover:text-pink-500 transition-colors"
+                                >
+                                  Reply
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {replies.length > 0 && (
+                          <div className="ml-11 border-l-2 border-pink-50 pl-4">
+                            {replies.map(reply => renderComment(reply, true))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  )
-                })
+                    )
+                  }
+
+                  return rootComments.map(c => renderComment(c))
+                })()
              )}
           </div>
 
@@ -437,30 +479,44 @@ export function MemoryDetailModal({
                   </SelectContent>
                 </Select>
              </div>
-             <div className="relative">
-                <Input
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder="Write a comment..."
-                  className="pr-12 bg-gray-50 border-gray-200 focus-visible:ring-pink-400 rounded-full"
-                  onKeyDown={(e) => {
-                     if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        if (comment.trim() && commentAsUser && !isSubmitting) handleCommentSubmit(e);
-                     }
-                  }}
-                />
-                <Button
-                  size="icon"
-                  onClick={handleCommentSubmit}
-                  disabled={!comment.trim() || !commentAsUser || isSubmitting}
-                  className={cn(
-                     "absolute right-1 top-1 h-8 w-8 rounded-full transition-all",
-                     comment.trim() ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-200 text-gray-400"
-                  )}
-                >
-                  <Send className="h-4 w-4 ml-0.5" />
-                </Button>
+             <div className="flex flex-col gap-2">
+                {replyingTo && (
+                  <div className="text-xs text-pink-600 flex items-center gap-2 bg-pink-50 px-3 py-1.5 rounded-md w-fit">
+                    Replying to comment
+                    <button
+                      type="button"
+                      onClick={() => setReplyingTo(null)}
+                      className="hover:text-red-500 ml-2 font-bold"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+                <div className="relative flex items-center w-full">
+                  <Input
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder={replyingTo ? "Write a reply..." : "Write a comment..."}
+                    className="pr-12 bg-gray-50 border-gray-200 focus-visible:ring-pink-400 rounded-full"
+                    onKeyDown={(e) => {
+                       if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          if (comment.trim() && commentAsUser && !isSubmitting) handleCommentSubmit(e);
+                       }
+                    }}
+                  />
+                  <Button
+                    size="icon"
+                    onClick={handleCommentSubmit}
+                    disabled={!comment.trim() || !commentAsUser || isSubmitting}
+                    className={cn(
+                       "absolute right-1 top-1 h-8 w-8 rounded-full transition-all",
+                       comment.trim() ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-200 text-gray-400"
+                    )}
+                  >
+                    <Send className="h-4 w-4 ml-0.5" />
+                  </Button>
+                </div>
              </div>
           </div>
         </div>

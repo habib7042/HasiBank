@@ -16,10 +16,6 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-  eslint: {
-    // 构建时忽略ESLint错误
-    ignoreDuringBuilds: true,
-  },
 };
 
 export default nextConfig;
